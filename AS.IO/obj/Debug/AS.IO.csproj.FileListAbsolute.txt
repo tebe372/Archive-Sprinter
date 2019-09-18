@@ -1,9 +1,0 @@
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.IO\bin\Debug\AS.IO.dll
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.IO\bin\Debug\AS.IO.pdb
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.IO\bin\Debug\AS.Core.dll
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.IO\bin\Debug\AS.Core.pdb
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.IO\obj\Debug\AS.IO.csprojAssemblyReference.cache
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.IO\obj\Debug\AS.IO.csproj.CoreCompileInputs.cache
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.IO\obj\Debug\AS.IO.csproj.CopyComplete
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.IO\obj\Debug\AS.IO.dll
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.IO\obj\Debug\AS.IO.pdb

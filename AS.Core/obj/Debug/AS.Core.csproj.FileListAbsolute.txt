@@ -1,6 +1,0 @@
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.Core\bin\Debug\AS.Core.dll
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.Core\bin\Debug\AS.Core.pdb
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.Core\obj\Debug\AS.Core.csprojAssemblyReference.cache
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.Core\obj\Debug\AS.Core.csproj.CoreCompileInputs.cache
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.Core\obj\Debug\AS.Core.dll
-C:\Users\d3m422\source\repos\ArchiveSprinter\AS.Core\obj\Debug\AS.Core.pdb
