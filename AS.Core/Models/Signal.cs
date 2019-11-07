@@ -52,4 +52,18 @@ namespace AS.Core.Models
       //  public ObservableCollection<SiteCoordinatesModel> Locations { get; set; }
         //public SignalMapPlotType MapPlotType { get; set; }
     }
+
+    public class SignalSignature
+    {
+        public SignalSignature()
+        {
+            
+        }
+
+        
+         public string Name { get; set; }
+        public IList<string> Channels { get; set; }
+    
+    }
+
 }
