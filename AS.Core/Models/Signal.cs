@@ -16,11 +16,12 @@ namespace AS.Core.Models
             IsCustomSignal = false;
             IsNameTypeUnitChanged = false;
             Data = new List<double>();
-            MATLABTimeStampNumber = new List<double>();
+            //MATLABTimeStampNumber = new List<double>();
             TimeStampNumber = new List<double>();
+            TimeStamps = new List<DateTime>();
           //  From = CoreUtilities.DummySiteCoordinatesModel;
           //  To = CoreUtilities.DummySiteCoordinatesModel;
-           // Locations = new ObservableCollection<SiteCoordinatesModel>();
+          // Locations = new ObservableCollection<SiteCoordinatesModel>();
           //  Locations.Add(CoreUtilities.DummySiteCoordinatesModel);
           //  MapPlotType = SignalMapPlotType.Dot;
         }
@@ -45,12 +46,13 @@ namespace AS.Core.Models
         public int PassedThroughDQFilter { get; set; }
         public int PassedThroughProcessor { get; set; }
         public List<double> Data { get; set; }
-        public List<double> TimeStampNumber { get; set; }
-        public List<double> MATLABTimeStampNumber { get; internal set; }
-    //    public SiteCoordinatesModel From { get; set; }
-    //    public SiteCoordinatesModel To { get; set; }
-      //  public ObservableCollection<SiteCoordinatesModel> Locations { get; set; }
-        //public SignalMapPlotType MapPlotType { get; set; }
+        public List<double> TimeStampNumber { get; set; } // .net number of days
+        public List<DateTime> TimeStamps { get; set; }
+                                           //public List<double> MATLABTimeStampNumber { get; internal set; }
+                                           //    public SiteCoordinatesModel From { get; set; }
+                                           //    public SiteCoordinatesModel To { get; set; }
+                                           //  public ObservableCollection<SiteCoordinatesModel> Locations { get; set; }
+                                           //public SignalMapPlotType MapPlotType { get; set; }
     }
 
     public class SignalSignature

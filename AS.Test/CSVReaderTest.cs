@@ -29,7 +29,24 @@ namespace AS.Test
         public void TestRead()
         {
             // Read in file and compare with known results
-            Assert.IsTrue(false);
+            var reader = DataFileReaderFactory.Create(DataFileType.csv);
+            List<Signal> signals = reader.Read("Data\\ExData_20170203_000800.csv");
+
+            Assert.IsNotNull(signals);
+            Assert.AreEqual(signals.Count, 8);
+            Assert.AreEqual(signals[0].Data.Count, 1800);
+        }
+
+        [TestMethod]
+        public void TestRead2()
+        {
+            // Read in file and compare with known results
+            CSVFileReader reader = (CSVFileReader)DataFileReaderFactory.Create(DataFileType.csv);
+            List<Signal> signals = reader.Read2("Data\\ExData_20170203_000800.csv");
+
+            Assert.IsNotNull(signals);
+            Assert.AreEqual(signals.Count, 8);
+            Assert.AreEqual(signals[0].Data.Count, 1800);
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,49 +13,103 @@ namespace AS.IO
 {
     public class CSVFileReader : IDataFileReader
     {
-        List<Signal> IDataFileReader.Read(string filename)
+        public List<Signal> Read(string filename)
         {
-            var reader = new TextFieldParser(filename);
-            reader.TextFieldType = FieldType.Delimited;
-            reader.SetDelimiters(",");
-            reader.HasFieldsEnclosedInQuotes = true;
-
             var signalList = new List<Signal>();
-
-            string pmuName = filename.Split('\\').Last().Split('_')[0];
-
-            List<string> signalNames = reader.ReadFields().Skip(1).ToList();
-
-            List<string> signalTypes = reader.ReadFields().Skip(1).ToList();
-
-            List<string> signalUnits = reader.ReadFields().Skip(1).ToList();
-
-            reader.ReadLine();
-            reader.ReadLine();
-
-            var time1 = reader.ReadFields()[0];
-            var time2 = reader.ReadFields()[0];
-
-            try
+            var baseTime = _getFileDateTime(filename);
+            var timeSpanRelativeToBaseTime = new List<double>();
+            var timeStamps = new List<DateTime>();
+            var timeStampeNumberInDays = new List<double>();
+            using (TextFieldParser reader = new TextFieldParser(filename))
             {
-                double t1 = Convert.ToDouble(time1);
+                reader.TextFieldType = FieldType.Delimited;
+                reader.SetDelimiters(",");
+                reader.HasFieldsEnclosedInQuotes = true;
 
-                double t2 = Convert.ToDouble(time2);
 
-                double SamplingRate = Math.Round((1 / (t2 - t1)) / 10) * 10;
-            }
+                string pmuName = Path.GetFileNameWithoutExtension(filename).Split('_')[0];
 
-            catch (Exception)
-            {
+                List<string> signalNames = reader.ReadFields().Skip(1).ToList();
 
-                DateTime t1 = DateTime.Parse(time1);
+                List<string> signalTypes = reader.ReadFields().Skip(1).ToList();
 
-                DateTime t2 = DateTime.Parse(time2);
+                List<string> signalUnits = reader.ReadFields().Skip(1).ToList();
+                //DataTable dt = new DataTable();
 
-                double dif = t2.Subtract(t1).TotalSeconds;
+                reader.ReadLine(); //skip the 4th line.
+                //var data = reader.ReadToEnd();
+                //var c = data.Length;
+                //var d = data.ToArray();
+                //var e = data.Sum(x => x);
+                //var f = data.Skip(1).ToArray();
+                for (int i = 0; i < signalNames.Count; i++)
+                {
+                    var newSignal = new Signal();
+                    newSignal.SignalName = signalNames[i];
+                    newSignal.Unit = signalUnits[i];
+                    newSignal.TypeAbbreviation = _getSignalType(signalTypes[i]);
+                    newSignal.PMUName = pmuName;
+                    newSignal.TimeStampNumber = timeStampeNumberInDays;
+                    newSignal.TimeStamps = timeStamps;
+                    signalList.Add(newSignal);
+                }
+                while (!reader.EndOfData)
+                {
+                    //can read line by line
+                    var row = reader.ReadFields();
+                    //DataRow dr = dt.NewRow();
+                    for (int i = 0; i < row.Length; i++)
+                    {
+                        var success = double.TryParse(row[i], out double value);
+                        if (!success)
+                        {
+                            value = double.NaN; //if conversion fail, set value to NAN, is this the behaviour we want?
+                        }
+                        if (i == 0)
+                        {
+                            timeSpanRelativeToBaseTime.Add(value);
+                            var datetimed = baseTime.AddSeconds(value);
+                            timeStamps.Add(datetimed); //might need to change if the first time column changes
+                            timeStampeNumberInDays.Add(datetimed.ToOADate());
+                        }
+                        else
+                        {
+                            signalList[i - 1].Data.Add(value);
+                        }
+                    }
+                    //dt.Rows.Add(dr);
 
-                double SamplingRate = Math.Round((1 / dif) / 10) * 10;
+                }
+                //var a = dt.Columns[0];
+                var time1 = timeSpanRelativeToBaseTime[0];
+                var time2 = timeSpanRelativeToBaseTime[1];
+                int samplingRate = (int)Math.Round((1 / (time1 - time2)) / 10) * 10;
 
+                //try
+                //{
+                //    //double t1 = Convert.ToDouble(time1);
+
+                //    //double t2 = Convert.ToDouble(time2);
+
+                //    samplingRate = Math.Round((1 / (time1 - time2)) / 10) * 10;
+                //}
+
+                //catch (Exception)
+                //{
+
+                //    //DateTime t1 = DateTime.Parse(time1);
+
+                //    //DateTime t2 = DateTime.Parse(time2);
+
+                //    //double dif = t2.Subtract(t1).TotalSeconds;
+
+                //    //double SamplingRate = Math.Round((1 / dif) / 10) * 10;
+
+                //}
+                foreach (var sig in signalList)
+                {
+                    sig.SamplingRate = samplingRate;
+                }
             }
 
             //for (var index = 0; index <= signalNames.Count - 1; index++)
@@ -145,6 +202,217 @@ namespace AS.IO
             //}
 
             return signalList;
+        }
+
+        public List<Signal> Read2(string filename)
+        {
+            //var l = File.ReadAllLines(filename).Select(x => x.Split(',')).ToArray();
+            var signalList = new List<Signal>();
+            var timeSpanRelativeToBaseTime = new List<double>();
+            var timeStamps = new List<DateTime>();
+            var timeStampeNumberInDays = new List<double>();
+            using (TextFieldParser reader = new TextFieldParser(filename))
+            {
+                reader.TextFieldType = FieldType.Delimited;
+                reader.SetDelimiters(",");
+                reader.HasFieldsEnclosedInQuotes = true;
+
+
+                string pmuName = filename.Split('\\').Last().Split('_')[0];
+
+                List<string> signalNames = reader.ReadFields().ToList();
+
+                List<string> signalTypes = reader.ReadFields().ToList();
+
+                List<string> signalUnits = reader.ReadFields().ToList();
+                DataTable dt = new DataTable();
+
+                reader.ReadLine(); //skip the 4th line.
+                //var data = reader.ReadToEnd();
+                //var c = data.Length;
+                //var d = data.ToArray();
+                //var e = data.Sum(x => x);
+                //var f = data.Skip(1).ToArray();
+
+                foreach (string header in signalNames)
+                {
+                    dt.Columns.Add(header);
+                }
+
+                while (!reader.EndOfData)
+                {
+                    //can read line by line
+                    var row = reader.ReadFields();
+                    DataRow dr = dt.Rows.Add();
+                    //DataRow dr = dt.NewRow();
+                    dr.ItemArray = row;
+                    //for (int i = 0; i < row.Length; i++)
+                    //{
+                    //    dr[i] = row[i];
+                    //}
+                    //dt.Rows.Add(dr);
+
+                }
+                for (int i = 0; i < dt.Columns.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        for (int j = 0; j < dt.Rows.Count; j++)
+                        {
+                            var value = double.Parse(dt.Rows[j][i].ToString());
+
+                            timeSpanRelativeToBaseTime.Add(value);
+                        }
+                    }
+                    else
+                    {
+                        var newSignal = new Signal();
+                        newSignal.SignalName = signalNames[i];
+                        newSignal.Unit = signalUnits[i];
+                        newSignal.TypeAbbreviation = _getSignalType(signalTypes[i]);
+                        newSignal.PMUName = pmuName;
+                        newSignal.TimeStampNumber = timeStampeNumberInDays;
+                        newSignal.TimeStamps = timeStamps;
+                        signalList.Add(newSignal);
+                        for (int j = 0; j < dt.Rows.Count; j++)
+                        {
+                            var value = double.Parse(dt.Rows[j][i].ToString());
+                            signalList[i - 1].Data.Add(value);
+                        }
+                    }
+                }
+                //foreach (var c in dt.Columns)
+                //{
+                //    foreach (var r in dt.Rows)
+                //    {
+                //        var vv = dt[r][c];
+                //    }
+                //}
+                var ds = dt.DataSet;
+                
+                var a = dt.Columns[0];
+                var b = dt.Columns["Time"];
+                //var r = dt.Rows[0];
+                //var v = r["Time"];
+                var time1 = timeSpanRelativeToBaseTime[0];
+                var time2 = timeSpanRelativeToBaseTime[1];
+                int samplingRate = (int)Math.Round((1 / (time1 - time2)) / 10) * 10;
+                foreach (var sig in signalList)
+                {
+                    sig.SamplingRate = samplingRate;
+                }
+
+                //var time1 = reader.ReadFields()[0];
+                //var time2 = reader.ReadFields()[0];
+
+                //try
+                //{
+                //    double t1 = Convert.ToDouble(time1);
+
+                //    double t2 = Convert.ToDouble(time2);
+
+                //    double SamplingRate = Math.Round((1 / (t2 - t1)) / 10) * 10;
+                //}
+
+                //catch (Exception)
+                //{
+
+                //    DateTime t1 = DateTime.Parse(time1);
+
+                //    DateTime t2 = DateTime.Parse(time2);
+
+                //    double dif = t2.Subtract(t1).TotalSeconds;
+
+                //    double SamplingRate = Math.Round((1 / dif) / 10) * 10;
+
+                //}
+            }
+
+
+            return signalList;
+        }
+
+        private string _getSignalType(string type)
+        {
+            switch (type)
+            {
+                case "VPM":
+                    {
+                        return "VMP";
+                    }
+
+                case "VPA":
+                    {
+                        return "VAP";
+                    }
+
+                case "IPM":
+                    {
+                        return "IMP";
+                    }
+
+                case "IPA":
+                    {
+                        return "IAP";
+                    }
+
+                case "F":
+                    {
+                        return "F";
+                    }
+
+                case "P":
+                    {
+                        return "P";
+                    }
+
+                case "Q":
+                    {
+                        return "Q";
+                    }
+
+                default:
+                    {
+                        return "Other";
+                    }
+            }
+        }
+
+        private DateTime _getFileDateTime(string filename)
+        {
+            var nameStrings = Path.GetFileNameWithoutExtension(filename).Split('_');
+            DateTime date = DateTime.MinValue;
+            TimeSpan time = TimeSpan.Zero;
+            string dateStr = "", timeStr = "";
+            foreach (var str in nameStrings)
+            {
+                if (str.Length == 8)
+                {
+                    try
+                    {
+                        date = DateTime.ParseExact(str, "yyyyMMdd", CultureInfo.InvariantCulture);
+                        dateStr = str;
+                    }
+                    catch (Exception)
+                    {
+
+                    }
+                }
+                else if (str.Length == 6)
+                {
+                    try
+                    {
+                        time = TimeSpan.ParseExact(str, "hhmmss", CultureInfo.InvariantCulture);
+                        timeStr = str;
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                }
+            }
+            //DateTime rslt = DateTime.ParseExact(dateStr + "_" + timeStr, "yyyyMMdd_HHmmss", CultureInfo.InvariantCulture);
+            return date.Add(time);
         }
     }
 }
