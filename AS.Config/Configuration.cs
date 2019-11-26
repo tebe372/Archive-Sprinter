@@ -9,11 +9,13 @@ namespace AS.Config
 {
     public class Configuration
     {
-        public List<InputFileInfo> InputFiles { get; set; } // List of input file information
+        public List<InputFileInfo> InputFiles = new List<InputFileInfo> { }; // List of input file information
         // TODO: information about processing windows
 
-        public List<PreProcessSetting> PreProcessSteps { get; set; }   // Customization & Data Quality steps
+        public List<PreProcessSetting> PreProcessSteps = new List<PreProcessSetting> { };  // Customization & Data Quality steps
         public List<SignatureSetting> SignatureSettings { get; set; }  // Signature calculation settings
+
+
     }
 
     public class InputFileInfo
@@ -21,6 +23,12 @@ namespace AS.Config
         public InputFileInfo()
         {
             FileDirectory = "";
+            FileType = DataFileType.pdat;
+        }
+
+        public InputFileInfo(string directory)
+        {
+            FileDirectory = directory;
             FileType = DataFileType.pdat;
         }
         public string FileDirectory { get; set; }

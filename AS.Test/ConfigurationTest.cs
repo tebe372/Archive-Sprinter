@@ -11,10 +11,10 @@ namespace AS.Test
     public class ConfigurationTest
     {
         [TestMethod]
-        public void TestDQFilterParse()
+        public void TestFilterParse()
         {
             string json = @"{
-                'Name': 'Test DQ Filter Name',
+                'Name': 'Test Filter Name',
                 'PMUs': [
                   {
                   'Name': 'ExData',
@@ -31,13 +31,13 @@ namespace AS.Test
                ]
             }";
 
-            DQFilter testfilter = JsonConvert.DeserializeObject<DQFilter>(json);
+            Filter testfilter = JsonConvert.DeserializeObject<Filter>(json);
         }
 
         [TestMethod]
-        public void TestDQFilterSerialize()
+        public void TestFilterSerialize()
         {
-            DQFilter testfilter = TestObjects.MakeDQFilter();
+            Filter testfilter = TestObjects.MakeDQFilter();
                 
             string jsonOutput = JsonConvert.SerializeObject(testfilter, Formatting.None);
 
@@ -50,11 +50,10 @@ namespace AS.Test
         {
             string json = @"{
                 'Name': 'Angle Wrapping',
-                'Parameters': [
-                    'AngleThreshold': 30
-                ],
+                'AngleThreshold': '30',
                 'PMUs': [
-                  'Name': 'ExData',
+                  {
+                    'Name': 'ExData',
                   'Channels' : [
                        'Sub1VA',
                        'Sub2VA',
@@ -64,39 +63,58 @@ namespace AS.Test
                        'Sub6VA',
                        'Sub7VA'
                    ]
-                ]
+                }]
             }";
 
-            DQFilter testfilter = JsonConvert.DeserializeObject<DQFilter>(json);
+            Filter testfilter = JsonConvert.DeserializeObject<Filter>(json);
         }
 
         [TestMethod]
         public void TestWrappingFilterSerialize()
         {
-            WrappingFailureDQFilter testfilter = TestObjects.MakeWrappingFilter();
+            Filter testfilter = TestObjects.MakeWrappingFilter();
 
             string jsonOutput = JsonConvert.SerializeObject(testfilter, Formatting.None);
 
-            Assert.IsNotNull(jsonOutput.Length);
+            Assert.IsFalse(jsonOutput.Length <= 0);
+        }
+
+        [TestMethod]
+        public void TestConfigurationSerialize()
+        {
+            Configuration testconfig = TestObjects.MakeConfiguration();
+
+            string jsonOutput = JsonConvert.SerializeObject(testconfig, Formatting.None);
+
+            Assert.IsFalse(jsonOutput.Length <= 0);
         }
     }
 
     public static class TestObjects
     {
-        public static DQFilter MakeDQFilter()
+        public static Filter MakeDQFilter()
         {
-            DQFilter testfilter = new DQFilter();
-            testfilter.Name = "TestName";
+            Filter testfilter = new Filter("TestName");
             testfilter.PMUs = new List<SignalSignature>();
             testfilter.PMUs.Add(MakeSignalSignature());
 
             return testfilter;
         }
-        public static WrappingFailureDQFilter MakeWrappingFilter()
+        public static Filter MakeWrappingFilter()
         {
-            WrappingFailureDQFilter testfilter = new WrappingFailureDQFilter();
+            /*   WrappingFailureDQFilter testfilter = new WrappingFailureDQFilter();
+               testfilter.PMUs = new List<SignalSignature>();
+               testfilter.PMUs.Add(MakeSignalSignature());
+
+               testfilter.AddParameter("AngleThresh", "30");
+
+               return testfilter;
+               */
+            Filter testfilter = new Filter("Angle Wrapping");
             testfilter.PMUs = new List<SignalSignature>();
             testfilter.PMUs.Add(MakeSignalSignature());
+
+            testfilter.AddParameter("AngleThresh", "30");
 
             return testfilter;
         }
@@ -108,6 +126,24 @@ namespace AS.Test
             testObj.Channels = new List<string> { "Sub1VA", "Sub2VA", "Sub3VA", "Sub4VA", "Sub5VA", "Sub6VA", "Sub7VA" };
 
             return testObj;
+        }
+
+        public static Configuration MakeConfiguration()
+        {
+            Configuration testObj = new Configuration();
+            testObj.InputFiles.Add(MakeInputFile());
+            testObj.PreProcessSteps.Add(MakeDQFilter());
+            testObj.PreProcessSteps.Add(MakeWrappingFilter());
+
+            return testObj;
+        }
+
+        public static InputFileInfo MakeInputFile(DataFileType type = DataFileType.csv)
+        {
+            InputFileInfo testFile = new InputFileInfo(".\\TestDir\\");
+            testFile.FileType = type;
+
+            return testFile;
         }
     }
 
