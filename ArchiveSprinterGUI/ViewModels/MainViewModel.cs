@@ -1,4 +1,5 @@
 ﻿using ArchiveSprinterGUI.ViewModels.SettingsViewModels;
+using AS.SampleDataManager;
 using AS.Utilities;
 using System;
 using System.Collections.Generic;
@@ -13,11 +14,13 @@ namespace ArchiveSprinterGUI.ViewModels
     {
         public MainViewModel()
         {
+            _sampleDataMgr = SampleDataMngr.Instance;
             _settingsVM = new SettingsViewModel();
             _sgnlInspctVM = new SignalInspectionViewModel();
             _currentView = _settingsVM;
             MainViewSelected = new RelayCommand(_switchView);
         }
+        private SampleDataMngr _sampleDataMgr;
         private ViewModelBase _currentView;
         public ViewModelBase CurrentView
         {
