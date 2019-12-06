@@ -102,14 +102,6 @@ namespace AS.Test
         }
         public static Filter MakeWrappingFilter()
         {
-            /*   WrappingFailureDQFilter testfilter = new WrappingFailureDQFilter();
-               testfilter.PMUs = new List<SignalSignature>();
-               testfilter.PMUs.Add(MakeSignalSignature());
-
-               testfilter.AddParameter("AngleThresh", "30");
-
-               return testfilter;
-               */
             Filter testfilter = new Filter("Angle Wrapping");
             testfilter.PMUs = new List<SignalSignature>();
             testfilter.PMUs.Add(MakeSignalSignature());
