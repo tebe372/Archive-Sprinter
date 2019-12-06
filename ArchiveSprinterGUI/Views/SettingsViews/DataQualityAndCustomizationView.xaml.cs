@@ -24,5 +24,6 @@ namespace ArchiveSprinterGUI.Views.SettingsViews
         {
             InitializeComponent();
         }
+
     }
 }
