@@ -148,8 +148,8 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
+  <ItemGroup>
     <Resource Include="Resources\AddCommand.png" />
-    </Resource>
     <Resource Include="..\Resources\Images\open.gif">
       <Link>Resources\open.gif</Link>
     </Resource>
