@@ -43,15 +43,15 @@
                     <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,5,0,0">
                         <Label Content="Example File:" Margin="2" Width="100"/>
                         <TextBox Text="{Binding ExampleFile, UpdateSourceTrigger=PropertyChanged}" Margin="2" VerticalAlignment="Center" MinWidth="100" MaxWidth="600" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
-                        <Button Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.BrowseInputFileDir}" Margin="2" ToolTip="Browse Input Data Directory" Width="25" Height="25" CommandParameter="{Binding}">
-                            <!--<Image Source="/BAWGUI.Settings;component/MyResources/open.gif" Stretch="Uniform"/>-->
+                        <Button Command="{Binding BrowseInputFileDir}" Margin="2" ToolTip="Browse Input Data Directory" Width="25" Height="25" CommandParameter="{Binding}">
+                            <Image Source="/ArchiveSprinterGUI;component/Resources/open.gif" Stretch="Uniform"/>
                         </Button>
                         <!--<Button Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.ReadExampleFile}" Margin="2" ToolTip="Update selected example file and settings" Height="25" CommandParameter="{Binding}" Content="Read File" IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=1, Mode=FindAncestor}, Path=DataContext.IsMatlabEngineRunning}"/>
                         <Button Command="{Binding RelativeSource={RelativeSource AncestorType=Window, Mode=FindAncestor, AncestorLevel=1}, Path=DataContext.InspectRawSignal}" Margin="2" ToolTip="Inspect input signals from this example file" Height="25" CommandParameter="{Binding}" Content="Inspect Signals" IsEnabled="{Binding RelativeSource={RelativeSource AncestorType=UserControl, AncestorLevel=1, Mode=FindAncestor}, Path=DataContext.IsMatlabEngineRunning}"/>-->
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0,5,0,0">
                         <Label Content="File Directory:" Margin="2" Width="100"/>
-                        <TextBox Text="{Binding FileDirectory, UpdateSourceTrigger=PropertyChanged}" Margin="2" VerticalAlignment="Center" MinWidth="200" IsReadOnly="True" Background="WhiteSmoke"/>
+                        <TextBox Text="{Binding FileDirectory, UpdateSourceTrigger=PropertyChanged}" Margin="2" VerticalAlignment="Center" MinWidth="200" MaxWidth="600" IsReadOnly="True" Background="WhiteSmoke"/>
 
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="0,5,0,0">

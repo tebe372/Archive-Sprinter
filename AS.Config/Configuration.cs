@@ -9,7 +9,7 @@ namespace AS.Config
 {
     public class Configuration
     {
-        public List<InputFileInfo> InputFiles = new List<InputFileInfo> { }; // List of input file information
+        public List<DataSourceSetting> InputFiles = new List<DataSourceSetting> { }; // List of input file information
         // TODO: information about processing windows
 
         public List<PreProcessSetting> PreProcessSteps = new List<PreProcessSetting> { };  // Customization & Data Quality steps
@@ -18,21 +18,4 @@ namespace AS.Config
 
     }
 
-    public class InputFileInfo
-    {
-        public InputFileInfo()
-        {
-            FileDirectory = "";
-            FileType = DataFileType.pdat;
-        }
-
-        public InputFileInfo(string directory)
-        {
-            FileDirectory = directory;
-            FileType = DataFileType.pdat;
-        }
-        public string FileDirectory { get; set; }
-        public DataFileType FileType;
-
-    }
 }

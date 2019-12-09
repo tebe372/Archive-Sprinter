@@ -38,8 +38,15 @@
     <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack-Core.1.1.1\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Json, Version=2.0.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Json.4.6.0\lib\netstandard2.0\System.Json.dll</HintPath>
     </Reference>
@@ -71,6 +78,8 @@
     <Compile Include="Converters\EnumToStringConverters.cs" />
     <Compile Include="Converters\RadioButtonViewConverters.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
+    <Compile Include="ViewModels\SampleDataManagerViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModels\DataSourceSettingViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\DataSourceViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\SignalInspectionViewModel.cs" />
@@ -139,13 +148,24 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\AddCommand.png" />
+    </Resource>
+    <Resource Include="..\Resources\Images\open.gif">
+      <Link>Resources\open.gif</Link>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AS.Config\AS.Config.csproj">
+      <Project>{39A7D9D2-0CE2-4240-BB01-43924EECCF1E}</Project>
+      <Name>AS.Config</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AS.Core\AS.Core.csproj">
       <Project>{8cc24166-b493-41c0-acb0-dc9177181e1e}</Project>
       <Name>AS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AS.SampleDataManager\AS.SampleDataManager.csproj">
+      <Project>{c256af11-b60a-4212-9e0d-9fd9d5bbe18d}</Project>
+      <Name>AS.SampleDataManager</Name>
     </ProjectReference>
     <ProjectReference Include="..\AS.Utilities\AS.Utilities.csproj">
       <Project>{9AD4EBFF-6D35-446C-9AA3-EB0068235636}</Project>

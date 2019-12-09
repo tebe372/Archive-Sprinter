@@ -25,6 +25,8 @@ namespace ArchiveSprinterGUI.Converters
                     return "PI Database";
                 case DataFileType.OpenHistorian:
                     return "openHistorian";
+                case DataFileType.OpenPDC:
+                    return "openPDC";
                 default:
                     throw new Exception("Input data file type not valid!");
             }
@@ -44,6 +46,8 @@ namespace ArchiveSprinterGUI.Converters
                     return DataFileType.PI;
                 case "openHistorian":
                     return DataFileType.OpenHistorian;
+                case "openPDC":
+                    return DataFileType.OpenPDC;
                 default:
                     throw new Exception("Enum type not valid!");
             }

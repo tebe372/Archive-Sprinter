@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.539
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29418.71
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AS.GUI", "ArchiveSprinterGUI\AS.GUI.csproj", "{1FE03491-7CB3-4830-8937-DF973270B8E7}"
 EndProject
@@ -17,7 +17,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AS.Utilities", "AS.Utilitie
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AS.Config", "AS.Config\AS.Config.csproj", "{39A7D9D2-0CE2-4240-BB01-43924EECCF1E}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Resources", "Resources\Resources.shproj", "{B8F54723-3799-4777-9BEF-5E29991632B2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AS.SampleDataManager", "AS.SampleDataManager\AS.SampleDataManager.csproj", "{C256AF11-B60A-4212-9E0D-9FD9D5BBE18D}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Resources\Resources.projitems*{b8f54723-3799-4777-9bef-5e29991632b2}*SharedItemsImports = 13
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -47,6 +54,10 @@ Global
 		{39A7D9D2-0CE2-4240-BB01-43924EECCF1E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{39A7D9D2-0CE2-4240-BB01-43924EECCF1E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{39A7D9D2-0CE2-4240-BB01-43924EECCF1E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C256AF11-B60A-4212-9E0D-9FD9D5BBE18D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C256AF11-B60A-4212-9E0D-9FD9D5BBE18D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C256AF11-B60A-4212-9E0D-9FD9D5BBE18D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C256AF11-B60A-4212-9E0D-9FD9D5BBE18D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

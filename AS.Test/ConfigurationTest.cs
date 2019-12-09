@@ -130,9 +130,9 @@ namespace AS.Test
             return testObj;
         }
 
-        public static InputFileInfo MakeInputFile(DataFileType type = DataFileType.csv)
+        public static DataSourceSetting MakeInputFile(DataFileType type = DataFileType.csv)
         {
-            InputFileInfo testFile = new InputFileInfo(".\\TestDir\\");
+            DataSourceSetting testFile = new DataSourceSetting(".\\TestDir\\");
             testFile.FileType = type;
 
             return testFile;

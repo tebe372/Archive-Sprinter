@@ -4,14 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8CC24166-B493-41C0-ACB0-DC9177181E1E}</ProjectGuid>
+    <ProjectGuid>{C256AF11-B60A-4212-9E0D-9FD9D5BBE18D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AS.Core</RootNamespace>
-    <AssemblyName>AS.Core</AssemblyName>
+    <RootNamespace>AS.SampleDataManager</RootNamespace>
+    <AssemblyName>AS.SampleDataManager</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -41,16 +42,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\EnumDefinitions.cs" />
-    <Compile Include="Models\Signal.cs" />
-    <Compile Include="Models\SiteCoordinates.cs" />
+    <Compile Include="SampleDataMngr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\SignalTypeHierachy.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AS.Utilities\AS.Utilities.csproj">
-      <Project>{9AD4EBFF-6D35-446C-9AA3-EB0068235636}</Project>
-      <Name>AS.Utilities</Name>
+    <ProjectReference Include="..\AS.Core\AS.Core.csproj">
+      <Project>{8CC24166-B493-41C0-ACB0-DC9177181E1E}</Project>
+      <Name>AS.Core</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
