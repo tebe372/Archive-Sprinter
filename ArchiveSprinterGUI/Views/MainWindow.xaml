@@ -19,7 +19,7 @@
             <localv:SettingsTabControl/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type localvm:SignalInspectionViewModel}">
-            <localsv:SignalInspectionView/>
+            <localsv:SignalInspectionView DataContext="{Binding SgnlInspctVM}"/>
         </DataTemplate>
         <converters:RadioButtonViewConverter1 x:Key="RadioButtonViewConverter1"/>
     </Window.Resources>

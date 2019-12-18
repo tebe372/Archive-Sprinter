@@ -114,7 +114,7 @@ namespace AS.IO
 
             //for (var index = 0; index <= signalNames.Count - 1; index++)
             //    {
-            //        var newSignal = new SignalSignatureViewModel();
+            //        var newSignal = new SignalViewModel();
             //        newSignal.PMUName = pmuName;
             //        newSignal.Unit = signalUnits[index];
             //        newSignal.SignalName = signalNames[index];
@@ -188,14 +188,14 @@ namespace AS.IO
             //    aFileInfo.SignalList = signalList;
             //    aFileInfo.TaggedSignals = signalSignatureList;
             //    aFileInfo.SamplingRate = (int)SamplingRate;
-            //    var newSig = new SignalSignatureViewModel(aFileInfo.FileDirectory + ", Sampling Rate: " + aFileInfo.SamplingRate + "/Second");
+            //    var newSig = new SignalViewModel(aFileInfo.FileDirectory + ", Sampling Rate: " + aFileInfo.SamplingRate + "/Second");
             //    newSig.SamplingRate = (int)SamplingRate;
-            //    var a = new SignalTypeHierachy(newSig);
+            //    var a = new SignalTree(newSig);
             //    a.SignalList = SortSignalByPMU(signalSignatureList);
             //    GroupedRawSignalsByPMU.Add(a);
-            //    //newSig = new SignalSignatureViewModel(aFileInfo.FileDirectory + ", Sampling Rate: " + aFileInfo.SamplingRate + "/Second");
+            //    //newSig = new SignalViewModel(aFileInfo.FileDirectory + ", Sampling Rate: " + aFileInfo.SamplingRate + "/Second");
             //    //newSig.SamplingRate = (int)SamplingRate;
-            //    var b = new SignalTypeHierachy(newSig);
+            //    var b = new SignalTree(newSig);
             //    b.SignalList = SortSignalByType(signalSignatureList);
             //    GroupedRawSignalsByType.Add(b);
             //    ReGroupedRawSignalsByType = GroupedRawSignalsByType;

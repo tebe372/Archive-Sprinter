@@ -45,7 +45,8 @@
     <Compile Include="Models\Signal.cs" />
     <Compile Include="Models\SiteCoordinates.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ViewModels\SignalTypeHierachy.cs" />
+    <Compile Include="ViewModels\SignalTree.cs" />
+    <Compile Include="ViewModels\SignalViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AS.Utilities\AS.Utilities.csproj">

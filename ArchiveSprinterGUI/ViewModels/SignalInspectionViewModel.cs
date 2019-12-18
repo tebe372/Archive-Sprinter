@@ -9,5 +9,10 @@ namespace ArchiveSprinterGUI.ViewModels
 {
     public class SignalInspectionViewModel : ViewModelBase
     {
+        public SignalInspectionViewModel()
+        {
+            SampleDataMngr = new SampleDataManagerViewModel();
+        }
+        public SampleDataManagerViewModel SampleDataMngr { get; set; }
     }
 }

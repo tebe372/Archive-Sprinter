@@ -98,6 +98,9 @@
     <Compile Include="Views\SignalInspectionViews\SignalInspectionView.xaml.cs">
       <DependentUpon>SignalInspectionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SignalInspectionViews\SignalSelectionPanel.xaml.cs">
+      <DependentUpon>SignalSelectionPanel.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -147,6 +150,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SignalInspectionViews\SignalSelectionPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\AddCommand.png" />
@@ -162,6 +169,10 @@
     <ProjectReference Include="..\AS.Core\AS.Core.csproj">
       <Project>{8cc24166-b493-41c0-acb0-dc9177181e1e}</Project>
       <Name>AS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AS.IO\AS.IO.csproj">
+      <Project>{7F5148D5-1206-44CF-B918-CC92DAEC221C}</Project>
+      <Name>AS.IO</Name>
     </ProjectReference>
     <ProjectReference Include="..\AS.SampleDataManager\AS.SampleDataManager.csproj">
       <Project>{c256af11-b60a-4212-9e0d-9fd9d5bbe18d}</Project>

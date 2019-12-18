@@ -17,33 +17,40 @@ namespace ArchiveSprinterGUI.ViewModels
         public SampleDataManagerViewModel()
         {
             _model = SampleDataMngr.Instance;
+            DataviewGroupMethods = new List<string>() { "View Signal by Type", "View Signal by PMU" };
+            SelectedDataViewingGroupMethod = "View Signal by Type";
+        }
+        public List<String> DataviewGroupMethods { get; set; }
+        public string SelectedDataViewingGroupMethod 
+        { 
+            get; set; 
         }
         #region Raw signals
-        private ObservableCollection<SignalTypeHierachy> _groupedRawSignalsByType;
-        public ObservableCollection<SignalTypeHierachy> GroupedRawSignalsByType
+        private ObservableCollection<SignalTree> _groupedRawSignalsByType;
+        public ObservableCollection<SignalTree> GroupedRawSignalsByType
         {
             get
             {
-                return _groupedRawSignalsByType;
+                return _model.GroupedSignalsByType;
             }
-            set
-            {
-                _groupedRawSignalsByType = value;
-                OnPropertyChanged();
-            }
+            //set
+            //{
+            //    _groupedRawSignalsByType = value;
+            //    OnPropertyChanged();
+            //}
         }
-        private ObservableCollection<SignalTypeHierachy> _groupedRawSignalsByPMU;
-        public ObservableCollection<SignalTypeHierachy> GroupedRawSignalsByPMU
+        private ObservableCollection<SignalTree> _groupedRawSignalsByPMU;
+        public ObservableCollection<SignalTree> GroupedRawSignalsByPMU
         {
             get
             {
-                return _groupedRawSignalsByPMU;
+                return _model.GroupedSignalsByPMU;
             }
-            set
-            {
-                _groupedRawSignalsByPMU = value;
-                OnPropertyChanged();
-            }
+            //set
+            //{
+            //    _groupedRawSignalsByPMU = value;
+            //    OnPropertyChanged();
+            //}
         }
         #endregion
     }
