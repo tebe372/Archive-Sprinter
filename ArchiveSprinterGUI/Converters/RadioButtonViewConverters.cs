@@ -30,4 +30,23 @@ namespace ArchiveSprinterGUI.Converters
             return DependencyProperty.UnsetValue;
         }
     }
+    public class RadioButtonViewConverter2 : IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is SignalInspectionViewModel)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+    }
 }

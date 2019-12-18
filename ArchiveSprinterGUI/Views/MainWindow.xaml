@@ -19,9 +19,10 @@
             <localv:SettingsTabControl/>
         </DataTemplate>
         <DataTemplate DataType="{x:Type localvm:SignalInspectionViewModel}">
-            <localsv:SignalInspectionView DataContext="{Binding SgnlInspctVM}"/>
+            <localsv:SignalInspectionView/>
         </DataTemplate>
         <converters:RadioButtonViewConverter1 x:Key="RadioButtonViewConverter1"/>
+        <converters:RadioButtonViewConverter2 x:Key="RadioButtonViewConverter2"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -64,7 +65,7 @@
                         <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type ToggleButton}}"/>
                     </RadioButton.Style>
                 </RadioButton>-->
-                <RadioButton Content="Signal Inspection" Margin="2" GroupName="ViewChoice" IsChecked="{Binding CurrentView}" Command="{Binding MainViewSelected}" CommandParameter="SignalInspection">
+                <RadioButton Content="Signal Inspection" Margin="2" GroupName="ViewChoice" IsChecked="{Binding CurrentView, Converter={StaticResource RadioButtonViewConverter2}}" Command="{Binding MainViewSelected}" CommandParameter="SignalInspection">
                     <RadioButton.Style>
                         <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type ToggleButton}}"/>
                     </RadioButton.Style>

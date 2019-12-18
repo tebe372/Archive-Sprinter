@@ -20,10 +20,16 @@ namespace ArchiveSprinterGUI.ViewModels
             DataviewGroupMethods = new List<string>() { "View Signal by Type", "View Signal by PMU" };
             SelectedDataViewingGroupMethod = "View Signal by Type";
         }
-        public List<String> DataviewGroupMethods { get; set; }
+        public List<string> DataviewGroupMethods { get; set; }
+        private string _selectedDataViewingGroupMethod;
         public string SelectedDataViewingGroupMethod 
-        { 
-            get; set; 
+        {
+            get { return _selectedDataViewingGroupMethod; }
+            set
+            {
+                _selectedDataViewingGroupMethod = value;
+                OnPropertyChanged();
+            }
         }
         #region Raw signals
         private ObservableCollection<SignalTree> _groupedRawSignalsByType;
@@ -33,11 +39,11 @@ namespace ArchiveSprinterGUI.ViewModels
             {
                 return _model.GroupedSignalsByType;
             }
-            //set
-            //{
-            //    _groupedRawSignalsByType = value;
-            //    OnPropertyChanged();
-            //}
+            set
+            {
+                _model.GroupedSignalsByType = value;
+                OnPropertyChanged();
+            }
         }
         private ObservableCollection<SignalTree> _groupedRawSignalsByPMU;
         public ObservableCollection<SignalTree> GroupedRawSignalsByPMU
@@ -46,11 +52,11 @@ namespace ArchiveSprinterGUI.ViewModels
             {
                 return _model.GroupedSignalsByPMU;
             }
-            //set
-            //{
-            //    _groupedRawSignalsByPMU = value;
-            //    OnPropertyChanged();
-            //}
+            set
+            {
+                _model.GroupedSignalsByPMU = value;
+                OnPropertyChanged();
+            }
         }
         #endregion
     }
