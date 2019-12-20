@@ -17,8 +17,20 @@ namespace ArchiveSprinterGUI.ViewModels
         public SampleDataManagerViewModel()
         {
             _model = SampleDataMngr.Instance;
+            _model.SignalCheckStatusChanged += __signalCheckStatusChanged;
             DataviewGroupMethods = new List<string>() { "View Signal by Type", "View Signal by PMU" };
             SelectedDataViewingGroupMethod = "View Signal by Type";
+        }
+
+        private void __signalCheckStatusChanged(SignalTree e)
+        {
+            OnSignalTreeCheckStatusChanged(e);
+        }
+        public event SignalTreeCheckStatusChangedEventHandler SignalCheckStatusChanged;
+        public delegate void SignalTreeCheckStatusChangedEventHandler(SignalTree e);
+        private void OnSignalTreeCheckStatusChanged(SignalTree e)
+        {
+            SignalCheckStatusChanged?.Invoke(e);
         }
         public List<string> DataviewGroupMethods { get; set; }
         private string _selectedDataViewingGroupMethod;

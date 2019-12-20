@@ -38,23 +38,6 @@ namespace AS.Core.ViewModels
                 if (_model.IsChecked != value)
                 {
                     _model.IsChecked = value;
-                    //SignalTree aTree = null; // point to one of the signalTree for later to invoke the plot redraw
-                    //foreach (var p in SignalTreeContained)
-                    //{
-                    //    if (p != null)
-                    //    {
-                    //        p.ChangeIsCheckedStatus(value); // change check status of p
-                    //        p.CheckDirectParent(value); // change check status of p's parent
-                    //        if (aTree == null)
-                    //        {
-                    //            aTree = p;
-                    //        }
-                    //    }
-                    //}
-                    //if (aTree != null)
-                    //{
-                    //    aTree.OnSignalCheckStatusChanged(); // redraw plot
-                    //}
                     OnPropertyChanged();
                 }
             }
@@ -89,6 +72,11 @@ namespace AS.Core.ViewModels
             get { return _model.PMUName; }
             set { _model.PMUName = value; } 
         }
+
+        //internal void ChangeIsCheckedStatus(bool? value)
+        //{
+        //    throw new NotImplementedException();
+        //}
         //private string _envelopePosition;
         // change the check status of the signal in the table, invoked from the signal tree when the the tree's node is check or uncheck to avoid other functions in the IsChecked setter such as redraw plot.
         //internal void ChangeIsCheckedStatus(bool? value)

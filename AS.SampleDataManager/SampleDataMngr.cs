@@ -79,6 +79,8 @@ namespace AS.SampleDataManager
                 foreach (var rateGroup in signalTypeGroupBySamplingRate)
                 {
                     var rate = rateGroup.Key;
+                    var newTree = new SignalTree("Sampling Rate: " + rate.ToString() + "/Second");
+                    newTree.SignalCheckStatusChanged += _signalTreeCheckStatusChanged;
                     var subSignalGroup = rateGroup.ToList();
                     ObservableCollection<SignalTree> signalTypeTree = new ObservableCollection<SignalTree>();
                     var signalTypeDictionary = subSignalGroup.GroupBy(x => x.TypeAbbreviation.ToArray()[0].ToString())/*.OrderBy(x=>x.Key)*/.ToDictionary(x => x.Key, x => new ObservableCollection<SignalViewModel>(x.ToList()));
@@ -96,9 +98,14 @@ namespace AS.SampleDataManager
                                             case "S":
                                                 {
                                                     var newHierachy = new SignalTree("Apparent");
+                                                    newHierachy.Parent = newTree;
                                                     //newHierachy.Signal.TypeAbbreviation = "S";
                                                     foreach (var signal in group)
-                                                        newHierachy.SignalList.Add(new SignalTree(signal));
+                                                    {
+                                                        var s = new SignalTree(signal);
+                                                        s.Parent = newHierachy;
+                                                        newHierachy.SignalList.Add(s);
+                                                    }
                                                     signalTypeTree.Add(newHierachy);
                                                     break;
                                                 }
@@ -106,9 +113,14 @@ namespace AS.SampleDataManager
                                             case "SC":
                                                 {
                                                     var newHierachy = new SignalTree("Scalar");
+                                                    newHierachy.Parent = newTree;
                                                     //newHierachy.Signal.TypeAbbreviation = "SC";
                                                     foreach (var signal in group)
-                                                        newHierachy.SignalList.Add(new SignalTree(signal));
+                                                    {
+                                                        var s = new SignalTree(signal);
+                                                        s.Parent = newHierachy;
+                                                        newHierachy.SignalList.Add(s);
+                                                    }
                                                     signalTypeTree.Add(newHierachy);
                                                     break;
                                                 }
@@ -119,16 +131,20 @@ namespace AS.SampleDataManager
                                                 }
                                         }
                                     }
-
                                     break;
                                 }
 
                             case "O":
                                 {
                                     var newHierachy = new SignalTree("Other");
+                                    newHierachy.Parent = newTree;
                                     //newHierachy.Signal.TypeAbbreviation = "OTHER";
                                     foreach (var signal in signalType.Value)
-                                        newHierachy.SignalList.Add(new SignalTree(signal));
+                                    {
+                                        var s = new SignalTree(signal);
+                                        s.Parent = newHierachy;
+                                        newHierachy.SignalList.Add(s);
+                                    }
                                     signalTypeTree.Add(newHierachy);
                                     break;
                                 }
@@ -143,9 +159,14 @@ namespace AS.SampleDataManager
                                             case "C":
                                                 {
                                                     var newHierachy = new SignalTree("CustomizedSignal");
+                                                    newHierachy.Parent = newTree;
                                                     //newHierachy.Signal.TypeAbbreviation = "C";
                                                     foreach (var signal in group)
-                                                        newHierachy.SignalList.Add(new SignalTree(signal));
+                                                    {
+                                                        var s = new SignalTree(signal);
+                                                        s.Parent = newHierachy;
+                                                        newHierachy.SignalList.Add(s);
+                                                    }
                                                     signalTypeTree.Add(newHierachy);
                                                     break;
                                                 }
@@ -153,9 +174,14 @@ namespace AS.SampleDataManager
                                             case "CP":
                                                 {
                                                     var newHierachy = new SignalTree("Complex");
+                                                    newHierachy.Parent = newTree;
                                                     //newHierachy.Signal.TypeAbbreviation = "CP";
                                                     foreach (var signal in group)
-                                                        newHierachy.SignalList.Add(new SignalTree(signal));
+                                                    {
+                                                        var s = new SignalTree(signal);
+                                                        s.Parent = newHierachy;
+                                                        newHierachy.SignalList.Add(s);
+                                                    }
                                                     signalTypeTree.Add(newHierachy);
                                                     break;
                                                 }
@@ -166,16 +192,20 @@ namespace AS.SampleDataManager
                                                 }
                                         }
                                     }
-
                                     break;
                                 }
 
                             case "D":
                                 {
                                     var newHierachy = new SignalTree("Digital");
+                                    newHierachy.Parent = newTree;
                                     //newHierachy.Signal.TypeAbbreviation = "D";
                                     foreach (var signal in signalType.Value)
-                                        newHierachy.SignalList.Add(new SignalTree(signal));
+                                    {
+                                        var s = new SignalTree(signal);
+                                        s.Parent = newHierachy;
+                                        newHierachy.SignalList.Add(s);
+                                    }
                                     signalTypeTree.Add(newHierachy);
                                     break;
                                 }
@@ -183,9 +213,14 @@ namespace AS.SampleDataManager
                             case "F":
                                 {
                                     var newHierachy = new SignalTree("Frequency");
+                                    newHierachy.Parent = newTree;
                                     //newHierachy.Signal.TypeAbbreviation = "F";
                                     foreach (var signal in signalType.Value)
-                                        newHierachy.SignalList.Add(new SignalTree(signal));
+                                    {
+                                        var s = new SignalTree(signal);
+                                        s.Parent = newHierachy;
+                                        newHierachy.SignalList.Add(s);
+                                    }
                                     signalTypeTree.Add(newHierachy);
                                     break;
                                 }
@@ -193,9 +228,14 @@ namespace AS.SampleDataManager
                             case "R":
                                 {
                                     var newHierachy = new SignalTree("Rate of Change of Frequency");
+                                    newHierachy.Parent = newTree;
                                     //newHierachy.Signal.TypeAbbreviation = "R";
                                     foreach (var signal in signalType.Value)
-                                        newHierachy.SignalList.Add(new SignalTree(signal));
+                                    {
+                                        var s = new SignalTree(signal);
+                                        s.Parent = newHierachy;
+                                        newHierachy.SignalList.Add(s);
+                                    }
                                     signalTypeTree.Add(newHierachy);
                                     break;
                                 }
@@ -203,9 +243,14 @@ namespace AS.SampleDataManager
                             case "Q":
                                 {
                                     var newHierachy = new SignalTree("Reactive Power");
+                                    newHierachy.Parent = newTree;
                                     //newHierachy.Signal.TypeAbbreviation = "Q";
                                     foreach (var signal in signalType.Value)
-                                        newHierachy.SignalList.Add(new SignalTree(signal));
+                                    {
+                                        var s = new SignalTree(signal);
+                                        s.Parent = newHierachy;
+                                        newHierachy.SignalList.Add(s);
+                                    }
                                     signalTypeTree.Add(newHierachy);
                                     break;
                                 }
@@ -213,9 +258,14 @@ namespace AS.SampleDataManager
                             case "P":
                                 {
                                     var newHierachy = new SignalTree("Active Power");
+                                    newHierachy.Parent = newTree;
                                     //newHierachy.Signal.TypeAbbreviation = "P";
                                     foreach (var signal in signalType.Value)
-                                        newHierachy.SignalList.Add(new SignalTree(signal));
+                                    {
+                                        var s = new SignalTree(signal);
+                                        s.Parent = newHierachy;
+                                        newHierachy.SignalList.Add(s);
+                                    }
                                     signalTypeTree.Add(newHierachy);
                                     break;
                                 }
@@ -223,6 +273,7 @@ namespace AS.SampleDataManager
                             case "V":
                                 {
                                     var newHierachy = new SignalTree("Voltage");
+                                    newHierachy.Parent = newTree;
                                     //newHierachy.Signal.TypeAbbreviation = "V";
                                     var voltageHierachy = signalType.Value.GroupBy(y => y.TypeAbbreviation.ToArray()[1].ToString());
                                     foreach (var group in voltageHierachy)
@@ -232,6 +283,7 @@ namespace AS.SampleDataManager
                                             case "M":
                                                 {
                                                     var mGroup = new SignalTree("Magnitude");
+                                                    mGroup.Parent = newHierachy;
                                                     //mGroup.Signal.TypeAbbreviation = "VM";
                                                     var mGroupHierachky = group.GroupBy(z => z.TypeAbbreviation.ToArray()[2].ToString());
                                                     foreach (var phase in mGroupHierachky)
@@ -241,9 +293,14 @@ namespace AS.SampleDataManager
                                                             case "P":
                                                                 {
                                                                     var positiveGroup = new SignalTree("Positive Sequence");
+                                                                    positiveGroup.Parent = mGroup;
                                                                     //positiveGroup.Signal.TypeAbbreviation = "VMP";
                                                                     foreach (var signal in phase)
-                                                                        positiveGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = positiveGroup;
+                                                                        positiveGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(positiveGroup);
                                                                     break;
                                                                 }
@@ -251,9 +308,14 @@ namespace AS.SampleDataManager
                                                             case "A":
                                                                 {
                                                                     var AGroup = new SignalTree("Phase A");
+                                                                    AGroup.Parent = mGroup;
                                                                     //AGroup.Signal.TypeAbbreviation = "VMA";
                                                                     foreach (var signal in phase)
-                                                                        AGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = AGroup;
+                                                                        AGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(AGroup);
                                                                     break;
                                                                 }
@@ -261,9 +323,14 @@ namespace AS.SampleDataManager
                                                             case "B":
                                                                 {
                                                                     var BGroup = new SignalTree("Phase B");
+                                                                    BGroup.Parent = mGroup;
                                                                     //BGroup.Signal.TypeAbbreviation = "VMB";
                                                                     foreach (var signal in phase)
-                                                                        BGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = BGroup;
+                                                                        BGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(BGroup);
                                                                     break;
                                                                 }
@@ -271,9 +338,14 @@ namespace AS.SampleDataManager
                                                             case "C":
                                                                 {
                                                                     var CGroup = new SignalTree("Phase C");
+                                                                    CGroup.Parent = mGroup;
                                                                     CGroup.Signal.TypeAbbreviation = "VMC";
                                                                     foreach (var signal in phase)
-                                                                        CGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = CGroup;
+                                                                        CGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(CGroup);
                                                                     break;
                                                                 }
@@ -291,6 +363,7 @@ namespace AS.SampleDataManager
                                             case "A":
                                                 {
                                                     var aGroup = new SignalTree("Angle");
+                                                    aGroup.Parent = newHierachy;
                                                     //aGroup.Signal.TypeAbbreviation = "VA";
                                                     var aGroupHierachy = group.GroupBy(z => z.TypeAbbreviation.ToArray()[2].ToString());
                                                     foreach (var phase in aGroupHierachy)
@@ -300,9 +373,14 @@ namespace AS.SampleDataManager
                                                             case "P":
                                                                 {
                                                                     var positiveGroup = new SignalTree("Positive Sequence");
+                                                                    positiveGroup.Parent = aGroup;
                                                                     //positiveGroup.Signal.TypeAbbreviation = "VAP";
                                                                     foreach (var signal in phase)
-                                                                        positiveGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = positiveGroup;
+                                                                        positiveGroup.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(positiveGroup);
                                                                     break;
                                                                 }
@@ -310,9 +388,14 @@ namespace AS.SampleDataManager
                                                             case "A":
                                                                 {
                                                                     var GroupA = new SignalTree("Phase A");
+                                                                    GroupA.Parent = aGroup;
                                                                     //GroupA.Signal.TypeAbbreviation = "VAA";
                                                                     foreach (var signal in phase)
-                                                                        GroupA.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupA;
+                                                                        GroupA.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupA);
                                                                     break;
                                                                 }
@@ -320,9 +403,14 @@ namespace AS.SampleDataManager
                                                             case "B":
                                                                 {
                                                                     var GroupB = new SignalTree("Phase B");
+                                                                    GroupB.Parent = aGroup;
                                                                     //GroupB.Signal.TypeAbbreviation = "VAB";
                                                                     foreach (var signal in phase)
-                                                                        GroupB.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupB;
+                                                                        GroupB.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupB);
                                                                     break;
                                                                 }
@@ -330,9 +418,14 @@ namespace AS.SampleDataManager
                                                             case "C":
                                                                 {
                                                                     var GroupC = new SignalTree("Phase C");
+                                                                    GroupC.Parent = aGroup;
                                                                     //GroupC.Signal.TypeAbbreviation = "VAC";
                                                                     foreach (var signal in phase)
-                                                                        GroupC.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupC;
+                                                                        GroupC.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupC);
                                                                     break;
                                                                 }
@@ -350,6 +443,7 @@ namespace AS.SampleDataManager
                                             case "P":
                                                 {
                                                     var aGroup = new SignalTree("Phasor");
+                                                    aGroup.Parent = newHierachy;
                                                     //aGroup.Signal.TypeAbbreviation = "VP";
                                                     var aGroupHierachy = group.GroupBy(z => z.TypeAbbreviation.ToArray()[2].ToString());
                                                     foreach (var phase in aGroupHierachy)
@@ -359,9 +453,14 @@ namespace AS.SampleDataManager
                                                             case "P":
                                                                 {
                                                                     var positiveGroup = new SignalTree("Positive Sequence");
+                                                                    positiveGroup.Parent = aGroup;
                                                                     //positiveGroup.Signal.TypeAbbreviation = "VPP";
                                                                     foreach (var signal in phase)
-                                                                        positiveGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = positiveGroup;
+                                                                        positiveGroup.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(positiveGroup);
                                                                     break;
                                                                 }
@@ -369,9 +468,14 @@ namespace AS.SampleDataManager
                                                             case "A":
                                                                 {
                                                                     var GroupA = new SignalTree("Phase A");
+                                                                    GroupA.Parent = aGroup;
                                                                     //GroupA.Signal.TypeAbbreviation = "VPA";
                                                                     foreach (var signal in phase)
-                                                                        GroupA.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupA;
+                                                                        GroupA.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupA);
                                                                     break;
                                                                 }
@@ -379,9 +483,14 @@ namespace AS.SampleDataManager
                                                             case "B":
                                                                 {
                                                                     var GroupB = new SignalTree("Phase B");
+                                                                    GroupB.Parent = aGroup;
                                                                     //GroupB.Signal.TypeAbbreviation = "VPB";
                                                                     foreach (var signal in phase)
-                                                                        GroupB.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupB;
+                                                                        GroupB.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupB);
                                                                     break;
                                                                 }
@@ -389,9 +498,14 @@ namespace AS.SampleDataManager
                                                             case "C":
                                                                 {
                                                                     var GroupC = new SignalTree("Phase C");
+                                                                    GroupC.Parent = aGroup;
                                                                     //GroupC.Signal.TypeAbbreviation = "VPC";
                                                                     foreach (var signal in phase)
-                                                                        GroupC.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupC;
+                                                                        GroupC.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupC);
                                                                     break;
                                                                 }
@@ -409,6 +523,7 @@ namespace AS.SampleDataManager
                                             case "W":
                                                 {
                                                     var mGroup = new SignalTree("Wave");
+                                                    mGroup.Parent = newHierachy;
                                                     //mGroup.Signal.TypeAbbreviation = "VM";
                                                     var mGroupHierachky = group.GroupBy(z => z.TypeAbbreviation.ToArray()[2].ToString());
                                                     foreach (var phase in mGroupHierachky)
@@ -418,9 +533,14 @@ namespace AS.SampleDataManager
                                                             case "A":
                                                                 {
                                                                     var AGroup = new SignalTree("Phase A");
+                                                                    AGroup.Parent = mGroup;
                                                                     //AGroup.Signal.TypeAbbreviation = "VWA";
                                                                     foreach (var signal in phase)
-                                                                        AGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = AGroup;
+                                                                        AGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(AGroup);
                                                                     break;
                                                                 }
@@ -428,9 +548,14 @@ namespace AS.SampleDataManager
                                                             case "B":
                                                                 {
                                                                     var BGroup = new SignalTree("Phase B");
+                                                                    BGroup.Parent = mGroup;
                                                                     //BGroup.Signal.TypeAbbreviation = "VWB";
                                                                     foreach (var signal in phase)
-                                                                        BGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = BGroup;
+                                                                        BGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(BGroup);
                                                                     break;
                                                                 }
@@ -438,9 +563,14 @@ namespace AS.SampleDataManager
                                                             case "C":
                                                                 {
                                                                     var CGroup = new SignalTree("Phase C");
+                                                                    CGroup.Parent = mGroup;
                                                                     //CGroup.Signal.TypeAbbreviation = "VWC";
                                                                     foreach (var signal in phase)
-                                                                        CGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = CGroup;
+                                                                        CGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(CGroup);
                                                                     break;
                                                                 }
@@ -467,6 +597,7 @@ namespace AS.SampleDataManager
                             case "I":
                                 {
                                     var newHierachy = new SignalTree("Current");
+                                    newHierachy.Parent = newTree;
                                     //newHierachy.Signal.TypeAbbreviation = "I";
                                     var currentHierachy = signalType.Value.GroupBy(y => y.TypeAbbreviation.ToArray()[1].ToString());
                                     foreach (var group in currentHierachy)
@@ -476,6 +607,7 @@ namespace AS.SampleDataManager
                                             case "M":
                                                 {
                                                     var mGroup = new SignalTree("Magnitude");
+                                                    mGroup.Parent = newHierachy;
                                                     //mGroup.Signal.TypeAbbreviation = "IM";
                                                     var mGroupHierachky = group.GroupBy(z => z.TypeAbbreviation.ToArray()[2].ToString());
                                                     foreach (var phase in mGroupHierachky)
@@ -485,9 +617,14 @@ namespace AS.SampleDataManager
                                                             case "P":
                                                                 {
                                                                     var positiveGroup = new SignalTree("Positive Sequence");
+                                                                    positiveGroup.Parent = mGroup;
                                                                     //positiveGroup.Signal.TypeAbbreviation = "IMP";
                                                                     foreach (var signal in phase)
-                                                                        positiveGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = positiveGroup;
+                                                                        positiveGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(positiveGroup);
                                                                     break;
                                                                 }
@@ -495,9 +632,14 @@ namespace AS.SampleDataManager
                                                             case "A":
                                                                 {
                                                                     var AGroup = new SignalTree("Phase A");
+                                                                    AGroup.Parent = mGroup;
                                                                     //AGroup.Signal.TypeAbbreviation = "IMA";
                                                                     foreach (var signal in phase)
-                                                                        AGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = AGroup;
+                                                                        AGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(AGroup);
                                                                     break;
                                                                 }
@@ -505,9 +647,14 @@ namespace AS.SampleDataManager
                                                             case "B":
                                                                 {
                                                                     var BGroup = new SignalTree("Phase B");
+                                                                    BGroup.Parent = mGroup;
                                                                     //BGroup.Signal.TypeAbbreviation = "IMB";
                                                                     foreach (var signal in phase)
-                                                                        BGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = BGroup;
+                                                                        BGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(BGroup);
                                                                     break;
                                                                 }
@@ -515,9 +662,14 @@ namespace AS.SampleDataManager
                                                             case "C":
                                                                 {
                                                                     var CGroup = new SignalTree("Phase C");
+                                                                    CGroup.Parent = mGroup;
                                                                     //CGroup.Signal.TypeAbbreviation = "IMC";
                                                                     foreach (var signal in phase)
-                                                                        CGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = CGroup;
+                                                                        CGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(CGroup);
                                                                     break;
                                                                 }
@@ -535,6 +687,7 @@ namespace AS.SampleDataManager
                                             case "A":
                                                 {
                                                     var aGroup = new SignalTree("Angle");
+                                                    aGroup.Parent = newHierachy;
                                                     //aGroup.Signal.TypeAbbreviation = "IA";
                                                     var aGroupHierachy = group.GroupBy(z => z.TypeAbbreviation.ToArray()[2].ToString());
                                                     foreach (var phase in aGroupHierachy)
@@ -544,9 +697,14 @@ namespace AS.SampleDataManager
                                                             case "P":
                                                                 {
                                                                     var positiveGroup = new SignalTree("Positive Sequence");
+                                                                    positiveGroup.Parent = aGroup;
                                                                     //positiveGroup.Signal.TypeAbbreviation = "IAP";
                                                                     foreach (var signal in phase)
-                                                                        positiveGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = positiveGroup;
+                                                                        positiveGroup.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(positiveGroup);
                                                                     break;
                                                                 }
@@ -554,9 +712,14 @@ namespace AS.SampleDataManager
                                                             case "A":
                                                                 {
                                                                     var GroupA = new SignalTree("Phase A");
+                                                                    GroupA.Parent = aGroup;
                                                                     //GroupA.Signal.TypeAbbreviation = "IAA";
                                                                     foreach (var signal in phase)
-                                                                        GroupA.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupA;
+                                                                        GroupA.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupA);
                                                                     break;
                                                                 }
@@ -564,9 +727,14 @@ namespace AS.SampleDataManager
                                                             case "B":
                                                                 {
                                                                     var GroupB = new SignalTree("Phase B");
+                                                                    GroupB.Parent = aGroup;
                                                                     //GroupB.Signal.TypeAbbreviation = "IAB";
                                                                     foreach (var signal in phase)
-                                                                        GroupB.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupB;
+                                                                        GroupB.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupB);
                                                                     break;
                                                                 }
@@ -574,9 +742,14 @@ namespace AS.SampleDataManager
                                                             case "C":
                                                                 {
                                                                     var GroupC = new SignalTree("Phase C");
+                                                                    GroupC.Parent = aGroup;
                                                                     //GroupC.Signal.TypeAbbreviation = "IAC";
                                                                     foreach (var signal in phase)
-                                                                        GroupC.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupC;
+                                                                        GroupC.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupC);
                                                                     break;
                                                                 }
@@ -594,6 +767,7 @@ namespace AS.SampleDataManager
                                             case "P":
                                                 {
                                                     var aGroup = new SignalTree("Phasor");
+                                                    aGroup.Parent = newHierachy;
                                                     //aGroup.Signal.TypeAbbreviation = "IP";
                                                     var aGroupHierachy = group.GroupBy(z => z.TypeAbbreviation.ToArray()[2].ToString());
                                                     foreach (var phase in aGroupHierachy)
@@ -603,9 +777,14 @@ namespace AS.SampleDataManager
                                                             case "P":
                                                                 {
                                                                     var positiveGroup = new SignalTree("Positive Sequence");
+                                                                    positiveGroup.Parent = aGroup;
                                                                     //positiveGroup.Signal.TypeAbbreviation = "IPP";
                                                                     foreach (var signal in phase)
-                                                                        positiveGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = aGroup;
+                                                                        aGroup.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(positiveGroup);
                                                                     break;
                                                                 }
@@ -613,9 +792,14 @@ namespace AS.SampleDataManager
                                                             case "A":
                                                                 {
                                                                     var GroupA = new SignalTree("Phase A");
+                                                                    GroupA.Parent = aGroup;
                                                                     //GroupA.Signal.TypeAbbreviation = "IPA";
                                                                     foreach (var signal in phase)
-                                                                        GroupA.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupA;
+                                                                        GroupA.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupA);
                                                                     break;
                                                                 }
@@ -623,9 +807,14 @@ namespace AS.SampleDataManager
                                                             case "B":
                                                                 {
                                                                     var GroupB = new SignalTree("Phase B");
+                                                                    GroupB.Parent = aGroup;
                                                                     //GroupB.Signal.TypeAbbreviation = "IPB";
                                                                     foreach (var signal in phase)
-                                                                        GroupB.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupB;
+                                                                        GroupB.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupB);
                                                                     break;
                                                                 }
@@ -633,9 +822,14 @@ namespace AS.SampleDataManager
                                                             case "C":
                                                                 {
                                                                     var GroupC = new SignalTree("Phase C");
+                                                                    GroupC.Parent = aGroup;
                                                                     //GroupC.Signal.TypeAbbreviation = "IPC";
                                                                     foreach (var signal in phase)
-                                                                        GroupC.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = GroupC;
+                                                                        GroupC.SignalList.Add(s);
+                                                                    }
                                                                     aGroup.SignalList.Add(GroupC);
                                                                     break;
                                                                 }
@@ -653,6 +847,7 @@ namespace AS.SampleDataManager
                                             case "W":
                                                 {
                                                     var mGroup = new SignalTree("Wave");
+                                                    mGroup.Parent = newHierachy;
                                                     //mGroup.Signal.TypeAbbreviation = "IM";
                                                     var mGroupHierachky = group.GroupBy(z => z.TypeAbbreviation.ToArray()[2].ToString());
                                                     foreach (var phase in mGroupHierachky)
@@ -662,9 +857,14 @@ namespace AS.SampleDataManager
                                                             case "A":
                                                                 {
                                                                     var AGroup = new SignalTree("Phase A");
+                                                                    AGroup.Parent = mGroup;
                                                                     //AGroup.Signal.TypeAbbreviation = "IWA";
                                                                     foreach (var signal in phase)
-                                                                        AGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = AGroup;
+                                                                        AGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(AGroup);
                                                                     break;
                                                                 }
@@ -672,9 +872,14 @@ namespace AS.SampleDataManager
                                                             case "B":
                                                                 {
                                                                     var BGroup = new SignalTree("Phase B");
+                                                                    BGroup.Parent = mGroup;
                                                                     //BGroup.Signal.TypeAbbreviation = "IWB";
                                                                     foreach (var signal in phase)
-                                                                        BGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = BGroup;
+                                                                        BGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(BGroup);
                                                                     break;
                                                                 }
@@ -682,9 +887,14 @@ namespace AS.SampleDataManager
                                                             case "C":
                                                                 {
                                                                     var CGroup = new SignalTree("Phase C");
+                                                                    CGroup.Parent = mGroup;
                                                                     //CGroup.Signal.TypeAbbreviation = "IWC";
                                                                     foreach (var signal in phase)
-                                                                        CGroup.SignalList.Add(new SignalTree(signal));
+                                                                    {
+                                                                        var s = new SignalTree(signal);
+                                                                        s.Parent = CGroup;
+                                                                        CGroup.SignalList.Add(s);
+                                                                    }
                                                                     mGroup.SignalList.Add(CGroup);
                                                                     break;
                                                                 }
@@ -713,7 +923,6 @@ namespace AS.SampleDataManager
                                 }
                         }
                     }
-                    var newTree = new SignalTree("Sampling Rate: " + rate.ToString() + "/Second");
                     //newSig.SamplingRate = rate;
                     //var a = new SignalTree(newSig);
                     newTree.SignalList = signalTypeTree;
@@ -722,6 +931,18 @@ namespace AS.SampleDataManager
             }
             return signalTypeTreeGroupedBySamplingRate;
         }
+
+        private void _signalTreeCheckStatusChanged(SignalTree e)
+        {
+            OnSignalTreeCheckStatusChanged(e);
+        }
+        public event SignalTreeCheckStatusChangedEventHandler SignalCheckStatusChanged;
+        public delegate void SignalTreeCheckStatusChangedEventHandler(SignalTree e);
+        private void OnSignalTreeCheckStatusChanged(SignalTree e)
+        {
+            SignalCheckStatusChanged?.Invoke(e);
+        }
+
         public ObservableCollection<SignalTree> SortSignalByPMU(ObservableCollection<SignalViewModel> signalList)
         {
             var pmuSignalTreeGroupedBySamplingRate = new ObservableCollection<SignalTree>();
@@ -731,6 +952,7 @@ namespace AS.SampleDataManager
                 foreach (var group in groupBySamplingRate)
                 {
                     var rate = group.Key;
+                    var newTree = new SignalTree("Sampling Rate: " + rate.ToString() + "/Second");
                     var subSignalList = group.ToList();
                     var PMUSignalDictionary = new Dictionary<string, List<SignalViewModel>>();
                     try
@@ -747,12 +969,16 @@ namespace AS.SampleDataManager
                     {
                         //var newPMUSignature = new SignalViewModel(subgroup.Key, subgroup.Key);
                         var newGroup = new SignalTree(subgroup.Key);
+                        newGroup.Parent = newTree;
                         foreach (var signal in subgroup.Value)
-                            newGroup.SignalList.Add(new SignalTree(signal));
+                        {
+                            var aTree = new SignalTree(signal);
+                            aTree.Parent = newGroup;
+                            newGroup.SignalList.Add(aTree);
+                        }
                         //newGroup.Signal.SamplingRate = subgroup.Value.FirstOrDefault().SamplingRate;
                         pmuSignalTree.Add(newGroup);
                     }
-                    var newTree = new SignalTree("Sampling Rate: " + rate.ToString() + "/Second");
                     //newSig.SamplingRate = rate;
                     //var a = new SignalTree(newSig);
                     newTree.SignalList = pmuSignalTree;

@@ -9,6 +9,8 @@
     <Import_RootNamespace>Resources</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Images\AddCommand.png" />
     <Content Include="$(MSBuildThisFileDirectory)Images\open.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\RemoveCommand_16x.png" />
   </ItemGroup>
 </Project>

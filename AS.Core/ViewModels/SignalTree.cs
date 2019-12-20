@@ -111,7 +111,7 @@ namespace AS.Core.ViewModels
         // this event is for redraw the plot when fired.
         public event SignalCheckStatusChangedEventHandler SignalCheckStatusChanged;
         public delegate void SignalCheckStatusChangedEventHandler(SignalTree e);
-        public void OnSignalCheckStatusChanged()
+        private void OnSignalCheckStatusChanged()
         {
             SignalCheckStatusChanged?.Invoke(this);
         }
@@ -129,8 +129,10 @@ namespace AS.Core.ViewModels
         {
             if (_signal != null && value != null && _signal.IsChecked != (bool)value)
             {// if the tree is a leaf node, it only have a signal, but no signal list, the leaf node's ischecked value cannot be null as it only has one signal
-                ////change the signal's check status without invoke the setter of IsChecked
-                //_signal.ChangeIsCheckedStatus(value);
+                //////////////change the signal's check status without invoke the setter of IsChecked
+                ////////////_signal.ChangeIsCheckedStatus(value);
+                //should not be a problem any more here to invoke the ischecked setter directly
+                _signal.IsChecked = (bool)value;
                 //find the other tree that also contain this signal and change the other's tree's check status if the node(s) is a parent of this signal
                 foreach (var p in _signal.SignalTreeContained)
                 {
@@ -154,9 +156,12 @@ namespace AS.Core.ViewModels
         // change check status of this tree without invoke the setter of IsChecked property
         public void ChangeIsCheckedStatus(bool? value)
         {
-            _isChecked = value;
-            CheckDirectChildren(value); // propagate the check status to direct children
-            OnPropertyChanged("IsChecked");
+            if (_isChecked != value)
+            {
+                _isChecked = value;
+                CheckDirectChildren(value); // propagate the check status to direct children
+                OnPropertyChanged("IsChecked");
+            }
         }
         // determin check status without invoke IsChecked property's setter
         public void DetermineIsCheckedStatus(bool? value)

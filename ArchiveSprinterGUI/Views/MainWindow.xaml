@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ArchiveSprinterGUI.Views"
         xmlns:localsvm="clr-namespace:ArchiveSprinterGUI.ViewModels.SettingsViewModels"
         xmlns:localvm="clr-namespace:ArchiveSprinterGUI.ViewModels"
+        xmlns:localsivm="clr-namespace:ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels"
         xmlns:localv="clr-namespace:ArchiveSprinterGUI.Views.SettingsViews"
         xmlns:localsv="clr-namespace:ArchiveSprinterGUI.Views.SignalInspectionViews"
         xmlns:converters="clr-namespace:ArchiveSprinterGUI.Converters"
@@ -18,7 +19,7 @@
         <DataTemplate DataType="{x:Type localsvm:SettingsViewModel}">
             <localv:SettingsTabControl/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type localvm:SignalInspectionViewModel}">
+        <DataTemplate DataType="{x:Type localsivm:SignalInspectionViewModel}">
             <localsv:SignalInspectionView/>
         </DataTemplate>
         <converters:RadioButtonViewConverter1 x:Key="RadioButtonViewConverter1"/>

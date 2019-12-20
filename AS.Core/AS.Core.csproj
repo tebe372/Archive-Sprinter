@@ -31,6 +31,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -39,9 +41,14 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Converters\BooleanVisibilityConverters.cs" />
+    <Compile Include="Converters\ColorToBrushConverter.cs" />
+    <Compile Include="Converters\SelectionStatusBackgroundConverter.cs" />
     <Compile Include="Models\EnumDefinitions.cs" />
+    <Compile Include="Models\Legend.cs" />
     <Compile Include="Models\Signal.cs" />
     <Compile Include="Models\SiteCoordinates.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -49,10 +56,15 @@
     <Compile Include="ViewModels\SignalViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\571\oxyplot\oxyplot\oxyplot\Source\OxyPlot\OxyPlot.csproj">
+      <Project>{14F0ECEE-3DB6-4B08-8D44-CAD0F8955889}</Project>
+      <Name>OxyPlot</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AS.Utilities\AS.Utilities.csproj">
       <Project>{9AD4EBFF-6D35-446C-9AA3-EB0068235636}</Project>
       <Name>AS.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

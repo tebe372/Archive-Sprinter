@@ -82,7 +82,8 @@
     <Compile Include="ViewModels\SettingsViewModels\DataSourceSettingViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\DataSourceViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\SettingsViewModel.cs" />
-    <Compile Include="ViewModels\SignalInspectionViewModel.cs" />
+    <Compile Include="ViewModels\SignalInspectionViewModels\SignalInspectionViewModel.cs" />
+    <Compile Include="ViewModels\SignalInspectionViewModels\SignalPlotPanel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -94,6 +95,9 @@
     </Compile>
     <Compile Include="Views\SettingsViews\SettingsTabControl.xaml.cs">
       <DependentUpon>SettingsTabControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SignalInspectionViews\ASignalPlotPanel.xaml.cs">
+      <DependentUpon>ASignalPlotPanel.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SignalInspectionViews\SignalInspectionView.xaml.cs">
       <DependentUpon>SignalInspectionView.xaml</DependentUpon>
@@ -146,6 +150,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SignalInspectionViews\ASignalPlotPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SignalInspectionViews\SignalInspectionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -156,12 +164,19 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\AddCommand.png" />
     <Resource Include="..\Resources\Images\open.gif">
       <Link>Resources\open.gif</Link>
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\571\oxyplot\oxyplot\oxyplot\Source\OxyPlot.Wpf\OxyPlot.Wpf.csproj">
+      <Project>{0af06956-f099-457c-8e0f-c92f778341a2}</Project>
+      <Name>OxyPlot.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\571\oxyplot\oxyplot\oxyplot\Source\OxyPlot\OxyPlot.csproj">
+      <Project>{14f0ecee-3db6-4b08-8d44-cad0f8955889}</Project>
+      <Name>OxyPlot</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AS.Config\AS.Config.csproj">
       <Project>{39A7D9D2-0CE2-4240-BB01-43924EECCF1E}</Project>
       <Name>AS.Config</Name>
@@ -182,6 +197,16 @@
       <Project>{9AD4EBFF-6D35-446C-9AA3-EB0068235636}</Project>
       <Name>AS.Utilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Resources\Images\AddCommand.png">
+      <Link>Resources\AddCommand.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Resources\Images\RemoveCommand_16x.png">
+      <Link>Resources\RemoveCommand_16x.png</Link>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

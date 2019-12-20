@@ -1,5 +1,6 @@
 ﻿using ArchiveSprinterGUI.ViewModels;
 using ArchiveSprinterGUI.ViewModels.SettingsViewModels;
+using ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
