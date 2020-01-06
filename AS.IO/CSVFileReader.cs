@@ -83,7 +83,7 @@ namespace AS.IO
                 //var a = dt.Columns[0];
                 var time1 = timeSpanRelativeToBaseTime[0];
                 var time2 = timeSpanRelativeToBaseTime[1];
-                int samplingRate = (int)Math.Round((1 / (time1 - time2)) / 10) * 10;
+                int samplingRate = (int)Math.Round((1 / (time2 - time1)) / 10) * 10;
 
                 //try
                 //{
@@ -296,7 +296,7 @@ namespace AS.IO
                 //var v = r["Time"];
                 var time1 = timeSpanRelativeToBaseTime[0];
                 var time2 = timeSpanRelativeToBaseTime[1];
-                int samplingRate = (int)Math.Round((1 / (time1 - time2)) / 10) * 10;
+                int samplingRate = (int)Math.Round((1 / (time2 - time1)) / 10) * 10;
                 foreach (var sig in signalList)
                 {
                     sig.SamplingRate = samplingRate;

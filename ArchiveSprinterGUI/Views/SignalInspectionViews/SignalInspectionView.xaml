@@ -59,7 +59,7 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="Signal Selection Panel" Margin="2"/>
                 <local:SignalSelectionPanel Grid.Row="1" Margin="2" DataContext="{Binding SampleDataMngr}"/>
-                <!--<local:SpectralInspectionParameters Grid.Row="2" Margin="2" DataContext="{Binding InspectionAnalysisParams}"/>-->
+                <local:SpectralInspectionParameters Grid.Row="2" Margin="2" DataContext="{Binding InspectionAnalysisParams}"/>
             </Grid>
         </Border>
     </Grid>

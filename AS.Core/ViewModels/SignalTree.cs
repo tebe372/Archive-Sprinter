@@ -99,7 +99,7 @@ namespace AS.Core.ViewModels
                     CheckDirectChildren(value);
 
                     //2, check direct parents without invoke the ischecked property, but also call onpropertychanged
-                    CheckDirectParent(value);
+                    CheckDirectParent();
 
                     //3, invoke plot redraw
                     OnSignalCheckStatusChanged();
@@ -116,12 +116,12 @@ namespace AS.Core.ViewModels
             SignalCheckStatusChanged?.Invoke(this);
         }
         //change check status of direct parent of this tree, it recursively calls the parent's check direct parent function
-        public void CheckDirectParent(bool? value)
+        public void CheckDirectParent()
         {
             if (_parent != null)
             {
-                _parent.DetermineIsCheckedStatus(value); // determine check status of parent node
-                _parent.CheckDirectParent(value); //determine check status of parent node's parent
+                _parent.DetermineIsCheckedStatus(); // determine check status of parent node
+                _parent.CheckDirectParent(); //determine check status of parent node's parent
             }
         }
         //change check status of direct children of the tree
@@ -139,7 +139,8 @@ namespace AS.Core.ViewModels
                     //the other tree cannot be null or the same as this tree
                     if (p != this && p != null)
                     {
-                        p.CheckDirectParent(value);
+                        p.ChangeIsCheckedStatus(value);
+                        p.CheckDirectParent();
                     }
                 }
             }
@@ -163,8 +164,10 @@ namespace AS.Core.ViewModels
                 OnPropertyChanged("IsChecked");
             }
         }
-        // determin check status without invoke IsChecked property's setter
-        public void DetermineIsCheckedStatus(bool? value)
+        // determine check status without invoke IsChecked property's setter
+        // used when from bottom to top when all the children's status is known
+        // don't use it from top to bottom as in this situation, the algorithm should be recursive
+        public void DetermineIsCheckedStatus()
         {
             bool hasChecked = false;
             bool hasUnChecked = false;
@@ -226,6 +229,67 @@ namespace AS.Core.ViewModels
         {
             get { return _parent; }
             set { _parent = value; }
+        }
+        // from top to bottom determine this node's status
+        public void DetermineIsCheckedStatusFromTopToBottom()
+        {
+            if (SignalList != null && SignalList.Count > 0)
+            {
+                bool hasChecked = false;
+                bool hasUnChecked = false;
+                bool hasNull = false;
+                foreach (var st in SignalList)
+                {
+                    st.DetermineIsCheckedStatusFromTopToBottom();
+                    if (st.IsChecked == null && hasNull != true)
+                    {
+                        // if one of the child is null, this node should be null
+                        hasNull = true;
+                        //OnPropertyChanged("IsChecked");
+                        //return;
+                    }
+                    if (st.IsChecked == true && hasUnChecked)
+                    {
+                        // if one of the children is checked and also has a unchecked child, this node should be null
+                        hasNull = true;
+                        //OnPropertyChanged("IsChecked");
+                        //return;
+                    }
+                    if (st.IsChecked == false && hasChecked)
+                    {
+                        // if one of the children is unchecked and also has a checked child, this node should be null
+                        hasNull = true;
+                        //OnPropertyChanged("IsChecked");
+                        //return;
+                    }
+                    if (st.IsChecked == true && hasChecked != true)
+                    {
+                        hasChecked = true;
+                    }
+                    if (st.IsChecked == false && hasUnChecked != true)
+                    {
+                        hasUnChecked = true;
+                    }
+                }
+                if (hasNull)
+                {
+                    _isChecked = null;
+                }
+                //else if(hasChecked && hasUnChecked)
+                //{
+                //    _isChecked = null;
+                //}
+                else
+                {
+                    _isChecked = hasChecked;
+                }
+                OnPropertyChanged("IsChecked");
+            }
+            else
+            {
+                _isChecked = Signal.IsChecked;
+                OnPropertyChanged("IsChecked");
+            }
         }
     }
 }

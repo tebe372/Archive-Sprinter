@@ -60,17 +60,25 @@ namespace AS.Core.ViewModels
             set { _model.SamplingRate = value; }
             get { return _model.SamplingRate; } 
         }
-
         public string TypeAbbreviation 
         {
             set { _model.TypeAbbreviation = value; }
             get { return _model.TypeAbbreviation; } 
         }
-
-        public string PMUName 
+        public string PMUName
         {
             get { return _model.PMUName; }
             set { _model.PMUName = value; } 
+        }
+        public List<double> Data
+        {
+            get { return _model.Data; }
+            //set { _model.Data = value; }
+        }
+        public List<double> TimeStampNumber
+        {
+            get { return _model.TimeStampNumber; }
+            //set { _model.TimeStampNumber = value; }
         }
 
         //internal void ChangeIsCheckedStatus(bool? value)

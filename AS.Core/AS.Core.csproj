@@ -48,6 +48,7 @@
     <Compile Include="Converters\ColorToBrushConverter.cs" />
     <Compile Include="Converters\SelectionStatusBackgroundConverter.cs" />
     <Compile Include="Models\EnumDefinitions.cs" />
+    <Compile Include="Models\InspectionAnalysisParameters.cs" />
     <Compile Include="Models\Legend.cs" />
     <Compile Include="Models\Signal.cs" />
     <Compile Include="Models\SiteCoordinates.cs" />
