@@ -75,8 +75,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Converters\DataQualityConverters.cs" />
     <Compile Include="Converters\EnumToStringConverters.cs" />
     <Compile Include="Converters\RadioButtonViewConverters.cs" />
+    <Compile Include="ViewModels\DataFilterViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SampleDataManagerViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\DataSourceSettingViewModel.cs" />

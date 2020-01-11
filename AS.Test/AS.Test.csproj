@@ -53,6 +53,7 @@
     <Compile Include="CSVReaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConfigurationTest.cs" />
+    <Compile Include="SettingsViewModelTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\ExData_20170203_000800.csv">
