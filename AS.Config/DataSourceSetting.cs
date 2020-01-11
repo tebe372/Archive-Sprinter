@@ -34,13 +34,72 @@ namespace AS.Config
                 if (_exampleFile != value)
                 {
                     _exampleFile = value;
-                    var reader = DataFileReaderFactory.Create(DataFileType.csv);
-                    List<Signal> signals = reader.Read(value);
-                    if (signals != null && signals.Count() > 0)
+                    if (!string.IsNullOrEmpty(value))
                     {
-                        SampleDataMngr sdm = SampleDataMngr.Instance;
-                        sdm.AddSampleSignals(signals);
+                        if (File.Exists(value) && CheckDataFileMatch())
+                        {
+                            var filename = "";
+                            try
+                            {
+                                filename = Path.GetFileNameWithoutExtension(value);
+                            }
+                            catch (ArgumentException ex)
+                            {
+                                throw new Exception("Data file path contains one or more of the invalid characters. Original message: " + ex.Message);
+                            }
+                            if (FileType == DataFileType.PI || FileType == DataFileType.OpenHistorian || FileType == DataFileType.OpenPDC)
+                            {
+                                Mnemonic = "";
+                                try
+                                {
+                                    FileDirectory = Path.GetDirectoryName(value);
+                                    var type = Path.GetExtension(value);
+                                    if (type == ".xml")
+                                    {
+                                        //PresetList = _model.GetPresets(value);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Exception("Error extracting file directory from selected file. Original message: " + ex.Message);
+                                }
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    Mnemonic = filename.Substring(0, filename.Length - 16);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Exception("Error extracting Mnemonic from selected data file. Original message: " + ex.Message);
+                                }
+                                try
+                                {
+                                    var fullPath = Path.GetDirectoryName(value);
+                                    var oneLevelUp = fullPath.Substring(0, fullPath.LastIndexOf(@"\"));
+                                    var twoLevelUp = oneLevelUp.Substring(0, oneLevelUp.LastIndexOf(@"\"));
+                                    FileDirectory = twoLevelUp;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Exception("Error extracting file directory from selected file. Original message: " + ex.Message);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("The example file  " + Path.GetFileName(value) + "  could not be found in the directory  " + Path.GetDirectoryName(value) + ".\n"
+                                            + "Please go to the 'Data Source' tab, update the location of the example file, and click the 'Read File' button.");
+                        }
                     }
+                    //var reader = DataFileReaderFactory.Create(DataFileType.csv);
+                    //List<Signal> signals = reader.Read(value);
+                    //if (signals != null && signals.Count() > 0)
+                    //{
+                    //    SampleDataMngr sdm = SampleDataMngr.Instance;
+                    //    sdm.AddSampleSignals(signals);
+                    //}
                 }
             }
         }

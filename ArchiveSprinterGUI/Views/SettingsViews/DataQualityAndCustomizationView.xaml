@@ -221,6 +221,5 @@
                 <TextBlock Grid.Row="0" Text="Signal Selection Panel" Margin="2"/>
             </Grid>
         </Border>
-
     </Grid>
 </UserControl>

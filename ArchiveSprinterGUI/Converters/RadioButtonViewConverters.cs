@@ -1,5 +1,6 @@
 ﻿using ArchiveSprinterGUI.ViewModels;
 using ArchiveSprinterGUI.ViewModels.SettingsViewModels;
+using ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -16,6 +17,25 @@ namespace ArchiveSprinterGUI.Converters
         object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is SettingsViewModel)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        object IValueConverter.ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return DependencyProperty.UnsetValue;
+        }
+    }
+    public class RadioButtonViewConverter2 : IValueConverter
+    {
+        object IValueConverter.Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is SignalInspectionViewModel)
             {
                 return true;
             }

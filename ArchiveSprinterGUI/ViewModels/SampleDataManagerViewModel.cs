@@ -17,34 +17,70 @@ namespace ArchiveSprinterGUI.ViewModels
         public SampleDataManagerViewModel()
         {
             _model = SampleDataMngr.Instance;
+            _model.SignalCheckStatusChanged += __signalCheckStatusChanged;
+            DataviewGroupMethods = new List<string>() { "View Signal by Type", "View Signal by PMU" };
+            SelectedDataViewingGroupMethod = "View Signal by Type";
         }
-        #region Raw signals
-        private ObservableCollection<SignalTypeHierachy> _groupedRawSignalsByType;
-        public ObservableCollection<SignalTypeHierachy> GroupedRawSignalsByType
+
+        private void __signalCheckStatusChanged(SignalTree e)
         {
-            get
-            {
-                return _groupedRawSignalsByType;
-            }
+            OnSignalTreeCheckStatusChanged(e);
+        }
+        public event SignalTreeCheckStatusChangedEventHandler SignalCheckStatusChanged;
+        public delegate void SignalTreeCheckStatusChangedEventHandler(SignalTree e);
+        private void OnSignalTreeCheckStatusChanged(SignalTree e)
+        {
+            SignalCheckStatusChanged?.Invoke(e);
+        }
+        public List<string> DataviewGroupMethods { get; set; }
+        private string _selectedDataViewingGroupMethod;
+        public string SelectedDataViewingGroupMethod 
+        {
+            get { return _selectedDataViewingGroupMethod; }
             set
             {
-                _groupedRawSignalsByType = value;
+                _selectedDataViewingGroupMethod = value;
                 OnPropertyChanged();
             }
         }
-        private ObservableCollection<SignalTypeHierachy> _groupedRawSignalsByPMU;
-        public ObservableCollection<SignalTypeHierachy> GroupedRawSignalsByPMU
+        #region Raw signals
+        private ObservableCollection<SignalTree> _groupedRawSignalsByType;
+        public ObservableCollection<SignalTree> GroupedRawSignalsByType
         {
             get
             {
-                return _groupedRawSignalsByPMU;
+                return _model.GroupedSignalsByType;
             }
             set
             {
-                _groupedRawSignalsByPMU = value;
+                _model.GroupedSignalsByType = value;
+                OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<SignalTree> _groupedRawSignalsByPMU;
+        public ObservableCollection<SignalTree> GroupedRawSignalsByPMU
+        {
+            get
+            {
+                return _model.GroupedSignalsByPMU;
+            }
+            set
+            {
+                _model.GroupedSignalsByPMU = value;
                 OnPropertyChanged();
             }
         }
         #endregion
+        public void DetermineCheckStatusOfGroupedSignals()
+        {
+            foreach (var item in GroupedRawSignalsByPMU)
+            {
+                item.DetermineIsCheckedStatusFromTopToBottom();
+            }
+            foreach (var item in GroupedRawSignalsByType)
+            {
+                item.DetermineIsCheckedStatusFromTopToBottom();
+            }
+        }
     }
 }

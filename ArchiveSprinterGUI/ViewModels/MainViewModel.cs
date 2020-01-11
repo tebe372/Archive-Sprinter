@@ -1,4 +1,5 @@
 ﻿using ArchiveSprinterGUI.ViewModels.SettingsViewModels;
+using ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels;
 using AS.SampleDataManager;
 using AS.Utilities;
 using System;

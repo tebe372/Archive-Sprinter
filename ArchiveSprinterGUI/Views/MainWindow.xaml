@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:ArchiveSprinterGUI.Views"
         xmlns:localsvm="clr-namespace:ArchiveSprinterGUI.ViewModels.SettingsViewModels"
         xmlns:localvm="clr-namespace:ArchiveSprinterGUI.ViewModels"
+        xmlns:localsivm="clr-namespace:ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels"
         xmlns:localv="clr-namespace:ArchiveSprinterGUI.Views.SettingsViews"
         xmlns:localsv="clr-namespace:ArchiveSprinterGUI.Views.SignalInspectionViews"
         xmlns:converters="clr-namespace:ArchiveSprinterGUI.Converters"
@@ -18,10 +19,11 @@
         <DataTemplate DataType="{x:Type localsvm:SettingsViewModel}">
             <localv:SettingsTabControl/>
         </DataTemplate>
-        <DataTemplate DataType="{x:Type localvm:SignalInspectionViewModel}">
+        <DataTemplate DataType="{x:Type localsivm:SignalInspectionViewModel}">
             <localsv:SignalInspectionView/>
         </DataTemplate>
         <converters:RadioButtonViewConverter1 x:Key="RadioButtonViewConverter1"/>
+        <converters:RadioButtonViewConverter2 x:Key="RadioButtonViewConverter2"/>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -64,7 +66,7 @@
                         <Style TargetType="RadioButton" BasedOn="{StaticResource {x:Type ToggleButton}}"/>
                     </RadioButton.Style>
                 </RadioButton>-->
-                <RadioButton Content="Signal Inspection" Margin="2" GroupName="ViewChoice" IsChecked="{Binding CurrentView}" Command="{Binding MainViewSelected}" CommandParameter="SignalInspection">
+                <RadioButton Content="Signal Inspection" Margin="2" GroupName="ViewChoice" IsChecked="{Binding CurrentView, Converter={StaticResource RadioButtonViewConverter2}}" Command="{Binding MainViewSelected}" CommandParameter="SignalInspection">
                     <RadioButton.Style>
                         <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type ToggleButton}}"/>
                     </RadioButton.Style>

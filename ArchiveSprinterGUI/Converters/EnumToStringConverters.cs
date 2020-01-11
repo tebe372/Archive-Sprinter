@@ -31,7 +31,6 @@ namespace ArchiveSprinterGUI.Converters
                     throw new Exception("Input data file type not valid!");
             }
         }
-
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             switch (value)
@@ -48,6 +47,45 @@ namespace ArchiveSprinterGUI.Converters
                     return DataFileType.OpenHistorian;
                 case "openPDC":
                     return DataFileType.OpenPDC;
+                default:
+                    throw new Exception("Enum type not valid!");
+            }
+        }
+    }
+    public class EnumToStringConverter2 : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch (value)
+            {
+                case DetectorWindowType.hann:
+                    return "Hann";
+                case DetectorWindowType.bartlett:
+                    return "Bartlett";
+                case DetectorWindowType.blackman:
+                    return "Blackman";
+                case DetectorWindowType.hamming:
+                    return "Hamming";
+                case DetectorWindowType.rectwin:
+                    return "Rectangular";
+                default:
+                    throw new Exception("Detector window type not valid!");
+            }
+        }
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            switch (value)
+            {
+                case "Hann":
+                    return DetectorWindowType.hann;
+                case "Bartlett":
+                    return DetectorWindowType.bartlett;
+                case "Blackman":
+                    return DetectorWindowType.blackman;
+                case "Hamming":
+                    return DetectorWindowType.hamming;
+                case "Rectangular":
+                    return DetectorWindowType.rectwin;
                 default:
                     throw new Exception("Enum type not valid!");
             }

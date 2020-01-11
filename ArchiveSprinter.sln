@@ -21,6 +21,10 @@ Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Resources", "Resources\Reso
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AS.SampleDataManager", "AS.SampleDataManager\AS.SampleDataManager.csproj", "{C256AF11-B60A-4212-9E0D-9FD9D5BBE18D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxyPlot", "..\..\571\oxyplot\oxyplot\oxyplot\Source\OxyPlot\OxyPlot.csproj", "{14F0ECEE-3DB6-4B08-8D44-CAD0F8955889}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OxyPlot.Wpf", "..\..\571\oxyplot\oxyplot\oxyplot\Source\OxyPlot.Wpf\OxyPlot.Wpf.csproj", "{0AF06956-F099-457C-8E0F-C92F778341A2}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Resources\Resources.projitems*{b8f54723-3799-4777-9bef-5e29991632b2}*SharedItemsImports = 13
@@ -58,6 +62,14 @@ Global
 		{C256AF11-B60A-4212-9E0D-9FD9D5BBE18D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C256AF11-B60A-4212-9E0D-9FD9D5BBE18D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C256AF11-B60A-4212-9E0D-9FD9D5BBE18D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{14F0ECEE-3DB6-4B08-8D44-CAD0F8955889}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{14F0ECEE-3DB6-4B08-8D44-CAD0F8955889}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{14F0ECEE-3DB6-4B08-8D44-CAD0F8955889}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{14F0ECEE-3DB6-4B08-8D44-CAD0F8955889}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AF06956-F099-457C-8E0F-C92F778341A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AF06956-F099-457C-8E0F-C92F778341A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AF06956-F099-457C-8E0F-C92F778341A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AF06956-F099-457C-8E0F-C92F778341A2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

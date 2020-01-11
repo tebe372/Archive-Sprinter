@@ -65,6 +65,21 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.7.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.7.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.7.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.7.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.7.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.7.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.7.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.7.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit, Version=3.7.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <HintPath>..\packages\Extended.Wpf.Toolkit.3.7.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -84,7 +99,9 @@
     <Compile Include="ViewModels\SettingsViewModels\DataSourceSettingViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\DataSourceViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\SettingsViewModel.cs" />
-    <Compile Include="ViewModels\SignalInspectionViewModel.cs" />
+    <Compile Include="ViewModels\SignalInspectionViewModels\InspectionAnalysisParametersViewModel.cs" />
+    <Compile Include="ViewModels\SignalInspectionViewModels\SignalInspectionViewModel.cs" />
+    <Compile Include="ViewModels\SignalInspectionViewModels\SignalPlotPanel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
     </Compile>
@@ -97,8 +114,17 @@
     <Compile Include="Views\SettingsViews\SettingsTabControl.xaml.cs">
       <DependentUpon>SettingsTabControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SignalInspectionViews\ASignalPlotPanel.xaml.cs">
+      <DependentUpon>ASignalPlotPanel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SignalInspectionViews\SignalInspectionView.xaml.cs">
       <DependentUpon>SignalInspectionView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SignalInspectionViews\SignalSelectionPanel.xaml.cs">
+      <DependentUpon>SignalSelectionPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SignalInspectionViews\SpectralInspectionParameters.xaml.cs">
+      <DependentUpon>SpectralInspectionParameters.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -145,18 +171,37 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SignalInspectionViews\ASignalPlotPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SignalInspectionViews\SignalInspectionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SignalInspectionViews\SignalSelectionPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SignalInspectionViews\SpectralInspectionParameters.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\AddCommand.png" />
     <Resource Include="..\Resources\Images\open.gif">
       <Link>Resources\open.gif</Link>
     </Resource>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\571\oxyplot\oxyplot\oxyplot\Source\OxyPlot.Wpf\OxyPlot.Wpf.csproj">
+      <Project>{0af06956-f099-457c-8e0f-c92f778341a2}</Project>
+      <Name>OxyPlot.Wpf</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\571\oxyplot\oxyplot\oxyplot\Source\OxyPlot\OxyPlot.csproj">
+      <Project>{14f0ecee-3db6-4b08-8d44-cad0f8955889}</Project>
+      <Name>OxyPlot</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AS.Config\AS.Config.csproj">
       <Project>{39A7D9D2-0CE2-4240-BB01-43924EECCF1E}</Project>
       <Name>AS.Config</Name>
@@ -164,6 +209,10 @@
     <ProjectReference Include="..\AS.Core\AS.Core.csproj">
       <Project>{8cc24166-b493-41c0-acb0-dc9177181e1e}</Project>
       <Name>AS.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\AS.IO\AS.IO.csproj">
+      <Project>{7F5148D5-1206-44CF-B918-CC92DAEC221C}</Project>
+      <Name>AS.IO</Name>
     </ProjectReference>
     <ProjectReference Include="..\AS.SampleDataManager\AS.SampleDataManager.csproj">
       <Project>{c256af11-b60a-4212-9e0d-9fd9d5bbe18d}</Project>
@@ -173,6 +222,16 @@
       <Project>{9AD4EBFF-6D35-446C-9AA3-EB0068235636}</Project>
       <Name>AS.Utilities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Resources\Images\AddCommand.png">
+      <Link>Resources\AddCommand.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Resources\Images\RemoveCommand_16x.png">
+      <Link>Resources\RemoveCommand_16x.png</Link>
+    </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

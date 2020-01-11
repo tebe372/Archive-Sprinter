@@ -1,5 +1,7 @@
 ﻿using AS.Config;
 using AS.Core.Models;
+using AS.IO;
+using AS.SampleDataManager;
 using AS.Utilities;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using System;
@@ -46,69 +48,83 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             {
                 if (_model.ExampleFile != value)
                 {
-                    _model.ExampleFile = value;
-                    OnPropertyChanged();
-                    if (!string.IsNullOrEmpty(value))
+                    try
                     {
-                        if (File.Exists(value) && _model.CheckDataFileMatch())
-                        {
-                            var filename = "";
-                            try
-                            {
-                                filename = Path.GetFileNameWithoutExtension(value);
-                            }
-                            catch (ArgumentException ex)
-                            {
-                                MessageBox.Show("Data file path contains one or more of the invalid characters. Original message: " + ex.Message, "Error!", MessageBoxButton.OK);
-                            }
-                            if (FileType == DataFileType.PI || FileType == DataFileType.OpenHistorian || FileType == DataFileType.OpenPDC)
-                            {
-                                Mnemonic = "";
-                                //this try block need to stay so the change would show up in the GUI, even though it's duplicating the work in DataConfigModel.cs tryi block on line 268 to 279.
-                                try
-                                {
-                                    FileDirectory = Path.GetDirectoryName(value);
-                                    var type = Path.GetExtension(value);
-                                    if (type == ".xml")
-                                    {
-                                        //PresetList = _model.GetPresets(value);
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show("Error extracting file directory from selected file. Original message: " + ex.Message, "Error!", MessageBoxButton.OK);
-                                }
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    Mnemonic = filename.Substring(0, filename.Length - 16);
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show("Error extracting Mnemonic from selected data file. Original message: " + ex.Message, "Error!", MessageBoxButton.OK);
-                                }
-                                //this try block need to stay so the change would show up in the GUI, even though it's duplicating the work in DataConfigModel.cs tryi block on line 268 to 279.
-                                try
-                                {
-                                    var fullPath = Path.GetDirectoryName(value);
-                                    var oneLevelUp = fullPath.Substring(0, fullPath.LastIndexOf(@"\"));
-                                    var twoLevelUp = oneLevelUp.Substring(0, oneLevelUp.LastIndexOf(@"\"));
-                                    FileDirectory = twoLevelUp;
-                                }
-                                catch (Exception ex)
-                                {
-                                    MessageBox.Show("Error extracting file directory from selected file. Original message: " + ex.Message, "Error!", MessageBoxButton.OK);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            MessageBox.Show("The example file  " + Path.GetFileName(value) + "  could not be found in the directory  " + Path.GetDirectoryName(value) + ".\n"
-                                            + "Please go to the 'Data Source' tab, update the location of the example file, and click the 'Read File' button.", "Warning!", MessageBoxButton.OK);
-                        }
+                        _model.ExampleFile = value;
+                        OnPropertyChanged();
                     }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message, "Error!", MessageBoxButton.OK);
+                    }
+                    var reader = DataFileReaderFactory.Create(DataFileType.csv);
+                    List<Signal> signals = reader.Read(value);
+                    if (signals != null && signals.Count() > 0)
+                    {
+                        SampleDataMngr sdm = SampleDataMngr.Instance;
+                        sdm.AddSampleSignals(signals);
+                    }
+                    //if (!string.IsNullOrEmpty(value))
+                    //{
+                    //    if (File.Exists(value) && _model.CheckDataFileMatch())
+                    //    {
+                    //        var filename = "";
+                    //        try
+                    //        {
+                    //            filename = Path.GetFileNameWithoutExtension(value);
+                    //        }
+                    //        catch (ArgumentException ex)
+                    //        {
+                    //            MessageBox.Show("Data file path contains one or more of the invalid characters. Original message: " + ex.Message, "Error!", MessageBoxButton.OK);
+                    //        }
+                    //        if (FileType == DataFileType.PI || FileType == DataFileType.OpenHistorian || FileType == DataFileType.OpenPDC)
+                    //        {
+                    //            Mnemonic = "";
+                    //            //this try block need to stay so the change would show up in the GUI, even though it's duplicating the work in DataConfigModel.cs tryi block on line 268 to 279.
+                    //            try
+                    //            {
+                    //                FileDirectory = Path.GetDirectoryName(value);
+                    //                var type = Path.GetExtension(value);
+                    //                if (type == ".xml")
+                    //                {
+                    //                    //PresetList = _model.GetPresets(value);
+                    //                }
+                    //            }
+                    //            catch (Exception ex)
+                    //            {
+                    //                MessageBox.Show("Error extracting file directory from selected file. Original message: " + ex.Message, "Error!", MessageBoxButton.OK);
+                    //            }
+                    //        }
+                    //        else
+                    //        {
+                    //            try
+                    //            {
+                    //                Mnemonic = filename.Substring(0, filename.Length - 16);
+                    //            }
+                    //            catch (Exception ex)
+                    //            {
+                    //                MessageBox.Show("Error extracting Mnemonic from selected data file. Original message: " + ex.Message, "Error!", MessageBoxButton.OK);
+                    //            }
+                    //            //this try block need to stay so the change would show up in the GUI, even though it's duplicating the work in DataConfigModel.cs tryi block on line 268 to 279.
+                    //            try
+                    //            {
+                    //                var fullPath = Path.GetDirectoryName(value);
+                    //                var oneLevelUp = fullPath.Substring(0, fullPath.LastIndexOf(@"\"));
+                    //                var twoLevelUp = oneLevelUp.Substring(0, oneLevelUp.LastIndexOf(@"\"));
+                    //                FileDirectory = twoLevelUp;
+                    //            }
+                    //            catch (Exception ex)
+                    //            {
+                    //                MessageBox.Show("Error extracting file directory from selected file. Original message: " + ex.Message, "Error!", MessageBoxButton.OK);
+                    //            }
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        MessageBox.Show("The example file  " + Path.GetFileName(value) + "  could not be found in the directory  " + Path.GetDirectoryName(value) + ".\n"
+                    //                        + "Please go to the 'Data Source' tab, update the location of the example file, and click the 'Read File' button.", "Warning!", MessageBoxButton.OK);
+                    //    }
+                    //}
                 }
             }
         }

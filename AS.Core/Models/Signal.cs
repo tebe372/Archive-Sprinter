@@ -38,7 +38,7 @@ namespace AS.Core.Models
  //       public string OldTypeAbbreviation { get; set; }
  //       public string OldUnit { get; set; }
         public bool? IsValid { get; set; }
-        public bool? IsChecked { get; set; }
+        public bool IsChecked { get; set; }
         public bool? IsEnabled { get; set; }
         public bool? IsCustomSignal { get; set; }
         public bool? IsNameTypeUnitChanged { get; set; }
