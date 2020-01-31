@@ -200,6 +200,10 @@
       <Project>{14f0ecee-3db6-4b08-8d44-cad0f8955889}</Project>
       <Name>OxyPlot</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AS.ComputationManager\AS.ComputationManager.csproj">
+      <Project>{74848df2-c9f6-4210-a782-e75f063a843c}</Project>
+      <Name>AS.ComputationManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AS.Config\AS.Config.csproj">
       <Project>{39A7D9D2-0CE2-4240-BB01-43924EECCF1E}</Project>
       <Name>AS.Config</Name>
