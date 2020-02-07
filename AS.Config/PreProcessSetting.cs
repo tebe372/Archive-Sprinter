@@ -27,6 +27,8 @@ namespace AS.Config
         {
             Parameters[paramName] = paramValue;
         }
+
+      
     }
     // Data Quality Filter Class
     public class Filter: PreProcessSetting

@@ -5,18 +5,21 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ArchiveSprinterGUI.Views.SettingsViews"
              xmlns:converters="clr-namespace:ArchiveSprinterGUI.Converters"
-             xmlns:vm="clr-namespace:ArchiveSprinterGUI.ViewModels;assembly=AS.GUI"
+             xmlns:vm="clr-namespace:ArchiveSprinterGUI.ViewModels.SettingsViewModels"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <ResourceDictionary>
             <converters:AddCustomizationParameters x:Key="AddCustomizationParameters"/>
+            <converters:SelectionStatusBackgroundConverter x:Key="SelectionStatusBackgroundConverter"/>
+            <converters:ExpanderHeaderConverter x:Key="ExpanderHeaderConverter"/>
             <!--<DataTemplate x:Key="SubtractionCustomization">
                 <local:SubtractionCustomization/>
-            </DataTemplate>
+            </DataTemplate>-->
             <DataTemplate x:Key="ZerosMissingDQFilterView">
                 <local:ZerosMissingDQFilterView/>
-            </DataTemplate>-->
+            </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="10,0,10,10">
@@ -46,15 +49,15 @@
                                         <Path VerticalAlignment="Center" Margin="4,4,0,0" Fill="Black" Data="M 0 0 L 4 4 L 8 0 Z" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </MenuItem.Header>
-                                <MenuItem Header="Filter" ItemsSource="{Binding DataConfigure.DQFilterList}">
+                                <MenuItem Header="Filter" ItemsSource="{Binding DQFilterList}">
                                     <MenuItem.ItemContainerStyle>
                                         <Style>
-                                            <Setter Property="MenuItem.Command" Value="{Binding Path=DataContext.DQFilterSelected, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"/>
+                                            <Setter Property="MenuItem.Command" Value="{Binding Path=DataContext.DataConfigStepAdded, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"/>
                                             <Setter Property="MenuItem.CommandParameter" Value="{Binding}"/>
                                         </Style>
                                     </MenuItem.ItemContainerStyle>
                                 </MenuItem>
-                                <MenuItem Header="Customization" ItemsSource="{Binding DataConfigure.CustomizationList}">
+                                <MenuItem Header="Customization" ItemsSource="{Binding CustomizationList}">
                                     <MenuItem.ItemContainerStyle>
                                         <Style>
                                             <Setter Property="MenuItem.Command" Value="{Binding Path=DataContext.CustomizationSelected, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"/>
@@ -73,9 +76,9 @@
                             </MenuItem>
                         </Menu>
                     </Grid>
-                    <ItemsControl ItemsSource="{Binding DataConfigure.CollectionOfSteps}" Grid.Row="1" Margin="2" Name="StepsControl">
+                    <ItemsControl ItemsSource="{Binding PreProcessSteps}" Grid.Row="1" Margin="2" Name="StepsControl">
                         <ItemsControl.Resources>
-                            <DataTemplate DataType="{x:Type vm:DataFilterViewModel}">
+                            <DataTemplate DataType="{x:Type vm:PreProcessStepViewModel}">
                                <Border Margin="2,2,11,2" BorderBrush="LightGray" BorderThickness="1" Background="{Binding IsStepSelected, Converter={StaticResource SelectionStatusBackgroundConverter}}">
                                     <!--<i:Interaction.Triggers>
                                         <i:EventTrigger EventName="MouseLeftButtonDown">
@@ -91,13 +94,13 @@
                                             <DockPanel Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}}, Path=ActualWidth}">
                                                 <TextBlock VerticalAlignment="Center" Text="{Binding Converter={StaticResource ExpanderHeaderConverter}}"/>
                                                 <Button DockPanel.Dock="Right" Width="24" Height="24" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Margin="0,0,30,0" VerticalAlignment="Center" HorizontalAlignment="Right" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.DeleteDataConfigStep}" CommandParameter="{Binding}">
-                                                    <Image Width="16" Height="16" Source="/BAWGUI.Settings;component/MyResources/RemoveCommand_16x.png" HorizontalAlignment="Center"/>
+                                                    <Image Width="16" Height="16" Source="/ArchiveSprinterGUI;component/Resources/RemoveCommand_16x.png" HorizontalAlignment="Center"/>
                                                 </Button>
                                             </DockPanel>
                                         </Expander.Header>
                                         <ScrollViewer Margin="2" HorizontalScrollBarVisibility="Auto" CanContentScroll="True" VerticalScrollBarVisibility="Hidden">
 
-                                            <ContentControl Content="{Binding}" Name="FilterSteps">
+                                            <ContentControl>
                                                 <ContentControl.Style>
                                                     <Style TargetType="ContentControl">
                                                         <Style.Triggers>
@@ -111,10 +114,12 @@
                                                     </Style>
                                                 </ContentControl.Style>
                                             </ContentControl>
+                                              
                                         </ScrollViewer>
                                     </Expander>
                                 </Border>
                             </DataTemplate>
+                   
                             <!--<DataTemplate DataType="{x:Type vm:Customization}">
                                 <Border Name="StepBorder" Margin="2,2,11,2" BorderBrush="LightGray" BorderThickness="1" Background="{Binding IsStepSelected, Converter={StaticResource SelectionStatusBackgroundConverter}}">
                                     <i:Interaction.Triggers>

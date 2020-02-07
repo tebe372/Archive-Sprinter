@@ -31,6 +31,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OxyPlot, Version=2.0.0.0, Culture=neutral, PublicKeyToken=638079a8f0bd61e9, processorArchitecture=MSIL">
+      <HintPath>..\packages\OxyPlot.Core.2.0.0\lib\net45\OxyPlot.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -57,15 +60,13 @@
     <Compile Include="ViewModels\SignalViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\571\oxyplot\oxyplot\oxyplot\Source\OxyPlot\OxyPlot.csproj">
-      <Project>{14F0ECEE-3DB6-4B08-8D44-CAD0F8955889}</Project>
-      <Name>OxyPlot</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AS.Utilities\AS.Utilities.csproj">
       <Project>{9AD4EBFF-6D35-446C-9AA3-EB0068235636}</Project>
       <Name>AS.Utilities</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
