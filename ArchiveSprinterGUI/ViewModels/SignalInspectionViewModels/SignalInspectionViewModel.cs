@@ -1,4 +1,6 @@
-﻿using AS.Core.Models;
+﻿using AS.ComputationManager.Functions;
+using AS.ComputationManager.Models;
+using AS.Core.Models;
 using AS.Core.ViewModels;
 using AS.Utilities;
 using OxyPlot;
@@ -27,7 +29,9 @@ namespace ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels
             AllPlotsDeSelected = new RelayCommand(DeSelectAllPlots);
             //UpdatePlot = new RelayCommand(_updatePlot);
             _signalPlots = new ObservableCollection<SignalPlotPanel>();
+
             _inspectionAnalysisParams = new InspectionAnalysisParametersViewModel();
+            SpectralInspection = new RelayCommand(_spectralInspection);
         }
 
         private void _signalCheckStatusChanged(SignalTree e)
@@ -357,6 +361,107 @@ namespace ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels
                     }
                 }
             }
+        }
+        public ICommand SpectralInspection { get; set; }
+        private void _spectralInspection(object obj)
+        {
+            var plot = obj as SignalPlotPanel;
+            double startPoint = 0;
+            double endPoint = 0;
+            int startIndex = 0;
+            int endIndex = 0;
+            foreach (var ax in plot.SignalViewPlotModel.Axes)
+            {
+                if (ax.IsHorizontal())
+                {
+                    startPoint = ax.ActualMinimum;
+                    endPoint = ax.ActualMaximum;
+                    //start = DateTime.FromOADate(ax.ActualMinimum).ToString("MM/dd/yyyy HH:mm:ss.fff");
+                    //end = DateTime.FromOADate(ax.ActualMaximum).ToString("MM/dd/yyyy HH:mm:ss.fff");
+                    break;
+                }
+            }
+            var timeStamp = plot.Signals[0].TimeStampNumber;
+            startIndex = timeStamp.FindLastIndex(a => a <= startPoint);
+            endIndex = timeStamp.FindIndex(a => a >= endPoint);
+            if (startIndex == -1)
+            {
+                startIndex = 0;
+            }
+            if (endIndex == -1)
+            {
+                endIndex = timeStamp.Count - 1;
+            }
+            List<List<double>> allData = plot.Signals.Select(a => a.Data.GetRange(startIndex, endIndex - startIndex + 1).ToList()).ToList();
+            double[] t = timeStamp.GetRange(startIndex, endIndex - startIndex + 1).ToArray();
+            InspectionAnalysisResults result = null;
+            if (plot.Signals.Count > 0)
+            {
+                InspectionAnalysisParams.Fs = plot.Signals[0].SamplingRate;
+                result = Functions.InspectionSpectral(allData, InspectionAnalysisParams.Model);
+                result.Signalnames = plot.Signals.Select(x => x.SignalName).ToList();
+            }
+            SelectedSignalPlotPanel.AddATab = true;
+            if (result != null)
+            {
+                //plot it!
+                //_plotInspectionAnalysisResult(result);
+            }
+        }
+        private void _plotInspectionAnalysisResult(InspectionAnalysisResults result)
+        {
+            var AsignalPlot = new ViewResolvingPlotModel() { PlotAreaBackground = OxyColors.WhiteSmoke };
+            //var legends = new ObservableCollection<Legend>();
+            OxyPlot.Axes.LinearAxis xAxis = new OxyPlot.Axes.LinearAxis()
+            {
+                Position = OxyPlot.Axes.AxisPosition.Bottom,
+                Title = result.Xlabel,
+                MajorGridlineStyle = LineStyle.Dot,
+                MinorGridlineStyle = LineStyle.Dot,
+                MajorGridlineColor = OxyColor.FromRgb(44, 44, 44),
+                TicklineColor = OxyColor.FromRgb(82, 82, 82),
+                IsZoomEnabled = true,
+                IsPanEnabled = true,
+            };
+            //timeXAxis.AxisChanged += TimeXAxis_AxisChanged;
+            AsignalPlot.Axes.Add(xAxis);
+            OxyPlot.Axes.LinearAxis yAxis = new OxyPlot.Axes.LinearAxis()
+            {
+                Position = OxyPlot.Axes.AxisPosition.Left,
+                Title = result.Ylabel,
+                //Unit = SelectedSignalToBeViewed.Unit,
+                MajorGridlineStyle = LineStyle.Dot,
+                MinorGridlineStyle = LineStyle.Dot,
+                MajorGridlineColor = OxyColor.FromRgb(44, 44, 44),
+                TicklineColor = OxyColor.FromRgb(82, 82, 82),
+                IsZoomEnabled = true,
+                IsPanEnabled = true
+            };
+            AsignalPlot.Axes.Add(yAxis);
+            for (int index = 0; index < result.Y.Count; index++)
+            {
+                var newSeries = new OxyPlot.Series.LineSeries() { LineStyle = LineStyle.Solid, StrokeThickness = 2 };
+                for (int i = 0; i < result.Y[index].Count; i++)
+                {
+                    newSeries.Points.Add(new DataPoint(result.X[i], result.Y[index][i]));
+                }
+                newSeries.Title = result.Signalnames[index];
+                foreach (var item in SelectedSignalPlotPanel.Legends)
+                {
+                    if (newSeries.Title == item.Name)
+                    {
+                        newSeries.Color = item.Color;
+                    }
+                }
+                AsignalPlot.Series.Add(newSeries);
+            }
+            AsignalPlot.LegendPlacement = LegendPlacement.Outside;
+            AsignalPlot.LegendPosition = LegendPosition.RightMiddle;
+            AsignalPlot.LegendPadding = 0.0;
+            AsignalPlot.LegendSymbolMargin = 0.0;
+            AsignalPlot.LegendMargin = 0;
+            AsignalPlot.IsLegendVisible = false;
+            SelectedSignalPlotPanel.SpectralInspectionPlotModel = AsignalPlot;
         }
     }
 }

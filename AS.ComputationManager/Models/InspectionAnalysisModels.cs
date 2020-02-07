@@ -1,11 +1,20 @@
-﻿using System;
+﻿using AS.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace AS.Core.Models
+namespace AS.ComputationManager.Models
 {
+    public class InspectionAnalysisResults
+    {
+        public string Xlabel { get; set; }
+        public string Ylabel { get; set; }
+        public List<string> Signalnames { get; set; }
+        public List<double> X { get; set; }
+        public List<List<double>> Y { get; set; }
+    }
     public class InspectionAnalysisParameters
     {
         public InspectionAnalysisParameters()
