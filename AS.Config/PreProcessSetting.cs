@@ -11,6 +11,10 @@ namespace AS.Config
 {
     public class PreProcessSetting
     {
+        public PreProcessSetting()
+        {
+            Name = "Undefined";
+        }
         public PreProcessSetting(string name)
         {
             Name = name;
@@ -23,6 +27,8 @@ namespace AS.Config
         {
             Parameters[paramName] = paramValue;
         }
+
+      
     }
     // Data Quality Filter Class
     public class Filter: PreProcessSetting
@@ -30,6 +36,11 @@ namespace AS.Config
         public Filter(string filterName) : base(filterName)
         {
             
+        }
+
+        public Filter() : base()
+        {
+
         }
        
         public IList<SignalSignature> PMUs { get; set; }

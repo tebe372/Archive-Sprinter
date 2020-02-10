@@ -74,6 +74,7 @@
     <Compile Include="CSVReaderTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConfigurationTest.cs" />
+    <Compile Include="SettingsViewModelTest.cs" />
     <Compile Include="SignalInspectionTest.cs" />
   </ItemGroup>
   <ItemGroup>

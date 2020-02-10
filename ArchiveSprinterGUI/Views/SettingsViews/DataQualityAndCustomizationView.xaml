@@ -4,8 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ArchiveSprinterGUI.Views.SettingsViews"
+             xmlns:converters="clr-namespace:ArchiveSprinterGUI.Converters"
+             xmlns:vm="clr-namespace:ArchiveSprinterGUI.ViewModels.SettingsViewModels"
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:AddCustomizationParameters x:Key="AddCustomizationParameters"/>
+            <converters:SelectionStatusBackgroundConverter x:Key="SelectionStatusBackgroundConverter"/>
+            <converters:ExpanderHeaderConverter x:Key="ExpanderHeaderConverter"/>
+            <!--<DataTemplate x:Key="SubtractionCustomization">
+                <local:SubtractionCustomization/>
+            </DataTemplate>-->
+            <DataTemplate x:Key="ZerosMissingDQFilterView">
+                <local:ZerosMissingDQFilterView/>
+            </DataTemplate>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid Margin="10,0,10,10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="6*"/>
@@ -25,8 +41,179 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
+                        <Menu Background="Transparent" BorderBrush="Transparent" BorderThickness="0" HorizontalAlignment="Right" Grid.Column="1" Margin="0,14,2,0" >
+                            <MenuItem HorizontalAlignment="Center" Width="Auto" Margin="0,0,0,0">
+                                <MenuItem.Header>
+                                    <StackPanel Orientation="Horizontal" Margin="0" HorizontalAlignment="Right">
+                                        <Image Width="16" Height="16" Source="/ArchiveSprinterGUI;component/Resources/AddCommand.png" HorizontalAlignment="Right" Margin="0"/>
+                                        <Path VerticalAlignment="Center" Margin="4,4,0,0" Fill="Black" Data="M 0 0 L 4 4 L 8 0 Z" HorizontalAlignment="Right"/>
+                                    </StackPanel>
+                                </MenuItem.Header>
+                                <MenuItem Header="Filter" ItemsSource="{Binding DQFilterList}">
+                                    <MenuItem.ItemContainerStyle>
+                                        <Style>
+                                            <Setter Property="MenuItem.Command" Value="{Binding Path=DataContext.DataConfigStepAdded, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"/>
+                                            <Setter Property="MenuItem.CommandParameter" Value="{Binding}"/>
+                                        </Style>
+                                    </MenuItem.ItemContainerStyle>
+                                </MenuItem>
+                                <MenuItem Header="Customization" ItemsSource="{Binding CustomizationList}">
+                                    <MenuItem.ItemContainerStyle>
+                                        <Style>
+                                            <Setter Property="MenuItem.Command" Value="{Binding Path=DataContext.CustomizationSelected, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"/>
+                                            <Setter Property="MenuItem.CommandParameter">
+                                                <Setter.Value>
+                                                    <MultiBinding Converter="{StaticResource AddCustomizationParameters}">
+                                                        <Binding Path="Header" RelativeSource="{RelativeSource Mode=Self}"/>
+                                                        <Binding Source="DataConfig"/>
+                                                    </MultiBinding>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+
+                                    </MenuItem.ItemContainerStyle>
+                                </MenuItem>
+                            </MenuItem>
+                        </Menu>
                     </Grid>
+                    <ItemsControl ItemsSource="{Binding PreProcessSteps}" Grid.Row="1" Margin="2" Name="StepsControl">
+                        <ItemsControl.Resources>
+                            <DataTemplate DataType="{x:Type vm:PreProcessStepViewModel}">
+                               <Border Margin="2,2,11,2" BorderBrush="LightGray" BorderThickness="1" Background="{Binding IsStepSelected, Converter={StaticResource SelectionStatusBackgroundConverter}}">
+                                    <!--<i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                                            <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.DataConfigStepSelected}" CommandParameter="{Binding}"/>
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="GotFocus">
+                                            <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.DataConfigStepSelected}" CommandParameter="{Binding}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>-->
+
+                                    <Expander IsExpanded="{Binding IsExpanded}">
+                                        <Expander.Header>
+                                            <DockPanel Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}}, Path=ActualWidth}">
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding Converter={StaticResource ExpanderHeaderConverter}}"/>
+                                                <Button DockPanel.Dock="Right" Width="24" Height="24" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Margin="0,0,30,0" VerticalAlignment="Center" HorizontalAlignment="Right" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.DeleteDataConfigStep}" CommandParameter="{Binding}">
+                                                    <Image Width="16" Height="16" Source="/ArchiveSprinterGUI;component/Resources/RemoveCommand_16x.png" HorizontalAlignment="Center"/>
+                                                </Button>
+                                            </DockPanel>
+                                        </Expander.Header>
+                                        <ScrollViewer Margin="2" HorizontalScrollBarVisibility="Auto" CanContentScroll="True" VerticalScrollBarVisibility="Hidden">
+
+                                            <ContentControl>
+                                                <ContentControl.Style>
+                                                    <Style TargetType="ContentControl">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Zeros">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource ZerosMissingDQFilterView}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Missing">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource ZerosMissingDQFilterView}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ContentControl.Style>
+                                            </ContentControl>
+                                              
+                                        </ScrollViewer>
+                                    </Expander>
+                                </Border>
+                            </DataTemplate>
+                   
+                            <!--<DataTemplate DataType="{x:Type vm:Customization}">
+                                <Border Name="StepBorder" Margin="2,2,11,2" BorderBrush="LightGray" BorderThickness="1" Background="{Binding IsStepSelected, Converter={StaticResource SelectionStatusBackgroundConverter}}">
+                                    <i:Interaction.Triggers>
+                                        <i:EventTrigger EventName="MouseLeftButtonDown">
+                                            <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.DataConfigStepSelected}" CommandParameter="{Binding}"/>
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="GotFocus">
+                                            <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.DataConfigStepSelected}" CommandParameter="{Binding}"/>
+                                        </i:EventTrigger>
+                                        <i:EventTrigger EventName="MouseLeftButtonUp">
+                                            <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.TextboxesLostFocus}" CommandParameter="{Binding ElementName=Steps, Path=DataContext}"/>
+                                        </i:EventTrigger>
+                                    </i:Interaction.Triggers>
+                                    <Expander IsExpanded="{Binding IsExpanded}">
+                                        <Expander.Header>
+                                            <DockPanel Width="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Expander}}, Path=ActualWidth}">
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding Converter={StaticResource ExpanderHeaderConverter}}"/>
+                                                <Button DockPanel.Dock="Right" Width="24" Height="24" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Margin="0,0,30,0" VerticalAlignment="Center" HorizontalAlignment="Right" Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.DeleteDataConfigStep}" CommandParameter="{Binding}">
+                                                    <Image Width="16" Height="16" Source="/BAWGUI.Settings;component/MyResources/RemoveCommand_16x.png" HorizontalAlignment="Center"/>
+                                                </Button>
+                                            </DockPanel>
+                                        </Expander.Header>
+                                        <ScrollViewer Margin="2" HorizontalScrollBarVisibility="Auto" CanContentScroll="True" VerticalScrollBarVisibility="Hidden">
+                                            <ContentControl Content="{Binding}" Name="Steps">
+                                                <ContentControl.Style>
+                                                    <Style TargetType="ContentControl">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Scalar Repetition">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource ScalarRepCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Addition">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource AdditionCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Subtraction">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource SubtractionCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Multiplication">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource MultiplicationCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Division">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource DivisionCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Exponential">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource ExponentCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Sign Reversal">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Absolute Value">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Real Component">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Imaginary Component">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Angle Calculation">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Complex Conjugate">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Phasor Creation">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource CreatePhasorCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Power Calculation">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource PowerCalculationsCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Signal Type/Unit">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource SpecifySignalTypeUnitCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Metric Prefix">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource MetricPrefixCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Angle Conversion">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource AngleConversionCustomization}"/>
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding Name}" Value="Duplicate Signals">
+                                                                <Setter Property="ContentTemplate" Value="{StaticResource SignalReplicationCustomization}"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ContentControl.Style>
+                                            </ContentControl>
+                                        </ScrollViewer>
+                                    </Expander>
+                                </Border>
+                            </DataTemplate>
+                            -->
+                        </ItemsControl.Resources>
+                    </ItemsControl>
                 </Grid>
+                
             </ScrollViewer>
         </Border>
         <GridSplitter Grid.Column="1" Width="5" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext"/>
