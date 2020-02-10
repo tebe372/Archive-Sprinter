@@ -20,6 +20,7 @@ namespace AS.IO
             var timeSpanRelativeToBaseTime = new List<double>();
             var timeStamps = new List<DateTime>();
             var timeStampeNumberInDays = new List<double>();
+            //Console.WriteLine(Environment.CurrentDirectory);
             using (TextFieldParser reader = new TextFieldParser(filename))
             {
                 reader.TextFieldType = FieldType.Delimited;

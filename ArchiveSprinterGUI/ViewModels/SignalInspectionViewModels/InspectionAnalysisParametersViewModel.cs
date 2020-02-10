@@ -61,6 +61,12 @@ namespace ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels
                     if (result != DBNull.Value)
                     {
                         WindowLength = Convert.ToDouble(result);
+                        if (WindowLength > AnalysisLength)
+                        {
+                            WindowLength = 0;
+                            _model.WindowLengthStr = "";
+                            throw new Exception("Window length cannot be larger than analysis length");
+                        }
                     }
                     else
                     {
@@ -96,6 +102,12 @@ namespace ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels
                     if (result != DBNull.Value)
                     {
                         WindowOverlap = Convert.ToDouble(result);
+                        if (WindowOverlap >= WindowLength)
+                        {
+                            WindowOverlap = 0;
+                            _model.WindowOverlapStr = "";
+                            MessageBox.Show("Window overlap need to be smaller than window length");
+                        }
                     }
                     else
                     {

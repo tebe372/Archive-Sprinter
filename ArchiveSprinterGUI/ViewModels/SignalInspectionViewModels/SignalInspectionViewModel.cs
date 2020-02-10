@@ -398,14 +398,21 @@ namespace ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels
             if (plot.Signals.Count > 0)
             {
                 InspectionAnalysisParams.Fs = plot.Signals[0].SamplingRate;
-                result = Functions.InspectionSpectral(allData, InspectionAnalysisParams.Model);
-                result.Signalnames = plot.Signals.Select(x => x.SignalName).ToList();
+                try
+                {
+                    result = Functions.InspectionSpectral(allData, InspectionAnalysisParams.Model);
+                    result.Signalnames = plot.Signals.Select(x => x.SignalName).ToList();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
             SelectedSignalPlotPanel.AddATab = true;
             if (result != null)
             {
                 //plot it!
-                //_plotInspectionAnalysisResult(result);
+                _plotInspectionAnalysisResult(result);
             }
         }
         private void _plotInspectionAnalysisResult(InspectionAnalysisResults result)

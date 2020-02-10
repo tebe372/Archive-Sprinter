@@ -9,6 +9,11 @@ namespace AS.ComputationManager.Models
 {
     public class InspectionAnalysisResults
     {
+        public InspectionAnalysisResults()
+        {
+            X = new List<double>();
+            Y = new List<List<double>>();
+        }
         public string Xlabel { get; set; }
         public string Ylabel { get; set; }
         public List<string> Signalnames { get; set; }
