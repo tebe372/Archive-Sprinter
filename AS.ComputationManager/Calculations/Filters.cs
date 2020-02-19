@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AS.Core.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,14 @@ namespace AS.ComputationManager.Calculations
 {
     public static class Filters
     {
+        public static void DropOutMissingFilt()
+        {
+
+        }
+
+        public static void DropOutZeroFilt(Signal s)
+        {
+
+        }
     }
 }

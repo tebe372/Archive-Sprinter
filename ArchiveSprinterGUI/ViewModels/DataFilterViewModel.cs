@@ -14,7 +14,7 @@ namespace ArchiveSprinterGUI.ViewModels
         {
             _model = new Filter();
         }
-        private PreProcessSetting _model;
+        private PreProcessStep _model;
     }
 
 }

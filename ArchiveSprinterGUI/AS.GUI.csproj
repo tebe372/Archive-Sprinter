@@ -111,6 +111,7 @@
     <Compile Include="ViewModels\SettingsViewModels\DataSourceViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\PreProcessStepViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\SettingsViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModels\SignatureSettingViewModel.cs" />
     <Compile Include="ViewModels\SignalInspectionViewModels\InspectionAnalysisParametersViewModel.cs" />
     <Compile Include="ViewModels\SignalInspectionViewModels\SignalInspectionViewModel.cs" />
     <Compile Include="ViewModels\SignalInspectionViewModels\SignalPlotPanel.cs" />
@@ -253,6 +254,10 @@
       <Link>Resources\RemoveCommand_16x.png</Link>
     </Resource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="..\Resources\Images\Run_16x.png">
+      <Link>Resources\Run_16x.png</Link>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

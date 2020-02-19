@@ -71,6 +71,9 @@
                         <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type ToggleButton}}"/>
                     </RadioButton.Style>
                 </RadioButton>
+                <Button Width="20" Height="20" Command="{Binding StartArchiveSprinter}">
+                    <Image Source="/ArchiveSprinterGUI;component/Resources/Run_16x.png" Stretch="Uniform"/>
+                </Button>
                 <!--<Button ToolTip="Save Config File" Width="22" Height="22" Margin="2" Command="{Binding ProjectControlVM.SaveConfigFile}" CommandParameter="{Binding}" Visibility="{Binding CurrentView, Converter={StaticResource ViewVisibilityConverter}}">
                     <Image Source="/ArchiveWalker;component/MyResources/Save24.png"/>
                 </Button>

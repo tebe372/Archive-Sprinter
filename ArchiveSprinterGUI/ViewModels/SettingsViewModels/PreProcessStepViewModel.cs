@@ -7,12 +7,17 @@ using AS.Config;
 using AS.Utilities;
 using System.Collections.ObjectModel;
 using AS.Core.ViewModels;
+using AS.Core.Models;
 
 namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 {
     public class PreProcessStepViewModel : ViewModelBase
     {
-        private PreProcessSetting _model;
+        private PreProcessStep _model;
+        public PreProcessStep Model
+        {
+            get { return _model; }
+        }
 
         public ObservableCollection<SignalViewModel> InputChannels;
 
@@ -44,7 +49,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 
         public PreProcessStepViewModel()
         {
-            _model = new PreProcessSetting();
+            _model = new PreProcessStep();
             _isSelected = false;
             _isComplete = false;
             StepCounter = 0;

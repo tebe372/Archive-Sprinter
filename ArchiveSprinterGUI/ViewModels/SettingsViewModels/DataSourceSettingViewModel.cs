@@ -23,6 +23,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             BrowseInputFileDir = new RelayCommand(_browseInputFile);
         }
         private DataSourceSetting _model;
+        public DataSourceSetting Model
+        {
+            get { return _model; }
+        }
         public DataFileType FileType 
         {
             get { return _model.FileType; }
@@ -57,7 +61,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     {
                         MessageBox.Show(ex.Message, "Error!", MessageBoxButton.OK);
                     }
-                    var reader = DataFileReaderFactory.Create(DataFileType.csv);
+                    var reader = DataFileReaderFactory.Create(FileType);
                     List<Signal> signals = reader.Read(value);
                     if (signals != null && signals.Count() > 0)
                     {

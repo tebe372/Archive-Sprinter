@@ -1,5 +1,4 @@
 ﻿using AS.Core.Models;
-using AS.IO;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AS.SampleDataManager;
+using AS.Core;
 
 namespace AS.Config
 {
@@ -36,7 +36,7 @@ namespace AS.Config
                     _exampleFile = value;
                     if (!string.IsNullOrEmpty(value))
                     {
-                        if (File.Exists(value) && CheckDataFileMatch())
+                        if (File.Exists(value) && Utilities.CheckDataFileMatch(value, FileType))
                         {
                             var filename = "";
                             try
@@ -104,25 +104,5 @@ namespace AS.Config
             }
         }
         public string Mnemonic { get; set; }
-
-        public bool CheckDataFileMatch()
-        {
-            var tp = "";
-            try
-            {
-                tp = Path.GetExtension(ExampleFile).Substring(1).ToLower();
-            }
-            catch
-            {
-            }
-            if (FileType.ToString().ToLower() == tp)
-                return true;
-            else if (FileType == DataFileType.powHQ && tp == "mat")
-                return true;
-            else if ((FileType == DataFileType.PI || FileType == DataFileType.OpenHistorian || FileType == DataFileType.OpenPDC) && tp == "xml")
-                return true;
-            else
-                return false;
-        }
     }
 }

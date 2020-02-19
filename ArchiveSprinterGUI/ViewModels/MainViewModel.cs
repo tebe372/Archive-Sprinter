@@ -1,5 +1,7 @@
 ﻿using ArchiveSprinterGUI.ViewModels.SettingsViewModels;
 using ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels;
+using AS.Core.Models;
+using AS.IO;
 using AS.SampleDataManager;
 using AS.Utilities;
 using System;
@@ -20,6 +22,7 @@ namespace ArchiveSprinterGUI.ViewModels
             _sgnlInspctVM = new SignalInspectionViewModel();
             _currentView = _settingsVM;
             MainViewSelected = new RelayCommand(_switchView);
+            StartArchiveSprinter = new RelayCommand(_startArchiveSprinter);
         }
         private SampleDataMngr _sampleDataMgr;
         private ViewModelBase _currentView;
@@ -64,6 +67,35 @@ namespace ArchiveSprinterGUI.ViewModels
                 CurrentView = _sgnlInspctVM;
             }
         }
+        public ICommand StartArchiveSprinter { get; set; }
+        private void _startArchiveSprinter(object obj)
+        {
+            //scan through all the steps of configuration and figure out needed signals.
 
+            //send list of signals to reader control
+
+            //read files first by sending this source parameter
+            var source = SettingsVM.DataSourceVM.Model;
+            var data = new FileReadingManager(source);
+            data.DataReadingDone += Data_DataReadingDone;
+            data.Start();
+        }
+
+        private void Data_DataReadingDone(object sender, List<Signal> e)
+        {
+            _processData(e);
+        }
+
+        private void _processData(List<Signal> e)
+        {
+            foreach (var item in SettingsVM.PreProcessSteps)
+            {
+                item.Model.Process(e);
+            }
+            foreach (var item in SettingsVM.SignatureSettings)
+            {
+                item.Model.Process(e);
+            }
+        }
     }
 }

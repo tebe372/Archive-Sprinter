@@ -12,7 +12,7 @@ namespace AS.Config
         public List<DataSourceSetting> InputFiles = new List<DataSourceSetting> { }; // List of input file information
         // TODO: information about processing windows
 
-        public List<PreProcessSetting> PreProcessSteps = new List<PreProcessSetting> { };  // Customization & Data Quality steps
+        public List<PreProcessStep> PreProcessSteps = new List<PreProcessStep> { };  // Customization & Data Quality steps
         public List<SignatureSetting> SignatureSettings { get; set; }  // Signature calculation settings
 
         public readonly List<string> DQFilterList = new List<string> {

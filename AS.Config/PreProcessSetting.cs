@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using AS.ComputationManager.Calculations;
 using AS.Core.Models;
 using Newtonsoft.Json;
 
 
 namespace AS.Config
 {
-    public class PreProcessSetting
+    public abstract class PreProcessStep
     {
-        public PreProcessSetting()
+        public PreProcessStep()
         {
             Name = "Undefined";
         }
-        public PreProcessSetting(string name)
+        public PreProcessStep(string name)
         {
             Name = name;
         }
@@ -28,10 +29,11 @@ namespace AS.Config
             Parameters[paramName] = paramValue;
         }
 
-      
+        public abstract void Process(List<Signal> e)
+;
     }
     // Data Quality Filter Class
-    public class Filter: PreProcessSetting
+    public class Filter: PreProcessStep
     {
         public Filter(string filterName) : base(filterName)
         {
@@ -45,15 +47,51 @@ namespace AS.Config
        
         public IList<SignalSignature> PMUs { get; set; }
 
+        public override void Process(List<Signal> e)
+        {
+        }
     }
 
     // Customization Class
-    public class Customization : PreProcessSetting
+    public class Customization : PreProcessStep
     {
+        public Customization()
+        {
+
+        }
         public Customization(string customName) : base (customName)
         {
  
         }
+
+        public override void Process(List<Signal> e)
+        {
+
+        }
     }
 
+    public class DropOutZeroFilt : Filter
+    {
+        public override void Process(List<Signal> e)
+        {
+            //do some parameter process
+            //according to the input channels that is selected, call the actual function and process each signal.
+            foreach (var signal in e)
+            {
+                Filters.DropOutZeroFilt(signal);
+            }
+        }
+    }
+    public class SubtractionCustomization : Customization
+    {
+        public Signal Subtrahend { get; set; }
+        public Signal Minuend { get; set; }
+        public override void Process(List<Signal> e)
+        {
+            //find the 2 input channels according to the customer selection for the 
+            
+            var newSignal = Customizations.SubtractionCustomization(Subtrahend, Minuend);
+            e.Add(newSignal);
+        }
+    }
 }

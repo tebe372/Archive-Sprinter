@@ -1,4 +1,4 @@
-﻿using AS.ComputationManager.Functions;
+﻿using AS.ComputationManager.Calculations;
 using AS.ComputationManager.Models;
 using AS.Core.Models;
 using AS.IO;
