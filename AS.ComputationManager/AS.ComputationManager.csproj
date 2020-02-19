@@ -46,6 +46,7 @@
     <Compile Include="Calculations\Customizations.cs" />
     <Compile Include="Calculations\Filters.cs" />
     <Compile Include="Calculations\Functions.cs" />
+    <Compile Include="Calculations\SignatureCalculations.cs" />
     <Compile Include="Models\InspectionAnalysisModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
