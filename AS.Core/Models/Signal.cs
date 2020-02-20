@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace AS.Core.Models
 {
-    public class Signal
+    /// <summary>
+    /// 
+    /// </summary>
+    public class Signal //do we implement a flag matrix for each signal?
     {
         public Signal()
         {

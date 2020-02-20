@@ -14,7 +14,7 @@ namespace AS.ComputationManager.Calculations
 
         }
 
-        public static void DropOutZeroFilt(Signal s)
+        public static void DropOutZeroFilt(Signal s, bool setToNaN)
         {
 
         }
