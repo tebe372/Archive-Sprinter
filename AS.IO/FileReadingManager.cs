@@ -10,6 +10,12 @@ using System.Threading.Tasks;
 
 namespace AS.IO
 {
+    /// <summary>
+    /// this class manages file reading from the sources,
+    /// it should read all eligible files in the directory
+    /// it should be able to combine/split read data according to user requirement
+    /// it might also need to be able to calculate how many works we need 
+    /// </summary>
     public class FileReadingManager
     {
         public FileReadingManager()

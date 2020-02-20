@@ -29,8 +29,10 @@ namespace AS.Config
             Parameters[paramName] = paramValue;
         }
 
-        public abstract void Process(List<Signal> e)
-;
+        public abstract void Process(List<Signal> e);
+
+        public abstract bool CheckStepIsComplete();
+
     }
     // Data Quality Filter Class
     public class Filter: PreProcessStep
@@ -50,6 +52,12 @@ namespace AS.Config
         public override void Process(List<Signal> e)
         {
         }
+
+        public override bool CheckStepIsComplete()
+        {
+            throw new NotImplementedException();
+        }
+        public bool SetToNaN { get; set; }
     }
 
     // Customization Class
@@ -62,6 +70,11 @@ namespace AS.Config
         public Customization(string customName) : base (customName)
         {
  
+        }
+
+        public override bool CheckStepIsComplete()
+        {
+            throw new NotImplementedException();
         }
 
         public override void Process(List<Signal> e)

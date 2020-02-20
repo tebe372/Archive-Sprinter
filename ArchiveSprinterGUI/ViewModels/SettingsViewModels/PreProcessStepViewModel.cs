@@ -13,16 +13,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 {
     public class PreProcessStepViewModel : ViewModelBase
     {
-        private PreProcessStep _model;
-        public PreProcessStep Model
-        {
-            get { return _model; }
-        }
-
-        public ObservableCollection<SignalViewModel> InputChannels;
-
-        public string Name { get; set; }
-
         public int StepCounter { get; set; }
 
         private bool _isSelected;
@@ -46,14 +36,46 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
+        private bool _isExpanded;
+        public bool IsExpanded
+        {
+            get
+            {
+                return _isExpanded;
+            }
+            set
+            {
+                _isExpanded = value;
+                OnPropertyChanged();
+            }
+        }
 
         public PreProcessStepViewModel()
         {
-            _model = new PreProcessStep();
             _isSelected = false;
             _isComplete = false;
             StepCounter = 0;
-            InputChannels = new ObservableCollection<SignalViewModel>();
+        }
+    }
+    public class DropOutZeroFiltViewModel : PreProcessStepViewModel
+    {
+        public DropOutZeroFiltViewModel(DropOutZeroFilt m)
+        {
+            _model = m;
+        }
+        private DropOutZeroFilt _model;
+        public DropOutZeroFilt Model
+        {
+            get { return _model; }
+        }
+        private bool _setToNaN;
+        public bool SetToNaN 
+        {
+            get
+            {
+                return _model.SetToNaN;
+            }
+            set { _model.SetToNaN = value; } 
         }
     }
 }
