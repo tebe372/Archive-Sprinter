@@ -13,6 +13,9 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 {
     public class PreProcessStepViewModel : ViewModelBase
     {
+        public virtual PreProcessStep Model { get; } // might need to be get rid of if possible
+
+        public virtual string Name { get; set; } // need to get rid of
         public int StepCounter { get; set; }
 
         private bool _isSelected;
@@ -64,7 +67,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             _model = m;
         }
         private DropOutZeroFilt _model;
-        public DropOutZeroFilt Model
+        public override PreProcessStep Model
         {
             get { return _model; }
         }
@@ -77,5 +80,8 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             }
             set { _model.SetToNaN = value; } 
         }
+
+        //private DropOutZeroFilt _model;
+        //public override PreProcessStep Model { get { return _model; } }
     }
 }
