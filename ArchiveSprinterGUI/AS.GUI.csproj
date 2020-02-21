@@ -123,8 +123,17 @@
     <Compile Include="Views\SettingsViews\DataSourceView.xaml.cs">
       <DependentUpon>DataSourceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\ZerosMissingDQFilterView.xaml.cs">
+      <DependentUpon>ZerosMissingDQFilterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsViews\SettingsTabControl.xaml.cs">
       <DependentUpon>SettingsTabControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\SignalSelectionPanel.xaml.cs">
+      <DependentUpon>SignalSelectionPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\TestFilterTemplate.xaml.cs">
+      <DependentUpon>TestFilterTemplate.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SignalInspectionViews\ASignalPlotPanel.xaml.cs">
       <DependentUpon>ASignalPlotPanel.xaml</DependentUpon>
@@ -192,6 +201,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsViews\SettingsTabControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\SignalSelectionPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SettingsViews\filterViews\TestFilterTemplate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

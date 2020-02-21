@@ -14,7 +14,19 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
     {
         private PreProcessSetting _model;
 
-        public ObservableCollection<SignalViewModel> InputChannels;
+        public ObservableCollection<SignalViewModel> _inputChannels;
+        public ObservableCollection<SignalViewModel> InputChannels
+        {
+            get
+            {
+                return _inputChannels;
+            }
+            set
+            {
+                _inputChannels = value;
+                OnPropertyChanged();
+            }
+        }
 
         public string Name { get; set; }
 
