@@ -15,7 +15,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
     {
         public virtual PreProcessStep Model { get; } // might need to be get rid of if possible
 
-        public virtual string Name { get; set; } // need to get rid of
+        //public virtual string Name { get; set; } // need to get rid of
         public ObservableCollection<SignalViewModel> _inputChannels;
         public ObservableCollection<SignalViewModel> InputChannels
         {
