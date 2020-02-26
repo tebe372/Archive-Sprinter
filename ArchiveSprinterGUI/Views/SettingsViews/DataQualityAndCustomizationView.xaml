@@ -20,6 +20,17 @@
             <DataTemplate x:Key="ZerosMissingDQFilterView">
                 <local:ZerosMissingDQFilterView/>
             </DataTemplate>
+            
+            <Style x:Key="DQFilterStyle" TargetType="ContentPresenter">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding Name}" Value="Zeros">
+                        <Setter Property="ContentTemplate" Value="{StaticResource ZerosMissingDQFilterView}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Missing">
+                        <Setter Property="ContentTemplate" Value="{StaticResource ZerosMissingDQFilterView}"/>
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
     <Grid Margin="10,0,10,10">
@@ -76,7 +87,7 @@
                             </MenuItem>
                         </Menu>
                     </Grid>
-                    <ItemsControl ItemsSource="{Binding PreProcessSteps}" Grid.Row="1" Margin="2" Name="StepsControl">
+                    <ItemsControl ItemsSource="{Binding PreProcessSteps, Mode=OneWay}" Grid.Row="1" Margin="2" Name="StepsControl" >
                         <ItemsControl.Resources>
                             <DataTemplate DataType="{x:Type vm:PreProcessStepViewModel}">
                                <Border Margin="2,2,11,2" BorderBrush="LightGray" BorderThickness="1" Background="{Binding IsStepSelected, Converter={StaticResource SelectionStatusBackgroundConverter}}">
@@ -99,22 +110,7 @@
                                             </DockPanel>
                                         </Expander.Header>
                                         <ScrollViewer Margin="2" HorizontalScrollBarVisibility="Auto" CanContentScroll="True" VerticalScrollBarVisibility="Hidden">
-
-                                            <ContentControl>
-                                                <ContentControl.Style>
-                                                    <Style TargetType="ContentControl">
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding Name}" Value="Zeros">
-                                                                <Setter Property="ContentTemplate" Value="{StaticResource ZerosMissingDQFilterView}"/>
-                                                            </DataTrigger>
-                                                            <DataTrigger Binding="{Binding Name}" Value="Missing">
-                                                                <Setter Property="ContentTemplate" Value="{StaticResource ZerosMissingDQFilterView}"/>
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </ContentControl.Style>
-                                            </ContentControl>
-                                              
+                                            <ContentPresenter Style="{StaticResource DQFilterStyle}" Content="{Binding}"/>
                                         </ScrollViewer>
                                     </Expander>
                                 </Border>
@@ -224,6 +220,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="Signal Selection Panel" Margin="2"/>
+                <local:SignalSelectionPanel Grid.Row="1" Margin="2" DataContext="{Binding SampleDataMngr}"/>
             </Grid>
         </Border>
     </Grid>

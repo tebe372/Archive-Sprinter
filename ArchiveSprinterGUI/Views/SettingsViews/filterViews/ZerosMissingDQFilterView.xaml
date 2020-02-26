@@ -11,4 +11,3 @@
         <local:FilterListBox DataContext="{Binding InputChannels}"/>
     </StackPanel>
 </UserControl>
-

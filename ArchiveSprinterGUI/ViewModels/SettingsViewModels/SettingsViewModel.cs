@@ -2,6 +2,7 @@
 using AS.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
     public class SettingsViewModel : ViewModelBase
     {
         private Configuration _model;
+        public SampleDataManagerViewModel SampleDataMngr { get; set; }
 
         private PreProcessStepViewModel _selectedStep;
         public PreProcessStepViewModel SelectedStep
@@ -25,8 +27,8 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             }
         }
 
-        private List<PreProcessStepViewModel> _preProcessSteps;
-        public List<PreProcessStepViewModel> PreProcessSteps
+        private ObservableCollection<PreProcessStepViewModel> _preProcessSteps;
+        public ObservableCollection<PreProcessStepViewModel> PreProcessSteps
         {
            get { return _preProcessSteps; }
             set
@@ -40,8 +42,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             _model = new Configuration();
             _selectedStep = new PreProcessStepViewModel();
-            _preProcessSteps = new List<PreProcessStepViewModel>();
-            
+            _preProcessSteps = new ObservableCollection<PreProcessStepViewModel>();
+
+            SampleDataMngr = new SampleDataManagerViewModel();
+
             DataConfigStepSelected = new RelayCommand(_dataConfigStepSelected);
             DataConfigStepAdded = new RelayCommand(_dataConfigStepAdded);
         }
