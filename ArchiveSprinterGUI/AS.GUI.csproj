@@ -229,14 +229,6 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\571\oxyplot\oxyplot\oxyplot\Source\OxyPlot.Wpf\OxyPlot.Wpf.csproj">
-      <Project>{0af06956-f099-457c-8e0f-c92f778341a2}</Project>
-      <Name>OxyPlot.Wpf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\..\571\oxyplot\oxyplot\oxyplot\Source\OxyPlot\OxyPlot.csproj">
-      <Project>{14f0ecee-3db6-4b08-8d44-cad0f8955889}</Project>
-      <Name>OxyPlot</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AS.ComputationManager\AS.ComputationManager.csproj">
       <Project>{74848df2-c9f6-4210-a782-e75f063a843c}</Project>
       <Name>AS.ComputationManager</Name>

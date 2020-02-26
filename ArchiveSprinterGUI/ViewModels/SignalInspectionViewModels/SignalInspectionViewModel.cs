@@ -5,6 +5,7 @@ using AS.Core.ViewModels;
 using AS.Utilities;
 using OxyPlot;
 using OxyPlot.Axes;
+using OxyPlot.Series;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -250,10 +251,10 @@ namespace ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels
         {
             var AsignalPlot = new ViewResolvingPlotModel() { PlotAreaBackground = OxyColors.WhiteSmoke };
             var legends = new ObservableCollection<Legend>();
-            OxyPlot.Axes.DateTimeAxis timeXAxis = new OxyPlot.Axes.DateTimeAxis()
+            DateTimeAxis timeXAxis = new DateTimeAxis()
             {
-                Position = OxyPlot.Axes.AxisPosition.Bottom,
-                MinorIntervalType = OxyPlot.Axes.DateTimeIntervalType.Auto,
+                Position = AxisPosition.Bottom,
+                MinorIntervalType = DateTimeIntervalType.Auto,
                 MajorGridlineStyle = LineStyle.Dot,
                 MinorGridlineStyle = LineStyle.Dot,
                 MajorGridlineColor = OxyColor.FromRgb(44, 44, 44),
@@ -263,9 +264,9 @@ namespace ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels
             };
             timeXAxis.AxisChanged += TimeXAxis_AxisChanged;
             AsignalPlot.Axes.Add(timeXAxis);
-            OxyPlot.Axes.LinearAxis yAxis = new OxyPlot.Axes.LinearAxis()
+            LinearAxis yAxis = new LinearAxis()
             {
-                Position = OxyPlot.Axes.AxisPosition.Left,
+                Position = AxisPosition.Left,
                 Title = _getUnitFromSignals(SelectedSignalPlotPanel.Signals),
                 //Unit = SelectedSignalToBeViewed.Unit,
                 MajorGridlineStyle = LineStyle.Dot,
@@ -279,7 +280,7 @@ namespace ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels
             var signalCounter = 0;
             foreach (var signal in SelectedSignalPlotPanel.Signals)
             {
-                var newSeries = new OxyPlot.Series.LineSeries() { LineStyle = LineStyle.Solid, StrokeThickness = 2 };
+                var newSeries = new LineSeries() { LineStyle = LineStyle.Solid, StrokeThickness = 2 };
                 for (int i = 0; i < signal.Data.Count; i++)
                 {
                     newSeries.Points.Add(new DataPoint(signal.TimeStampNumber[i], signal.Data[i]));
@@ -419,9 +420,9 @@ namespace ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels
         {
             var AsignalPlot = new ViewResolvingPlotModel() { PlotAreaBackground = OxyColors.WhiteSmoke };
             //var legends = new ObservableCollection<Legend>();
-            OxyPlot.Axes.LinearAxis xAxis = new OxyPlot.Axes.LinearAxis()
+            LinearAxis xAxis = new LinearAxis()
             {
-                Position = OxyPlot.Axes.AxisPosition.Bottom,
+                Position = AxisPosition.Bottom,
                 Title = result.Xlabel,
                 MajorGridlineStyle = LineStyle.Dot,
                 MinorGridlineStyle = LineStyle.Dot,
@@ -432,9 +433,9 @@ namespace ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels
             };
             //timeXAxis.AxisChanged += TimeXAxis_AxisChanged;
             AsignalPlot.Axes.Add(xAxis);
-            OxyPlot.Axes.LinearAxis yAxis = new OxyPlot.Axes.LinearAxis()
+            LinearAxis yAxis = new LinearAxis()
             {
-                Position = OxyPlot.Axes.AxisPosition.Left,
+                Position = AxisPosition.Left,
                 Title = result.Ylabel,
                 //Unit = SelectedSignalToBeViewed.Unit,
                 MajorGridlineStyle = LineStyle.Dot,
@@ -447,7 +448,7 @@ namespace ArchiveSprinterGUI.ViewModels.SignalInspectionViewModels
             AsignalPlot.Axes.Add(yAxis);
             for (int index = 0; index < result.Y.Count; index++)
             {
-                var newSeries = new OxyPlot.Series.LineSeries() { LineStyle = LineStyle.Solid, StrokeThickness = 2 };
+                var newSeries = new LineSeries() { LineStyle = LineStyle.Solid, StrokeThickness = 2 };
                 for (int i = 0; i < result.Y[index].Count; i++)
                 {
                     newSeries.Points.Add(new DataPoint(result.X[i], result.Y[index][i]));
