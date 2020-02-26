@@ -20,9 +20,7 @@
             <DataTemplate x:Key="ZerosMissingDQFilterView">
                 <local:ZerosMissingDQFilterView/>
             </DataTemplate>
-            <DataTemplate x:Key="TestFilterTemplate">
-                <local:TestFilterTemplate/>
-            </DataTemplate>
+            
             <Style x:Key="DQFilterStyle" TargetType="ContentPresenter">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Name}" Value="Zeros">
