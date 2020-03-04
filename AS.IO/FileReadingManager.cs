@@ -34,6 +34,7 @@ namespace AS.IO
             if (Directory.Exists(SourceDirectory))
             {
                 var allFiles = Directory.GetFiles(SourceDirectory, "*.*", SearchOption.AllDirectories);
+                Array.Sort(allFiles);
                 foreach (var file in allFiles)
                 {
                     if (Utilities.CheckDataFileMatch(file, FileType))
