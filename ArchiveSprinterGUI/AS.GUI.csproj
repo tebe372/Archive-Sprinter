@@ -101,7 +101,6 @@
     </Compile>
     <Compile Include="Converters\DataQualityConverters.cs" />
     <Compile Include="Converters\EnumToStringConverters.cs" />
-    <Compile Include="Converters\ErrorStatusBorderColorConverter.cs" />
     <Compile Include="Converters\RadioButtonViewConverters.cs" />
     <Compile Include="Converters\VisibleIfNonZeroConverter.cs" />
     <Compile Include="ViewModels\DataFilterViewModel.cs" />
@@ -117,6 +116,9 @@
     <Compile Include="ViewModels\SignalInspectionViewModels\SignalPlotPanel.cs" />
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\SubtractionCustomization.xaml.cs">
+      <DependentUpon>SubtractionCustomization.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsViews\DataQualityAndCustomizationView.xaml.cs">
       <DependentUpon>DataQualityAndCustomizationView.xaml</DependentUpon>
@@ -179,7 +181,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsViews\customizationViews\SubtractionCustomization.xaml">
-      <SubType>UserControl</SubType>
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsViews\DataQualityAndCustomizationView.xaml">

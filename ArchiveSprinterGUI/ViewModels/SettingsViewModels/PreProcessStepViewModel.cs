@@ -74,6 +74,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             _isSelected = false;
             _isComplete = false;
             StepCounter = 0;
+            _inputChannels = new ObservableCollection<SignalViewModel>();
         }
     }
     public class DropOutZeroFiltViewModel : PreProcessStepViewModel

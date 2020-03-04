@@ -1,5 +1,6 @@
 ﻿using AS.Config;
 using AS.Utilities;
+using AS.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -45,10 +46,13 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             _preProcessSteps = new ObservableCollection<PreProcessStepViewModel>();
 
             SampleDataMngr = new SampleDataManagerViewModel();
+            SampleDataMngr.SignalCheckStatusChanged += _signalCheckStatusChanged;
 
             DataConfigStepSelected = new RelayCommand(_dataConfigStepSelected);
             DataConfigStepAdded = new RelayCommand(_dataConfigStepAdded);
+            DeleteDataConfigStep = new RelayCommand(_deleteDataConfigStep);
         }
+
         public int CurrentTabIndex { get; set; } = 0;
         public DataSourceSettingViewModel DataSourceVM { get; set; } = new DataSourceSettingViewModel();
         private List<DataSourceSettingViewModel> _dataSourceVMList = new List<DataSourceSettingViewModel>();
@@ -83,6 +87,23 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 
         }
 
+        public ICommand DeleteDataConfigStep { get; set; }
+        private void _deleteDataConfigStep(object obj)
+        {
+            // Delete step
+            if (MessageBox.Show("Delete step?", "Warning!", MessageBoxButtons.OKCancel) == DialogResult.OK){
+                // Try to delete current step
+                try
+                {
+                    PreProcessSteps.Remove((PreProcessStepViewModel)obj);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Error deleting step");
+                }
+            }
+        }
+
         private void _stepSelectedToEdit(object obj)
         {
             PreProcessStepViewModel step = obj as PreProcessStepViewModel;
@@ -102,6 +123,11 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 step.IsSelected = true;
                 SelectedStep = step;
             }
+        }
+
+        private void _signalCheckStatusChanged(SignalTree e)
+        {
+  //          MessageBox.Show("Update Signal List");
         }
 
         public List<String> DQFilterList => _model.DQFilterList;
