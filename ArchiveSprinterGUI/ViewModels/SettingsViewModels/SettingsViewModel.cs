@@ -127,7 +127,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 
         private void _signalCheckStatusChanged(SignalTree e)
         {
-            MessageBox.Show("Update Signal List");
+  //          MessageBox.Show("Update Signal List");
         }
 
         public List<String> DQFilterList => _model.DQFilterList;
