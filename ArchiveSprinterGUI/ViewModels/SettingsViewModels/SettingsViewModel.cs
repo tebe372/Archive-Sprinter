@@ -107,7 +107,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         public List<String> DQFilterList => _model.DQFilterList;
         public List<String> CustomizationList => _model.CustomizationList;
 
-        public List<SignatureSettingViewModel> SignatureSettings { get; internal set; }
+        public List<SignatureSettingViewModel> SignatureSettings { get; internal set; } = new List<SignatureSettingViewModel>();
     }
 
 

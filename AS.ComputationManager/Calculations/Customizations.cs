@@ -9,10 +9,15 @@ namespace AS.ComputationManager.Calculations
 {
     public static class Customizations
     {
-        public static Signal SubtractionCustomization(Signal subtrahend, Signal minuend)
+        public static List<double> SubtractionCustomization(List<double> subtrahend, List<double> minuend)
         {
             //process the subtraction and return the new signal.
-            return new Signal();
+            var result = new List<double>();
+            for (int i = 0; i < subtrahend.Count; i++)
+            {
+                result.Add(subtrahend[i] - minuend[i]);
+            }
+            return result;
         }
     }
 }

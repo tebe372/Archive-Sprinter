@@ -48,14 +48,44 @@ namespace AS.Core.Models
         public int SamplingRate { get; set; }
         public int PassedThroughDQFilter { get; set; }
         public int PassedThroughProcessor { get; set; }
-        public List<double> Data { get; set; }
+        private List<double> _data;
+        public List<double> Data 
+        {
+            get { return _data; }
+            set 
+            {
+                _data = value;
+                _flags = null;
+            }
+        }
         public List<double> TimeStampNumber { get; set; } // .net number of days
         public List<DateTime> TimeStamps { get; set; }
-                                           //public List<double> MATLABTimeStampNumber { get; internal set; }
-                                           //    public SiteCoordinatesModel From { get; set; }
-                                           //    public SiteCoordinatesModel To { get; set; }
-                                           //  public ObservableCollection<SiteCoordinatesModel> Locations { get; set; }
-                                           //public SignalMapPlotType MapPlotType { get; set; }
+        private List<bool> _flags;
+        public List<bool> Flags 
+        {
+            get
+            {
+                if (_flags == null)
+                {
+                    bool[] f = new bool[_data.Count];
+                    Utilities.Populate<bool>(f, true);
+                    _flags = f.ToList();
+                }
+                return _flags; 
+                
+            }
+            set{ _flags = value; } 
+        }
+
+        public void ChangeFlaggedValueToNAN()
+        {
+            throw new NotImplementedException();
+        }
+        //public List<double> MATLABTimeStampNumber { get; internal set; }
+        //    public SiteCoordinatesModel From { get; set; }
+        //    public SiteCoordinatesModel To { get; set; }
+        //  public ObservableCollection<SiteCoordinatesModel> Locations { get; set; }
+        //public SignalMapPlotType MapPlotType { get; set; }
     }
 
     public class SignalSignature

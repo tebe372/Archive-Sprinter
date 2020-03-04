@@ -241,6 +241,10 @@
       <Project>{8cc24166-b493-41c0-acb0-dc9177181e1e}</Project>
       <Name>AS.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AS.DataManager\AS.DataManager.csproj">
+      <Project>{f1da46a2-c2e4-4d00-9ad6-775ebc4a2673}</Project>
+      <Name>AS.DataManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AS.IO\AS.IO.csproj">
       <Project>{7F5148D5-1206-44CF-B918-CC92DAEC221C}</Project>
       <Name>AS.IO</Name>

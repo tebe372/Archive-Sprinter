@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AS.ComputationManager", "AS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Numerics", "..\..\571\MathNet\mathnet-numerics\src\Numerics\Numerics.csproj", "{59A25BB7-3ED5-4B80-A1E4-3F98330567F9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AS.DataManager", "AS.DataManager\AS.DataManager.csproj", "{F1DA46A2-C2E4-4D00-9AD6-775EBC4A2673}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Resources\Resources.projitems*{b8f54723-3799-4777-9bef-5e29991632b2}*SharedItemsImports = 13
@@ -70,6 +72,10 @@ Global
 		{59A25BB7-3ED5-4B80-A1E4-3F98330567F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59A25BB7-3ED5-4B80-A1E4-3F98330567F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59A25BB7-3ED5-4B80-A1E4-3F98330567F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1DA46A2-C2E4-4D00-9AD6-775EBC4A2673}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1DA46A2-C2E4-4D00-9AD6-775EBC4A2673}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1DA46A2-C2E4-4D00-9AD6-775EBC4A2673}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1DA46A2-C2E4-4D00-9AD6-775EBC4A2673}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

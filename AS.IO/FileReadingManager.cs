@@ -39,19 +39,30 @@ namespace AS.IO
                     if (Utilities.CheckDataFileMatch(file, FileType))
                     {
                         var signals = reader.Read(file);
-                        OnDataReadingDone(signals);
+                        OnFileReadingDone(signals);
                     }
                 }
+                OnDataReadingDone();
             }
         }
 
         public string SourceDirectory { get; set; }
         public DataFileType FileType { get; set; }
-        public delegate void DataReadingDoneEventhandler(object sender, List<Signal> e);
-        public event DataReadingDoneEventhandler DataReadingDone;
-        protected virtual void OnDataReadingDone(List<Signal> e)
+        //used when done reading one file
+        public delegate void FileReadingDoneEventhandler(object sender, List<Signal> e);
+        public event FileReadingDoneEventhandler FileReadingDone;
+        protected virtual void OnFileReadingDone(List<Signal> e)
         {
-            DataReadingDone?.Invoke(this, e);
+            FileReadingDone?.Invoke(this, e);
         }
+        //used when done reading all files in the directory
+        public delegate void DataReadingDoneEventhandler(object sender);
+        public event DataReadingDoneEventhandler DataReadingDone;
+        protected virtual void OnDataReadingDone()
+        {
+            DataReadingDone?.Invoke(this);
+        }
+
+
     }
 }

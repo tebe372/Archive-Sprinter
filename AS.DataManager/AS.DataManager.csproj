@@ -4,14 +4,15 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{39A7D9D2-0CE2-4240-BB01-43924EECCF1E}</ProjectGuid>
+    <ProjectGuid>{F1DA46A2-C2E4-4D00-9AD6-775EBC4A2673}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>AS.Config</RootNamespace>
-    <AssemblyName>AS.Config</AssemblyName>
+    <RootNamespace>AS.DataManager</RootNamespace>
+    <AssemblyName>AS.DataManager</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -31,7 +32,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,32 +42,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Configuration.cs" />
-    <Compile Include="DataSourceSetting.cs" />
-    <Compile Include="PreProcessSetting.cs" />
+    <Compile Include="DataStore.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SignatureSetting.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AS.ComputationManager\AS.ComputationManager.csproj">
-      <Project>{74848df2-c9f6-4210-a782-e75f063a843c}</Project>
-      <Name>AS.ComputationManager</Name>
-    </ProjectReference>
     <ProjectReference Include="..\AS.Core\AS.Core.csproj">
       <Project>{8cc24166-b493-41c0-acb0-dc9177181e1e}</Project>
       <Name>AS.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\AS.DataManager\AS.DataManager.csproj">
-      <Project>{F1DA46A2-C2E4-4D00-9AD6-775EBC4A2673}</Project>
-      <Name>AS.DataManager</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\AS.SampleDataManager\AS.SampleDataManager.csproj">
-      <Project>{c256af11-b60a-4212-9e0d-9fd9d5bbe18d}</Project>
-      <Name>AS.SampleDataManager</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -100,11 +100,39 @@ namespace AS.Config
     {
         public Signal Subtrahend { get; set; }
         public Signal Minuend { get; set; }
+        public string SignalName { get; set; } //validation of signal name and pmu name should have been done in the view model?
+        public string PMUName { get; set; }
         public override void Process(List<Signal> e)
         {
-            //find the 2 input channels according to the customer selection for the 
-            
-            var newSignal = Customizations.SubtractionCustomization(Subtrahend, Minuend);
+            //find the 2 input channels according to the customer selection for the
+
+            //validate the subtrahend and minuend in the ViewModel when user first select the signal
+
+            var newSignal = new Signal(PMUName, SignalName);
+            if (Subtrahend.TypeAbbreviation == Minuend.TypeAbbreviation)
+            {
+                newSignal.TypeAbbreviation = Subtrahend.TypeAbbreviation;
+            }
+            else
+            {
+                newSignal.TypeAbbreviation = "OTHER";
+            }
+
+
+            if (Subtrahend.Data.Count == Minuend.Data.Count && Subtrahend.Unit == Minuend.Unit)
+            {
+                newSignal.Data = Customizations.SubtractionCustomization(Subtrahend.Data, Minuend.Data);
+                newSignal.SamplingRate = Subtrahend.SamplingRate;
+                newSignal.Unit = Subtrahend.Unit;
+                //flag?
+            }
+            else
+            {
+                newSignal.Unit = "OTHER";
+                newSignal.Data = null;  //matlab set it to NaN
+                newSignal.SamplingRate = -1;
+                //flag?
+            }
             e.Add(newSignal);
         }
     }
