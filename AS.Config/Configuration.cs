@@ -28,24 +28,25 @@ namespace AS.Config
             //     "Entire PMU",
             //     "Angle Wrapping"
         };
-        public readonly List<string> CustomizationList = new List<string> { "Scalar Repetition",
-                                                                            "Addition", 
-                                                                            "Subtraction", 
-                                                                            "Multiplication", 
-                                                                            "Division",
-                                                                            "Exponential",
-                                                                            "Sign Reversal", 
-                                                                            "Absolute Value", 
-                                                                            "Real Component", 
-                                                                            "Imaginary Component", 
-                                                                            "Angle Calculation",
-                                                                            "Complex Conjugate",
-                                                                            "Phasor Creation", 
-                                                                            "Power Calculation", 
-                                                                            "Signal Type/Unit", 
-                                                                            "Metric Prefix", 
-                                                                            "Angle Conversion", 
-                                                                            "Duplicate Signals"};
+        public readonly List<string> CustomizationList = new List<string> { //"Scalar Repetition",
+                                                                           // "Addition", 
+                                                                            "Subtraction",
+            // "Multiplication", 
+            //   "Division",
+            //   "Exponential",
+            //   "Sign Reversal", 
+            //   "Absolute Value", 
+            //   "Real Component", 
+            //    "Imaginary Component", 
+            //   "Angle Calculation",
+            //   "Complex Conjugate",
+            //   "Phasor Creation", 
+            //   "Power Calculation", 
+            //   "Signal Type/Unit", 
+            //   "Metric Prefix", 
+            //    "Angle Conversion", 
+            //    "Duplicate Signals"
+        };
 
 
         public void AddConfigStep(string stepName)
