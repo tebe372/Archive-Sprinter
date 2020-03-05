@@ -79,7 +79,13 @@ namespace AS.Core.Models
 
         public void ChangeFlaggedValueToNAN()
         {
-            throw new NotImplementedException();
+            for (int idx = 0; idx < Flags.Count; idx++)
+            {
+                if (!Flags[idx])
+                {
+                    Data[idx] = double.NaN;
+                }
+            }
         }
         //public List<double> MATLABTimeStampNumber { get; internal set; }
         //    public SiteCoordinatesModel From { get; set; }

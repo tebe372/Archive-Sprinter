@@ -14,9 +14,15 @@ namespace AS.ComputationManager.Calculations
 
         }
 
-        public static void DropOutZeroFilt(Signal s, bool setToNaN)
+        public static void DropOutZeroFilt(Signal s)
         {
-
+            for (int idx = 0; idx < s.Data.Count; idx++)
+            {
+                if (s.Data[idx] < 1e-15)
+                {
+                    s.Flags[idx] = false;
+                }
+            }
         }
     }
 }

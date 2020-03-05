@@ -92,7 +92,7 @@ namespace AS.Config
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
             {
-                Filters.DropOutZeroFilt(signal, SetToNaN);
+                Filters.DropOutZeroFilt(signal);
             }
         }
     }
