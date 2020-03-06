@@ -126,6 +126,9 @@
     <Compile Include="Views\SettingsViews\DataSourceView.xaml.cs">
       <DependentUpon>DataSourceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\FilterListBox.xaml.cs">
+      <DependentUpon>FilterListBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsViews\filterViews\ZerosMissingDQFilterView.xaml.cs">
       <DependentUpon>ZerosMissingDQFilterView.xaml</DependentUpon>
     </Compile>

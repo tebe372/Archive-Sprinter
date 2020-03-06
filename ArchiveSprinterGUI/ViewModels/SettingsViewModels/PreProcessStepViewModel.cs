@@ -41,6 +41,11 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             set
             {
                 _isSelected = value;
+                // Go through and set all the input channels 
+                foreach (var s in InputChannels)
+                {
+                    s.IsChecked = value;
+                }
                 OnPropertyChanged();
             }
         }
