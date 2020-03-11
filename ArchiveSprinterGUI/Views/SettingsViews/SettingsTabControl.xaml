@@ -13,5 +13,8 @@
         <TabItem Header="Data Quality and Customization">
             <local:DataQualityAndCustomizationView/>
         </TabItem>
+        <TabItem Header="Signature Calculations">
+            <local:DataQualityAndCustomizationView/>
+        </TabItem>
     </TabControl>
 </UserControl>
