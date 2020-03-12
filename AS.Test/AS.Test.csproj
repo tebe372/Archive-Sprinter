@@ -87,6 +87,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ArchiveSprinterGUI\AS.GUI.csproj">
+      <Project>{1fe03491-7cb3-4830-8937-df973270b8e7}</Project>
+      <Name>AS.GUI</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AS.ComputationManager\AS.ComputationManager.csproj">
       <Project>{74848DF2-C9F6-4210-A782-E75F063A843C}</Project>
       <Name>AS.ComputationManager</Name>
