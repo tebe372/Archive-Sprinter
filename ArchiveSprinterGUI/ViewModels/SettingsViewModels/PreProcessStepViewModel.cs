@@ -13,9 +13,21 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 {
     public class PreProcessStepViewModel : ViewModelBase
     {
-        public virtual PreProcessStep Model { get; } // might need to be get rid of if possible
+        private PreProcessStep _model;
+        public PreProcessStep Model
+        {
+            get
+            {
+                return _model;
+            }
+            set
+            {
+                _model = value;
+            }
+        }
 
-        //public virtual string Name { get; set; } // need to get rid of
+
+        
         public ObservableCollection<SignalViewModel> _inputChannels;
         public ObservableCollection<SignalViewModel> InputChannels
         {
@@ -81,7 +93,27 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             StepCounter = 0;
             _inputChannels = new ObservableCollection<SignalViewModel>();
         }
+
+        public PreProcessStepViewModel(string name)
+        {
+            _isSelected = false;
+            _isComplete = false;
+            StepCounter = 0;
+            _inputChannels = new ObservableCollection<SignalViewModel>();
+            Name = name;
+            switch (name)
+            {
+                case "Zeros":
+                    _model = new DropOutZeroFilt();
+                    break;
+                case "Subtraction":
+                    _model = new SubtractionCustomization();
+                    break;
+            }
+
+        }
     }
+    /*
     public class DropOutZeroFiltViewModel : PreProcessStepViewModel
     {
         public DropOutZeroFiltViewModel(DropOutZeroFilt m)
@@ -106,4 +138,28 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         //private DropOutZeroFilt _model;
         //public override PreProcessStep Model { get { return _model; } }
     }
+   
+    public class SubtractionCustViewModel : PreProcessStepViewModel
+    {
+        private SignalViewModel _minuend;
+        public SignalViewModel Minuend
+        {
+            get { return _minuend; }
+            set {
+                _minuend = value;
+                OnPropertyChanged();
+            }
+        }
+        private SignalViewModel _subtrahend;
+        public SignalViewModel Subtrahend
+        {
+            get { return _subtrahend; }
+            set
+            {
+                _subtrahend = value;
+                OnPropertyChanged();
+            }
+        }
+    }
+    */
 }

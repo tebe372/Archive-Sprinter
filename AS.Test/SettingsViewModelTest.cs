@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using ArchiveSprinterGUI.ViewModels.SettingsViewModels;
 
 namespace AS.Test
 {
@@ -7,8 +8,11 @@ namespace AS.Test
     public class SettingsViewModelTest
     {
         [TestMethod]
-        public void TestMethod1()
+        public void TestSelectMinuend()
         {
+            SettingsViewModel viewModel = new SettingsViewModel();
+            viewModel.SelectedStep = new PreProcessStepViewModel("Subtraction");
+
         }
     }
 }

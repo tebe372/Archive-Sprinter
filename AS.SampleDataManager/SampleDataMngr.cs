@@ -27,7 +27,6 @@ namespace AS.SampleDataManager
         }
         private SampleDataMngr()
         {
-            //     _signalsVM = new ObservableCollection<SignalViewModel>();
             _signals = new List<Signal>();
         }
 

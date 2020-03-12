@@ -79,8 +79,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         private void _dataConfigStepAdded(object obj)
         {
             string stepName = (string)obj;
-            PreProcessStepViewModel newStep = new PreProcessStepViewModel();
-            newStep.Name = stepName;
+            PreProcessStepViewModel newStep = new PreProcessStepViewModel(stepName);
      
             newStep.StepCounter = PreProcessSteps.Count + 1;
             PreProcessSteps.Add(newStep);
