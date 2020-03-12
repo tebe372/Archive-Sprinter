@@ -13,15 +13,25 @@ namespace AS.Config
     public abstract class SignatureSetting
     {
         public abstract void Process(DataStore dataMngr);
+        public abstract string SignatureName { get; }
         public int WindowSize { get; set; }
         public int WindowOverlap { get; set; }
         public bool CheckNanResult { get; set; }
         public bool OmitNan { get; set; }
         public List<string> InputSignals { get; set; }
+    }
+    public class Mean : SignatureSetting
+    {
+        public override string SignatureName { get { return "Mean"; } }
 
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
     }
     public class Variance : SignatureSetting
     {
+        public override string SignatureName { get { return "Variance"; } }
         public override void Process(DataStore dataMngr)
         {
             //if there are still data to be processed
@@ -53,6 +63,141 @@ namespace AS.Config
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
             }            
+        }
+    }
+    public class StandardDeviation : SignatureSetting
+    {
+        public override string SignatureName { get { return "Standard Deviation"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Kurtosis : SignatureSetting
+    {
+        public override string SignatureName { get { return "Kurtosis"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Skewness : SignatureSetting
+    {
+        public override string SignatureName { get { return "Skewness"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class CorrelationCoefficient : SignatureSetting
+    {
+        public override string SignatureName { get { return "Correlation Coefficient"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Covariance : SignatureSetting
+    {
+        public override string SignatureName { get { return "Covariance"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Periodogram : SignatureSetting
+    {
+        public override string SignatureName { get { return "Periodogram"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class GMSCSpectrum : SignatureSetting
+    {
+        public override string SignatureName { get { return "Generalized Magnitude Squared Coherence (GMSC) Spectrum"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Percentile : SignatureSetting
+    {
+        public override string SignatureName { get { return "Percentile"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Quartiles : SignatureSetting
+    {
+        public override string SignatureName { get { return "Quartiles"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Median : SignatureSetting
+    {
+        public override string SignatureName { get { return "Median"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Maximum : SignatureSetting
+    {
+        public override string SignatureName { get { return "Maximum"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Minimum : SignatureSetting
+    {
+        public override string SignatureName { get { return "Minimum"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Range : SignatureSetting
+    {
+        public override string SignatureName { get { return "Range"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Rise : SignatureSetting
+    {
+        public override string SignatureName { get { return "Rise"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
+        }
+    }
+    public class Histogram : SignatureSetting
+    {
+        public override string SignatureName { get { return "Histogram"; } }
+
+        public override void Process(DataStore dataMngr)
+        {
+            throw new NotImplementedException();
         }
     }
 }

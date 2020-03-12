@@ -47,14 +47,50 @@ namespace AS.Config
             //    "Angle Conversion", 
             //    "Duplicate Signals"
         };
-
+        public List<SignatureCalMenu> SignatureList { get; set; } = new List<SignatureCalMenu> { 
+            new SignatureCalMenu ("Sample Statistics", new List<SignatureCalMenu>{
+                new SignatureCalMenu("Mean"),
+                new SignatureCalMenu("Variance"),
+                new SignatureCalMenu("Standard Deviation"),
+                new SignatureCalMenu("Kurtosis"),
+                new SignatureCalMenu("Skewness"),
+            }),
+            new SignatureCalMenu("Correlation Coefficient"),
+            new SignatureCalMenu("Covariance"),
+            new SignatureCalMenu("Frequency-Domain Methods", new List<SignatureCalMenu>{
+                new SignatureCalMenu("Periodogram"),
+                new SignatureCalMenu("Generalized Magnitude Squared Coherence (GMSC) Spectrum"),
+            }),
+            new SignatureCalMenu("Order Statistics", new List<SignatureCalMenu>{
+                new SignatureCalMenu("Percentile"),
+                new SignatureCalMenu("Quartiles"),
+                new SignatureCalMenu("Median"),
+                new SignatureCalMenu("Maximum"),
+                new SignatureCalMenu("Minimum"),
+                new SignatureCalMenu("Range")
+            }),
+            new SignatureCalMenu("Rise"),
+            new SignatureCalMenu("Histogram")
+        };
 
         public void AddConfigStep(string stepName)
         {
             // Create new filter specification
             // Add to list of steps
         }
-
     }
+    public class SignatureCalMenu {
+        public SignatureCalMenu(string sig)
+        {
+            Signature = sig;
+        }
 
+        public SignatureCalMenu(string sig, List<SignatureCalMenu> subSigs) : this(sig)
+        {
+            SubSignature = subSigs;
+        }
+
+        public string Signature { get; set; }
+        public List<SignatureCalMenu> SubSignature { get; set; }
+    }
 }

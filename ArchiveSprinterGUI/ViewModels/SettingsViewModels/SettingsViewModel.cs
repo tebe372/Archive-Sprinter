@@ -51,8 +51,11 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             DataConfigStepSelected = new RelayCommand(_dataConfigStepSelected);
             DataConfigStepAdded = new RelayCommand(_dataConfigStepAdded);
             DeleteDataConfigStep = new RelayCommand(_deleteDataConfigStep);
-        }
 
+            SignatureCalAdded = new RelayCommand(_addASignatureStep);
+            SignatureStepSelected = new RelayCommand(_signatureStepSelected);
+            DeleteASignatureStep = new RelayCommand(_deleteASignatureStep);
+        }
         public int CurrentTabIndex { get; set; } = 0;
         public DataSourceSettingViewModel DataSourceVM { get; set; } = new DataSourceSettingViewModel();
         private List<DataSourceSettingViewModel> _dataSourceVMList = new List<DataSourceSettingViewModel>();
@@ -204,8 +207,29 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         }
         public List<String> DQFilterList => _model.DQFilterList;
         public List<String> CustomizationList => _model.CustomizationList;
+        public List<SignatureCalMenu> SignatureList => _model.SignatureList;
+        public ICommand SignatureCalAdded { get; set; }
+        private void _addASignatureStep(object obj)
+        {
+            var sig = ((SignatureCalMenu)obj).Signature;
+            var newSig = new SignatureSettingViewModel(sig);
+            newSig.StepCounter = SignatureSettings.Count + 1;
+            SignatureSettings.Add(newSig);
+            _signatureStepSelected(newSig);
+        }
+        public ICommand SignatureStepSelected { get; set; }
+        private void _signatureStepSelected(object obj)
+        {
+            SignatureSettingViewModel step = obj as SignatureSettingViewModel;
+            step.IsSelected = true;
+        }
+        public ICommand DeleteASignatureStep { get; set; }
+        private void _deleteASignatureStep(object obj)
+        {
 
-        public List<SignatureSettingViewModel> SignatureSettings { get; internal set; } = new List<SignatureSettingViewModel>();
+        }
+
+        public ObservableCollection<SignatureSettingViewModel> SignatureSettings { get; internal set; } = new ObservableCollection<SignatureSettingViewModel>();
     }
 
 

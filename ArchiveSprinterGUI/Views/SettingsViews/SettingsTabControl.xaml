@@ -14,7 +14,7 @@
             <local:DataQualityAndCustomizationView/>
         </TabItem>
         <TabItem Header="Signature Calculations">
-            <local:DataQualityAndCustomizationView/>
+            <local:SignatureCalSettingsView/>
         </TabItem>
     </TabControl>
 </UserControl>

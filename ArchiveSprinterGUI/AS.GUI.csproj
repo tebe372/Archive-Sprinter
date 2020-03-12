@@ -138,6 +138,12 @@
     <Compile Include="Views\SettingsViews\SignalSelectionPanel.xaml.cs">
       <DependentUpon>SignalSelectionPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\SignatureCalSettingsView.xaml.cs">
+      <DependentUpon>SignatureCalSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\signatureViews\BasicSignatureView.xaml.cs">
+      <DependentUpon>BasicSignatureView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SignalInspectionViews\ASignalPlotPanel.xaml.cs">
       <DependentUpon>ASignalPlotPanel.xaml</DependentUpon>
     </Compile>
@@ -210,6 +216,14 @@
     <Page Include="Views\SettingsViews\SignalSelectionPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SettingsViews\SignatureCalSettingsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\signatureViews\BasicSignatureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SignalInspectionViews\ASignalPlotPanel.xaml">
       <SubType>Designer</SubType>
