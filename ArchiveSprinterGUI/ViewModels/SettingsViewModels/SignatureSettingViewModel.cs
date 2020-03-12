@@ -6,11 +6,11 @@ using System.Collections.ObjectModel;
 
 namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 {
-    public class SignatureSettingViewModel : ViewModelBase
+    public class SignatureSettingViewModel : StepViewModel
     {
         private SignatureSetting _model;
 
-        public SignatureSettingViewModel(string sig)
+        public SignatureSettingViewModel(string sig) : base()
         {
             switch (sig)
             {
@@ -68,7 +68,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 default:
                     break;
             }
-            _inputChannels = new ObservableCollection<SignalViewModel>();
         }
 
         public SignatureSetting Model
@@ -112,47 +111,5 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-        private bool _isExpanded;
-        public bool IsExpanded
-        {
-            get
-            {
-                return _isExpanded;
-            }
-            set
-            {
-                _isExpanded = value;
-                OnPropertyChanged();
-            }
-        }
-        private bool _isSelected;
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set
-            {
-                _isSelected = value;
-                // Go through and set all the input channels 
-                foreach (var s in InputChannels)
-                {
-                    s.IsChecked = value;
-                }
-                OnPropertyChanged();
-            }
-        }
-        public ObservableCollection<SignalViewModel> _inputChannels;
-        public ObservableCollection<SignalViewModel> InputChannels
-        {
-            get
-            {
-                return _inputChannels;
-            }
-            set
-            {
-                _inputChannels = value;
-                OnPropertyChanged();
-            }
-        }
-        public int StepCounter { get; set; }
     }
 }

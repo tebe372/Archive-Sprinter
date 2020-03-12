@@ -17,8 +17,8 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         private Configuration _model;
         public SampleDataManagerViewModel SampleDataMngr { get; set; }
 
-        private PreProcessStepViewModel _selectedStep;
-        public PreProcessStepViewModel SelectedStep
+        private StepViewModel _selectedStep;
+        public StepViewModel SelectedStep
         {
             get { return _selectedStep; }
             set

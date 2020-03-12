@@ -111,6 +111,7 @@
     <Compile Include="ViewModels\SettingsViewModels\PreProcessStepViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\SettingsViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\SignatureSettingViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModels\StepViewModel.cs" />
     <Compile Include="ViewModels\SignalInspectionViewModels\InspectionAnalysisParametersViewModel.cs" />
     <Compile Include="ViewModels\SignalInspectionViewModels\SignalInspectionViewModel.cs" />
     <Compile Include="ViewModels\SignalInspectionViewModels\SignalPlotPanel.cs" />

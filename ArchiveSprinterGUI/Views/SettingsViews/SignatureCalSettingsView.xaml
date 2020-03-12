@@ -47,26 +47,24 @@
                             <ColumnDefinition Width="50"/>
                         </Grid.ColumnDefinitions>
                         <Menu Background="Transparent" BorderBrush="Transparent" BorderThickness="0" HorizontalAlignment="Right" Grid.Column="1" Margin="0,14,2,0">
-                            <MenuItem HorizontalAlignment="Center" Width="Auto" Margin="0,0,0,0">
+                            <MenuItem HorizontalAlignment="Center" Width="Auto" Margin="0,0,0,0" ItemsSource="{Binding SignatureList}">
                                 <MenuItem.Header>
                                     <StackPanel Orientation="Horizontal" Margin="0" HorizontalAlignment="Right">
                                         <Image Width="16" Height="16" Source="/ArchiveSprinterGUI;component/Resources/AddCommand.png" HorizontalAlignment="Right" Margin="0"/>
                                         <Path VerticalAlignment="Center" Margin="4,4,0,0" Fill="Black" Data="M 0 0 L 4 4 L 8 0 Z" HorizontalAlignment="Right"/>
                                     </StackPanel>
                                 </MenuItem.Header>
-                                <MenuItem Header="Signatures"  ItemsSource="{Binding SignatureList}">
-                                    <MenuItem.ItemContainerStyle>
-                                        <Style>
-                                            <Setter Property="MenuItem.Command" Value="{Binding Path=DataContext.SignatureCalAdded, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"/>
-                                            <Setter Property="MenuItem.CommandParameter" Value="{Binding}"/>
-                                        </Style>
-                                    </MenuItem.ItemContainerStyle>
-                                    <MenuItem.ItemTemplate>
-                                        <HierarchicalDataTemplate DataType="{x:Type cm:SignatureCalMenu}" ItemsSource="{Binding SubSignature}">
-                                            <TextBlock Text="{Binding Signature}"/>
-                                        </HierarchicalDataTemplate>
-                                    </MenuItem.ItemTemplate>
-                                </MenuItem>
+                                <MenuItem.ItemContainerStyle>
+                                    <Style>
+                                        <Setter Property="MenuItem.Command" Value="{Binding Path=DataContext.SignatureCalAdded, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}}"/>
+                                        <Setter Property="MenuItem.CommandParameter" Value="{Binding}"/>
+                                    </Style>
+                                </MenuItem.ItemContainerStyle>
+                                <MenuItem.ItemTemplate>
+                                    <HierarchicalDataTemplate DataType="{x:Type cm:SignatureCalMenu}" ItemsSource="{Binding SubSignature}">
+                                        <TextBlock Text="{Binding Signature}"/>
+                                    </HierarchicalDataTemplate>
+                                </MenuItem.ItemTemplate>
                             </MenuItem>
                         </Menu>
                     </Grid>

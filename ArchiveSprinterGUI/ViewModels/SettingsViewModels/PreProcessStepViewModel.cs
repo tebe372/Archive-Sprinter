@@ -11,7 +11,7 @@ using AS.Core.Models;
 
 namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 {
-    public class PreProcessStepViewModel : ViewModelBase
+    public class PreProcessStepViewModel : StepViewModel
     {
         private PreProcessStep _model;
         public PreProcessStep Model
@@ -24,43 +24,8 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             {
                 _model = value;
             }
-        }
-
-
-        
-        public ObservableCollection<SignalViewModel> _inputChannels;
-        public ObservableCollection<SignalViewModel> InputChannels
-        {
-            get
-            {
-                return _inputChannels;
-            }
-            set
-            {
-                _inputChannels = value;
-                OnPropertyChanged();
-            }
-        }
-
+        }      
         public string Name { get; set; }
-
-        public int StepCounter { get; set; }
-
-        private bool _isSelected;
-        public bool IsSelected
-        {
-            get { return _isSelected; }
-            set
-            {
-                _isSelected = value;
-                // Go through and set all the input channels 
-                foreach (var s in InputChannels)
-                {
-                    s.IsChecked = value;
-                }
-                OnPropertyChanged();
-            }
-        }
 
         private bool _isComplete;
         public bool IsComplete
@@ -72,34 +37,15 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-        private bool _isExpanded;
-        public bool IsExpanded
+
+        public PreProcessStepViewModel() : base()
         {
-            get
-            {
-                return _isExpanded;
-            }
-            set
-            {
-                _isExpanded = value;
-                OnPropertyChanged();
-            }
+            _isComplete = false;
         }
 
-        public PreProcessStepViewModel()
+        public PreProcessStepViewModel(string name) : this()
         {
-            _isSelected = false;
             _isComplete = false;
-            StepCounter = 0;
-            _inputChannels = new ObservableCollection<SignalViewModel>();
-        }
-
-        public PreProcessStepViewModel(string name)
-        {
-            _isSelected = false;
-            _isComplete = false;
-            StepCounter = 0;
-            _inputChannels = new ObservableCollection<SignalViewModel>();
             Name = name;
             switch (name)
             {
