@@ -96,13 +96,19 @@ namespace ArchiveSprinterGUI.ViewModels
         #endregion
         public void DetermineCheckStatusOfGroupedSignals()
         {
-            foreach (var item in GroupedRawSignalsByPMU)
+            if (GroupedRawSignalsByPMU != null)
             {
-                item.DetermineIsCheckedStatusFromTopToBottom();
+                foreach (var item in GroupedRawSignalsByPMU)
+                {
+                    item.DetermineIsCheckedStatusFromTopToBottom();
+                }
             }
-            foreach (var item in GroupedRawSignalsByType)
+            if (GroupedRawSignalsByType != null)
             {
-                item.DetermineIsCheckedStatusFromTopToBottom();
+                foreach (var item in GroupedRawSignalsByType)
+                {
+                    item.DetermineIsCheckedStatusFromTopToBottom();
+                }
             }
         }
 

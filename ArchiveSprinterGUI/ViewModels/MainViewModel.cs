@@ -63,6 +63,11 @@ namespace ArchiveSprinterGUI.ViewModels
         {
             if ((string)obj == "Settings")
             {
+                if (CurrentView is SignalInspectionViewModel)
+                {
+                    var view = (SignalInspectionViewModel)CurrentView;
+                    view.DeSelectAllPlots(null);
+                }
                 CurrentView = SettingsVM;
             }
             else

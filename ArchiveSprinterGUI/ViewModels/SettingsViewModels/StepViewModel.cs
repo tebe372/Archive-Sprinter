@@ -18,7 +18,14 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             _isExpanded = false;
             _inputChannels = new ObservableCollection<SignalViewModel>();
         }
-        public int StepCounter { get; set; }
+        private int _stepCounter;
+        public int StepCounter 
+        {
+            get { return _stepCounter; }
+            set { _stepCounter = value;
+                OnPropertyChanged();
+            }
+        }
 
         private bool _isSelected;
         public bool IsSelected

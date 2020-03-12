@@ -42,8 +42,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         public SettingsViewModel()
         {
             _model = new Configuration();
-            _selectedStep = new PreProcessStepViewModel();
+            //_selectedStep = new PreProcessStepViewModel();
             _preProcessSteps = new ObservableCollection<PreProcessStepViewModel>();
+            _currentTabIndex = 0;
+            //_oldTabIndex = 0;
 
             SampleDataMngr = new SampleDataManagerViewModel();
             SampleDataMngr.SignalCheckStatusChanged += _signalCheckStatusChanged;
@@ -55,8 +57,8 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             SignatureCalAdded = new RelayCommand(_addASignatureStep);
             SignatureStepSelected = new RelayCommand(_signatureStepSelected);
             DeleteASignatureStep = new RelayCommand(_deleteASignatureStep);
+            DeSelectAllSteps = new RelayCommand(_deSelectAllSteps);
         }
-        public int CurrentTabIndex { get; set; } = 0;
         public DataSourceSettingViewModel DataSourceVM { get; set; } = new DataSourceSettingViewModel();
         private List<DataSourceSettingViewModel> _dataSourceVMList = new List<DataSourceSettingViewModel>();
         public List<DataSourceSettingViewModel> DataSourceVMList
@@ -220,15 +222,84 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         private void _signatureStepSelected(object obj)
         {
             SignatureSettingViewModel step = obj as SignatureSettingViewModel;
-            step.IsSelected = true;
+            if (SelectedStep != step)
+            {
+                if (SelectedStep != null)
+                {
+                    SelectedStep.IsSelected = false;
+                    step.IsSelected = true;
+                }
+                SelectedStep = step;
+                SampleDataMngr.DetermineCheckStatusOfGroupedSignals();
+            }
         }
         public ICommand DeleteASignatureStep { get; set; }
         private void _deleteASignatureStep(object obj)
         {
-
+            // Delete step
+            SignatureSettingViewModel stepRemove = (SignatureSettingViewModel)obj;
+            if (MessageBox.Show("Delete step " + stepRemove.StepCounter.ToString() + " in signature calculation: " + stepRemove.SignatureName + "?", "Warning!", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                // Try to delete current step
+                try
+                {
+                    SignatureSettings.Remove(stepRemove);
+                    var steps = new ObservableCollection<SignatureSettingViewModel>(SignatureSettings);
+                    foreach (var step in steps)
+                    {
+                        if (step.StepCounter > stepRemove.StepCounter)
+                        {
+                            step.StepCounter -= 1;
+                        }
+                    }
+                    SignatureSettings = steps;
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Error deleting step");
+                }
+                // Select a different step?
+                if (SelectedStep != null)
+                {
+                    SelectedStep.IsSelected = false;
+                    SelectedStep = null;
+                }
+            }
         }
-
+        public ICommand DeSelectAllSteps { get; set; }
+        private void _deSelectAllSteps(object obj)
+        {
+            if (SelectedStep != null)
+            {
+                foreach (var s in SelectedStep.InputChannels)
+                {
+                    s.IsChecked = false;
+                }
+                SelectedStep.IsSelected = false;
+                SelectedStep = null;
+                SampleDataMngr.DetermineCheckStatusOfGroupedSignals();
+            }
+        }
         public ObservableCollection<SignatureSettingViewModel> SignatureSettings { get; internal set; } = new ObservableCollection<SignatureSettingViewModel>();
+        //private int _oldTabIndex;
+        private int _currentTabIndex;
+        public int CurrentTabIndex 
+        {
+            get { return _currentTabIndex; }
+            set {
+                if (_currentTabIndex != value)
+                {
+                    _currentTabIndex = value;
+                    _deSelectAllSteps(null);
+                    //if (_oldTabIndex == 1)
+                    //{
+
+                    //}
+                    //_oldTabIndex = _currentTabIndex;
+                    OnPropertyChanged();
+                }
+            } 
+        }
     }
 
 
