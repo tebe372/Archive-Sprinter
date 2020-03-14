@@ -28,12 +28,20 @@ namespace AS.IO
             FileType = source.FileType;
         }
 
-        public void Start()
+        public async Task Start()
         {
             var reader = DataFileReaderFactory.Create(FileType);
             if (Directory.Exists(SourceDirectory))
             {
-                var allFiles = Directory.GetFiles(SourceDirectory, "*.*", SearchOption.AllDirectories);
+                string[] allFiles;
+                try
+                {
+                    allFiles = Directory.GetFiles(SourceDirectory, "*.*", SearchOption.AllDirectories);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
                 Array.Sort(allFiles);
                 foreach (var file in allFiles)
                 {

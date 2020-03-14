@@ -22,35 +22,38 @@ namespace AS.DataManager
         // when all data in the data source directory are read and preprocessed and put in the store
         public bool DataCompleted { get; set; }
         public DateTime TimeZero { get; set; }
-
         public Dictionary<string, Dictionary<DateTime, Signal>> Signals { get; set; }
         public List<DateTime> StartTimeStamps { get; set; }
         public List<DateTime> EndTimeStamps { get; set; }
         public Dictionary<DateTime, DateTime> TimePairs { get; set; }
-
+        public bool FirstFile { get; set; }
         public void AddData(List<Signal> e)
         {
-            foreach (var sig in e)
+            if (e != null && e.Count > 0)
             {
-                var name = sig.PMUName + "_" + sig.SignalName;
-                var startT = sig.TimeStamps.FirstOrDefault();
-                StartTimeStamps.Add(startT);
-                var endT = sig.TimeStamps.LastOrDefault();
-                EndTimeStamps.Add(endT);
-                TimePairs[endT] = startT;
-                if (TimeZero == null)
+                var startT = e.FirstOrDefault().TimeStamps.FirstOrDefault();
+                if (FirstFile)
                 {
                     TimeZero = startT;
+                    FirstFile = false;
                 }
-                else if(TimeZero < startT)
+                else if (TimeZero >= startT)
                 {
-                    throw new Exception("Data source files not read in order");
+                    throw new Exception("Possible data source files time order problem.");
                 }
-                if (!Signals.ContainsKey(name))
+                StartTimeStamps.Add(startT);
+                var endT = e.FirstOrDefault().TimeStamps.LastOrDefault();
+                EndTimeStamps.Add(endT);
+                TimePairs[endT] = startT;
+                foreach (var sig in e)
                 {
-                    Signals[name] = new Dictionary<DateTime, Signal>();
+                    var name = sig.PMUName + "_" + sig.SignalName;
+                    if (!Signals.ContainsKey(name))
+                    {
+                        Signals[name] = new Dictionary<DateTime, Signal>();
+                    }
+                    Signals[name][endT] = sig;
                 }
-                Signals[name][endT] = sig;
             }
         }
 
@@ -86,15 +89,15 @@ namespace AS.DataManager
             {
                 return false;
             }
-            else
-            {
-                //delete all time stamp before i1
-                EndTimeStamps.RemoveRange(0, i1);
-                //for (int i = i1 - 1; i >= 0; i--)
-                //{
-                //    EndTimeStamps.RemoveAt(i);
-                //}
-            }
+            //else
+            //{
+            //    //delete all time stamp before i1
+            //    EndTimeStamps.RemoveRange(0, i1);
+            //    //for (int i = i1 - 1; i >= 0; i--)
+            //    //{
+            //    //    EndTimeStamps.RemoveAt(i);
+            //    //}
+            //}
             //find the continuous time stamps that will be concatenated
             var possibleTimeStamps = EndTimeStamps.GetRange(i1, i2 - i1 + 1);
             foreach (var name in signalNames)
@@ -104,16 +107,24 @@ namespace AS.DataManager
                 var firstSig = sig[possibleTimeStamps[0]];
                 var thisSig = new Signal(firstSig.PMUName, firstSig.SignalName);
                 var firstDataPoint = firstSig.TimeStamps.IndexOf(startT);
+                if (firstDataPoint == -1)
+                {
+                    return false;
+                }
                 if (possibleTimeStamps.Count == 1)
                 {
                     // if here's only 1 fragment, find the start and end point and get data between that range
                     var lastDataPoint = firstSig.TimeStamps.IndexOf(endT);
+                    if (lastDataPoint == -1)
+                    {
+                        return false;
+                    }
                     thisSig.Data.AddRange(firstSig.Data.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1));
                 }
                 else
                 {
                     // if need to put several fragment together, find the first partial piece first
-                    thisSig.Data.AddRange(firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint + 1));
+                    thisSig.Data.AddRange(firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint));
                     // if there are middle pieces, add the middle pieces which should be whole pieces
                     for (int ii = 1; ii < possibleTimeStamps.Count - 1; ii++)
                     {
@@ -126,6 +137,7 @@ namespace AS.DataManager
                 }
                 signals.Add(thisSig);
             }
+            EndTimeStamps.RemoveRange(0, i1);
             return true;
         }
 
@@ -139,6 +151,15 @@ namespace AS.DataManager
                 }
             }
             return null;
+        }
+        public void Clean()
+        {
+            Signals.Clear();
+            StartTimeStamps.Clear();
+            EndTimeStamps.Clear();
+            TimePairs.Clear();
+            FirstFile = true;
+            DataCompleted = false;
         }
     }
 }

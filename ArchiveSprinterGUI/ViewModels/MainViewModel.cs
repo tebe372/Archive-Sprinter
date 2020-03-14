@@ -10,7 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace ArchiveSprinterGUI.ViewModels
@@ -76,7 +78,7 @@ namespace ArchiveSprinterGUI.ViewModels
             }
         }
         public ICommand StartArchiveSprinter { get; set; }
-        private void _startArchiveSprinter(object obj)
+        private async void _startArchiveSprinter(object obj)
         {
             //scan through all the steps of configuration and figure out needed signals.
 
@@ -87,11 +89,28 @@ namespace ArchiveSprinterGUI.ViewModels
             var data = new FileReadingManager(source);
             data.FileReadingDone += FileReadingDone;
             data.DataReadingDone += DataReadingDone;
+            DataMngr.Clean();
             // this need to be put on a thread
-            Task.Factory.StartNew(() => data.Start());
+            try
+            {
+                await Task.Run(async () => { await data.Start(); }) ;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             //data.Start();
             // call another function that start the signature calculation, might be the computation/data manager, on a thread too.
-            Task.Factory.StartNew(() => _signatureCalculation());
+            Thread.Sleep(500);
+            try
+            {
+                await Task.Run(async () => { await _signatureCalculation(); });
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
         }
 
         private void DataReadingDone(object sender)
@@ -135,11 +154,13 @@ namespace ArchiveSprinterGUI.ViewModels
             //    item.Model.Process(e);
             //}
         }
-        private void _signatureCalculation()
+        private async Task _signatureCalculation()
         {
             foreach (var item in SettingsVM.SignatureSettings)
             {
-                Task.Factory.StartNew(() => item.Model.Process(DataMngr));
+                item.GetSignalNameList();
+                item.GetSamplingRAte();
+                await Task.Factory.StartNew(() => item.Model.Process(DataMngr));
             }
         }
     }

@@ -16,5 +16,8 @@
         <TabItem Header="Signature Calculations">
             <local:SignatureCalSettingsView/>
         </TabItem>
+        <TabItem Header="Date Writer">
+            <local:DataWriterView/>
+        </TabItem>
     </TabControl>
 </UserControl>

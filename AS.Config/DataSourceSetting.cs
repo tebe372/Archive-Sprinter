@@ -77,9 +77,39 @@ namespace AS.Config
                                 try
                                 {
                                     var fullPath = Path.GetDirectoryName(value);
-                                    var oneLevelUp = fullPath.Substring(0, fullPath.LastIndexOf(@"\"));
-                                    var twoLevelUp = oneLevelUp.Substring(0, oneLevelUp.LastIndexOf(@"\"));
-                                    FileDirectory = twoLevelUp;
+                                    var slashIndex = fullPath.LastIndexOf(@"\");
+                                    if (slashIndex > 0)
+                                    {
+                                        var oneLevelUp = fullPath.Substring(0, slashIndex);
+                                        if (Directory.Exists(oneLevelUp))
+                                        {
+                                            slashIndex = oneLevelUp.LastIndexOf(@"\");
+                                            if (slashIndex > 0)
+                                            {
+                                                var twoLevelUp = oneLevelUp.Substring(0, slashIndex);
+                                                if (Directory.Exists(twoLevelUp))
+                                                {
+                                                    FileDirectory = twoLevelUp;
+                                                }
+                                                else
+                                                {
+                                                    FileDirectory = oneLevelUp;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                FileDirectory = oneLevelUp;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            FileDirectory = fullPath;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        FileDirectory = fullPath;
+                                    }
                                 }
                                 catch (Exception ex)
                                 {

@@ -127,6 +127,9 @@
     <Compile Include="Views\SettingsViews\DataSourceView.xaml.cs">
       <DependentUpon>DataSourceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\DataWriterView.xaml.cs">
+      <DependentUpon>DataWriterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsViews\FilterListBox.xaml.cs">
       <DependentUpon>FilterListBox.xaml</DependentUpon>
     </Compile>
@@ -199,6 +202,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsViews\DataSourceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\DataWriterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

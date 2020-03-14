@@ -19,6 +19,7 @@ namespace AS.Config
         public bool CheckNanResult { get; set; }
         public bool OmitNan { get; set; }
         public List<string> InputSignals { get; set; }
+        public int SamplingRate { get; set; }
     }
     public class Mean : SignatureSetting
     {
@@ -40,9 +41,9 @@ namespace AS.Config
             var startT = dataMngr.TimeZero;
             var endT = startT.AddSeconds(WindowSize);
 
-            List<Signal> signals = new List<Signal>();
             while (true)
             {
+                List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
                 if (!dataMngr.GetData(signals, startT, endT, InputSignals))
                 {
@@ -59,6 +60,7 @@ namespace AS.Config
                 foreach (var item in signals)
                 {
                     var variance = SignatureCalculations.Variance(item.Data);
+                    Console.WriteLine(variance);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);

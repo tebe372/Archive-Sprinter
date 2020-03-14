@@ -2,7 +2,9 @@
 using AS.Core.ViewModels;
 using AS.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 {
@@ -110,6 +112,16 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 _model.OmitNan = value;
                 OnPropertyChanged();
             }
+        }
+
+        internal void GetSignalNameList()
+        {
+            _model.InputSignals = InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList();
+        }
+
+        internal void GetSamplingRAte()
+        {
+            _model.SamplingRate = InputChannels.FirstOrDefault().SamplingRate;
         }
     }
 }

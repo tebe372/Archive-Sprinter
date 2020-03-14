@@ -128,6 +128,14 @@
                            
                         </ItemsControl.Resources>
                     </ItemsControl>
+                    <Border Grid.Row="2" Margin="2">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseLeftButtonDown">
+                                <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor}, Path=DataContext.DeSelectAllSteps}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <TextBlock></TextBlock>
+                    </Border>
                 </Grid>                
             </ScrollViewer>
         </Border>

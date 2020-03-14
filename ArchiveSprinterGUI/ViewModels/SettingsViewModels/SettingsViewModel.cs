@@ -131,9 +131,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 {
                     // Deselect previously selected step
                     SelectedStep.IsSelected = false;
-                    // Set this step to selected
-                    SelectedStep = step;
-                    SelectedStep.IsSelected = true;
 
                     // Check if this step is complete
                     // if (!step.IsComplete)
@@ -141,6 +138,9 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     //   MessageBox.Show("Missing field(s) in this step, please double check!", "Error!", MessageBoxButtons.OK);
                     //}
                 }
+                // Set this step to selected
+                step.IsSelected = true;
+                SelectedStep = step;
                 SampleDataMngr.DetermineCheckStatusOfGroupedSignals();
             }
         }
@@ -227,8 +227,8 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 if (SelectedStep != null)
                 {
                     SelectedStep.IsSelected = false;
-                    step.IsSelected = true;
                 }
+                step.IsSelected = true;
                 SelectedStep = step;
                 SampleDataMngr.DetermineCheckStatusOfGroupedSignals();
             }
@@ -244,15 +244,13 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 try
                 {
                     SignatureSettings.Remove(stepRemove);
-                    var steps = new ObservableCollection<SignatureSettingViewModel>(SignatureSettings);
-                    foreach (var step in steps)
+                    foreach (var step in SignatureSettings)
                     {
                         if (step.StepCounter > stepRemove.StepCounter)
                         {
                             step.StepCounter -= 1;
                         }
                     }
-                    SignatureSettings = steps;
                 }
                 catch (Exception)
                 {
