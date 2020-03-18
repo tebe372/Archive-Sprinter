@@ -13,13 +13,71 @@ namespace AS.Config
     public abstract class SignatureSetting
     {
         public abstract void Process(DataStore dataMngr);
+        public abstract void ProcessNANData(Signal sig); //either interpolate or omit
         public abstract string SignatureName { get; }
         public int WindowSize { get; set; }
         public int WindowOverlap { get; set; }
+        private string _windowSizeStr;
+        public string WindowSizeStr 
+        {
+            get { return _windowSizeStr; }
+            set
+            {
+                _windowSizeStr = value;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    WindowSize = Convert.ToInt32(value);
+                    WindowSizeNumberOfSamples = WindowSize * SamplingRate;
+                }
+            } 
+        }
+        private string _windowOverlapStr;
+        public string WindowOverlapStr 
+        {
+            get { return _windowOverlapStr; }
+            set
+            {
+                _windowOverlapStr = value;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    WindowOverlap = Convert.ToInt32(value);
+                    WindowOverlapNumberOfSamples = WindowOverlap * SamplingRate;
+                }
+            } 
+        }
         public bool CheckNanResult { get; set; }
         public bool OmitNan { get; set; }
         public List<string> InputSignals { get; set; }
-        public int SamplingRate { get; set; }
+        private int _samplingRate;
+        public int SamplingRate 
+        {
+            get { return _samplingRate; }
+            set
+            {
+                if (_samplingRate != value)
+                {
+                    _samplingRate = value;
+                    WindowOverlapNumberOfSamples = WindowOverlap * value;
+                    WindowSizeNumberOfSamples = WindowSize * value;
+                }
+            } 
+        }
+        public int WindowSizeNumberOfSamples { get; set; }
+        public int WindowOverlapNumberOfSamples { get; set; }
+        public void RemoveNanValue(Signal sig)
+        {
+            for (int i = sig.Data.Count - 1; i >= 0; i--)
+            {
+                if (!sig.Flags[i])
+                {
+                    sig.Data.RemoveAt(i);
+                }
+            }
+        }
+        public void InterpolateNanValue(Signal sig)
+        {
+
+        }
     }
     public class Mean : SignatureSetting
     {
@@ -27,7 +85,54 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                //according to the input channels in variance, take part of the e as input to the following function call.
+                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double mean = Double.NaN;
+                    if (item.Flags.Contains(false))
+                    {
+                        if (OmitNan)
+                        {
+                            ProcessNANData(item);
+                            mean = SignatureCalculations.Mean(item.Data);
+                        }
+                    }
+                    else
+                    {
+                        mean = SignatureCalculations.Mean(item.Data);
+                    }
+                    Console.WriteLine("Mean:");
+                    Console.WriteLine(mean);
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
         }
     }
     public class Variance : SignatureSetting
@@ -45,7 +150,7 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
-                if (!dataMngr.GetData(signals, startT, endT, InputSignals))
+                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
                 {
                     if (dataMngr.DataCompleted)
                     {
@@ -59,12 +164,30 @@ namespace AS.Config
                 }
                 foreach (var item in signals)
                 {
-                    var variance = SignatureCalculations.Variance(item.Data);
+                    double variance = Double.NaN;
+                    if (item.Flags.Contains(false))
+                    {
+                        if (OmitNan)
+                        {
+                            ProcessNANData(item);
+                            variance = SignatureCalculations.Variance(item.Data);
+                        }
+                    }
+                    else
+                    {
+                        variance = SignatureCalculations.Variance(item.Data);
+                    }
+                    Console.WriteLine("Variance:");
                     Console.WriteLine(variance);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
             }            
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
         }
     }
     public class StandardDeviation : SignatureSetting
@@ -73,7 +196,54 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                //according to the input channels in variance, take part of the e as input to the following function call.
+                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double std = Double.NaN;
+                    if (item.Flags.Contains(false))
+                    {
+                        if (OmitNan)
+                        {
+                            ProcessNANData(item);
+                            std = SignatureCalculations.Stdev(item.Data);
+                        }
+                    }
+                    else
+                    {
+                        std = SignatureCalculations.Stdev(item.Data);
+                    }
+                    Console.WriteLine("Standard Deviation:");
+                    Console.WriteLine(std);
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
         }
     }
     public class Kurtosis : SignatureSetting
@@ -82,7 +252,54 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                //according to the input channels in variance, take part of the e as input to the following function call.
+                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double kurt = Double.NaN;
+                    if (item.Flags.Contains(false))
+                    {
+                        if (OmitNan)
+                        {
+                            ProcessNANData(item);
+                            kurt = SignatureCalculations.Kurtosis(item.Data);
+                        }
+                    }
+                    else
+                    {
+                        kurt = SignatureCalculations.Kurtosis(item.Data);
+                    }
+                    Console.WriteLine("Kurtosis:");
+                    Console.WriteLine(kurt);
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
         }
     }
     public class Skewness : SignatureSetting
@@ -91,7 +308,54 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                //according to the input channels in variance, take part of the e as input to the following function call.
+                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double skew = Double.NaN;
+                    if (item.Flags.Contains(false))
+                    {
+                        if (OmitNan)
+                        {
+                            ProcessNANData(item);
+                            skew = SignatureCalculations.Skewness(item.Data);
+                        }
+                    }
+                    else
+                    {
+                        skew = SignatureCalculations.Skewness(item.Data);
+                    }
+                    Console.WriteLine("Skewness:");
+                    Console.WriteLine(skew);
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
         }
     }
     public class CorrelationCoefficient : SignatureSetting
@@ -102,6 +366,11 @@ namespace AS.Config
         {
             throw new NotImplementedException();
         }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            //omit nan in pairs
+        }
     }
     public class Covariance : SignatureSetting
     {
@@ -110,6 +379,11 @@ namespace AS.Config
         public override void Process(DataStore dataMngr)
         {
             throw new NotImplementedException();
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            //omit nan in pairs
         }
     }
     public class Periodogram : SignatureSetting
@@ -120,6 +394,11 @@ namespace AS.Config
         {
             throw new NotImplementedException();
         }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            // interpolate
+        }
     }
     public class GMSCSpectrum : SignatureSetting
     {
@@ -128,6 +407,11 @@ namespace AS.Config
         public override void Process(DataStore dataMngr)
         {
             throw new NotImplementedException();
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            //interpolate
         }
     }
     public class Percentile : SignatureSetting
@@ -138,6 +422,11 @@ namespace AS.Config
         {
             throw new NotImplementedException();
         }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
+        }
     }
     public class Quartiles : SignatureSetting
     {
@@ -147,6 +436,11 @@ namespace AS.Config
         {
             throw new NotImplementedException();
         }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
+        }
     }
     public class Median : SignatureSetting
     {
@@ -154,7 +448,54 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                //according to the input channels in variance, take part of the e as input to the following function call.
+                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double med = Double.NaN;
+                    if (item.Flags.Contains(false))
+                    {
+                        if (OmitNan)
+                        {
+                            ProcessNANData(item);
+                            med = SignatureCalculations.Median(item.Data);
+                        }
+                    }
+                    else
+                    {
+                        med = SignatureCalculations.Median(item.Data);
+                    }
+                    Console.WriteLine("Median:");
+                    Console.WriteLine(med);
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
         }
     }
     public class Maximum : SignatureSetting
@@ -163,7 +504,54 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                //according to the input channels in variance, take part of the e as input to the following function call.
+                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double max = Double.NaN;
+                    if (item.Flags.Contains(false))
+                    {
+                        if (OmitNan)
+                        {
+                            ProcessNANData(item);
+                            max = SignatureCalculations.Maximum(item.Data);
+                        }
+                    }
+                    else
+                    {
+                        max = SignatureCalculations.Maximum(item.Data);
+                    }
+                    Console.WriteLine("Maximum:");
+                    Console.WriteLine(max);
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
         }
     }
     public class Minimum : SignatureSetting
@@ -172,7 +560,54 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                //according to the input channels in variance, take part of the e as input to the following function call.
+                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double min = Double.NaN;
+                    if (item.Flags.Contains(false))
+                    {
+                        if (OmitNan)
+                        {
+                            ProcessNANData(item);
+                            min = SignatureCalculations.Minimum(item.Data);
+                        }
+                    }
+                    else
+                    {
+                        min = SignatureCalculations.Minimum(item.Data);
+                    }
+                    Console.WriteLine("Minimum:");
+                    Console.WriteLine(min);
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
         }
     }
     public class Range : SignatureSetting
@@ -181,7 +616,54 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                //according to the input channels in variance, take part of the e as input to the following function call.
+                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double range = Double.NaN;
+                    if (item.Flags.Contains(false))
+                    {
+                        if (OmitNan)
+                        {
+                            ProcessNANData(item);
+                            range = SignatureCalculations.Range(item.Data);
+                        }
+                    }
+                    else
+                    {
+                        range = SignatureCalculations.Range(item.Data);
+                    }
+                    Console.WriteLine("Range:");
+                    Console.WriteLine(range);
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
         }
     }
     public class Rise : SignatureSetting
@@ -190,7 +672,54 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                //according to the input channels in variance, take part of the e as input to the following function call.
+                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        break;
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double rise = Double.NaN;
+                    if (item.Flags.Contains(false))
+                    {
+                        if (OmitNan)
+                        {
+                            ProcessNANData(item);
+                            rise = SignatureCalculations.Rise(item.Data);
+                        }
+                    }
+                    else
+                    {
+                        rise = SignatureCalculations.Rise(item.Data);
+                    }
+                    Console.WriteLine("Rise:");
+                    Console.WriteLine(rise);
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
         }
     }
     public class Histogram : SignatureSetting
@@ -200,6 +729,11 @@ namespace AS.Config
         public override void Process(DataStore dataMngr)
         {
             throw new NotImplementedException();
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
         }
     }
 }

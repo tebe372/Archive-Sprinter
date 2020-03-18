@@ -131,6 +131,7 @@ namespace ArchiveSprinterGUI.ViewModels
             bool newStage = true;
             foreach (var item in SettingsVM.PreProcessSteps)
             {
+                item.GetSignalNameList();
                 if (item.Model is Customization && newStage)
                 {
                     newStage = false;

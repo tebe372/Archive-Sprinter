@@ -52,11 +52,19 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 case "Zeros":
                     _model = new DropOutZeroFilt();
                     break;
+                case "Missing":
+                    _model = new DropOutMissingFilt();
+                    break;
                 case "Subtraction":
                     _model = new SubtractionCustomization();
                     break;
             }
 
+        }
+
+        internal void GetSignalNameList()
+        {
+            _model.InputSignals = InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList();
         }
     }
     /*

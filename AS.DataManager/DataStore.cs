@@ -57,7 +57,7 @@ namespace AS.DataManager
             }
         }
 
-        public bool GetData(List<Signal> signals, DateTime startT, DateTime endT, List<string> signalNames)
+        public bool GetData(List<Signal> signals, DateTime startT, DateTime endT, int windowSize, List<string> signalNames)
         {
             bool foundStart = false;
             EndTimeStamps.Sort();
@@ -117,27 +117,51 @@ namespace AS.DataManager
                     var lastDataPoint = firstSig.TimeStamps.IndexOf(endT);
                     if (lastDataPoint == -1)
                     {
-                        return false;
+                        //thisSig.Data = firstSig.Data;
+                        thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
+                        thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
                     }
-                    thisSig.Data.AddRange(firstSig.Data.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1));
+                    else
+                    {
+                        thisSig.Data = firstSig.Data.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
+                        thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
+                    }
                 }
                 else
                 {
                     // if need to put several fragment together, find the first partial piece first
-                    thisSig.Data.AddRange(firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint));
+                    thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
+                    thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
                     // if there are middle pieces, add the middle pieces which should be whole pieces
-                    for (int ii = 1; ii < possibleTimeStamps.Count - 1; ii++)
+                    for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
                     {
                         thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
+                        thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
                     }
                     // then add the last piece, which could be a partial piece too
-                    var lastSig = sig[possibleTimeStamps[possibleTimeStamps.Count - 1]];
-                    var lastDatPoint = lastSig.TimeStamps.IndexOf(endT);
-                    thisSig.Data.AddRange(lastSig.Data.GetRange(0, lastDatPoint + 1));
+                    //var lastSig = sig[possibleTimeStamps[possibleTimeStamps.Count - 1]];
+                    //var lastDatPoint = lastSig.TimeStamps.IndexOf(endT);
+                    //if (lastDatPoint == -1)
+                    //{
+                    //    thisSig.Data.AddRange(lastSig.Data);
+                    //}
+                    //else
+                    //{
+                    //    thisSig.Data.AddRange(lastSig.Data.GetRange(0, lastDatPoint + 1));
+                    //}
                 }
-                signals.Add(thisSig);
+                if (thisSig.Data.Count < windowSize)
+                {
+                    return false;
+                }
+                else
+                {
+                    thisSig.Data.RemoveRange(windowSize, thisSig.Data.Count - windowSize);
+                    thisSig.Flags.RemoveRange(windowSize, thisSig.Flags.Count - windowSize);
+                    signals.Add(thisSig);
+                }
             }
-            EndTimeStamps.RemoveRange(0, i1);
+            //EndTimeStamps.RemoveRange(0, i1);
             return true;
         }
 
@@ -150,7 +174,9 @@ namespace AS.DataManager
                     return idx;
                 }
             }
-            return null;
+            // didn't find the timestamp that is later than endT
+            return endTimeStamps.Count - 1;
+            //return null;
         }
         public void Clean()
         {

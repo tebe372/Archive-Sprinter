@@ -9,9 +9,15 @@ namespace AS.ComputationManager.Calculations
 {
     public static class Filters
     {
-        public static void DropOutMissingFilt()
+        public static void DropOutMissingFilt(Signal s)
         {
-
+            for (int idx = 0; idx < s.Data.Count; idx++)
+            {
+                if (double.IsNaN(s.Data[idx]))
+                {
+                    s.Flags[idx] = false;
+                }
+            }
         }
 
         public static void DropOutZeroFilt(Signal s)

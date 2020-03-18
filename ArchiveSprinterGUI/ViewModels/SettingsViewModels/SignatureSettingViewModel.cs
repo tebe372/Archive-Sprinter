@@ -80,26 +80,26 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             get { return _model.SignatureName; }
         }
-        public string WindowSize 
+        public string WindowSizeStr
         {
-            get { return _model.WindowSize.ToString(); }
+            get { return _model.WindowSizeStr; }
             set
             {
-                if (!string.IsNullOrEmpty(value))
+                if (_model.WindowSizeStr != value)
                 {
-                    _model.WindowSize = Convert.ToInt32(value);
+                    _model.WindowSizeStr = value;
                     OnPropertyChanged();
                 }
             }
         }
-        public string WindowOverlap
+        public string WindowOverlapStr
         {
-            get { return _model.WindowOverlap.ToString(); }
+            get { return _model.WindowOverlapStr; }
             set
             {
-                if (!string.IsNullOrEmpty(value))
+                if (_model.WindowOverlapStr != value)
                 {
-                    _model.WindowOverlap = Convert.ToInt32(value);
+                    _model.WindowOverlapStr = value;
                     OnPropertyChanged();
                 }
             }

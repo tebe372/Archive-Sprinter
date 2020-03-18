@@ -32,6 +32,7 @@ namespace AS.Config
         public abstract void Process(List<Signal> e);
 
         public abstract bool CheckStepIsComplete();
+        public List<string> InputSignals { get; set; }
 
     }
     // Data Quality Filter Class
@@ -92,7 +93,28 @@ namespace AS.Config
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
             {
-                Filters.DropOutZeroFilt(signal);
+                var name = signal.PMUName + "_" + signal.SignalName;
+                if (InputSignals.Contains(name))
+                {
+                    Filters.DropOutZeroFilt(signal);
+                }
+            }
+        }
+    }
+    public class DropOutMissingFilt : Filter
+    {
+        public int FlagBit { get; set; }
+        public override void Process(List<Signal> e)
+        {
+            //do some parameter process
+            //according to the input channels that is selected, call the actual function and process each signal.
+            foreach (var signal in e)
+            {
+                var name = signal.PMUName + "_" + signal.SignalName;
+                if (InputSignals.Contains(name))
+                {
+                    Filters.DropOutMissingFilt(signal);
+                }
             }
         }
     }

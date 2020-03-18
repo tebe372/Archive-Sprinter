@@ -51,8 +51,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\571\MathNet\mathnet-numerics\src\Numerics\Numerics.csproj">
-      <Project>{59a25bb7-3ed5-4b80-a1e4-3f98330567f9}</Project>
+    <ProjectReference Include="..\..\numerics\src\Numerics\Numerics.csproj">
+      <Project>{222ea06b-875c-4676-b746-7994b85b9086}</Project>
       <Name>Numerics</Name>
     </ProjectReference>
     <ProjectReference Include="..\AS.Core\AS.Core.csproj">
