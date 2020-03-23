@@ -7,8 +7,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <TabControl TabStripPlacement="Top" SelectedIndex="{Binding CurrentTabIndex}">
-        <TabItem Header="Data Source">
-            <local:DataSourceView DataContext="{Binding DataSourceVM}"/>
+        <TabItem Header="Data Source etc.">
+            <local:DataSourceETC/>
         </TabItem>
         <TabItem Header="Data Quality and Customization">
             <local:DataQualityAndCustomizationView/>

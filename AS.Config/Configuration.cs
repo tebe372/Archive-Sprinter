@@ -57,10 +57,10 @@ namespace AS.Config
             }),
             new SignatureCalMenu("Correlation Coefficient"),
             new SignatureCalMenu("Covariance"),
-            new SignatureCalMenu("Frequency-Domain Methods", new List<SignatureCalMenu>{
-                new SignatureCalMenu("Periodogram"),
-                new SignatureCalMenu("Generalized Magnitude Squared Coherence (GMSC) Spectrum"),
-            }),
+            //new SignatureCalMenu("Frequency-Domain Methods", new List<SignatureCalMenu>{
+            //    new SignatureCalMenu("Periodogram"),
+            //    new SignatureCalMenu("Generalized Magnitude Squared Coherence (GMSC) Spectrum"),
+            //}),
             new SignatureCalMenu("Order Statistics", new List<SignatureCalMenu>{
                 new SignatureCalMenu("Percentile"),
                 new SignatureCalMenu("Quartiles"),
@@ -72,7 +72,50 @@ namespace AS.Config
             new SignatureCalMenu("Rise"),
             new SignatureCalMenu("Histogram")
         };
-
+        public int WindowSize { get; set; }
+        public int WindowOverlap { get; set; }
+        public int DatawriteOutFrequency { get; set; }
+        private string _windowSizeStr;
+        public string WindowSizeStr
+        {
+            get { return _windowSizeStr; }
+            set
+            {
+                _windowSizeStr = value;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    WindowSize = Convert.ToInt32(value);
+                }
+            }
+        }
+        private string _windowOverlapStr;
+        public string WindowOverlapStr
+        {
+            get { return _windowOverlapStr; }
+            set
+            {
+                _windowOverlapStr = value;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    WindowOverlap = Convert.ToInt32(value);
+                }
+            }
+        }
+        private string _datawriteOutFrequencyStr;
+        public string DatawriteOutFrequencyStr
+        {
+            get { return _datawriteOutFrequencyStr; }
+            set
+            {
+                _datawriteOutFrequencyStr = value;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    DatawriteOutFrequency = Convert.ToInt32(value);
+                }
+            }
+        }
+        public string DatawriteOutFrequencyUnit { get; set; }
+        public List<string> DatawriteOutFrequencyUnits { get; set; } = new List<string> { "Hours", "Days", "Weeks", "Month" };
         public void AddConfigStep(string stepName)
         {
             // Create new filter specification

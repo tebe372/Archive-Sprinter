@@ -15,6 +15,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
     public class SettingsViewModel : ViewModelBase
     {
         private Configuration _model;
+        public Configuration Model
+        {
+            get { return _model; }
+        }
         public SampleDataManagerViewModel SampleDataMngr { get; set; }
 
         private StepViewModel _selectedStep;
@@ -214,6 +218,8 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             var sig = ((SignatureCalMenu)obj).Signature;
             var newSig = new SignatureSettingViewModel(sig);
+            newSig.WindowOverlapStr = WindowOverlapStr;
+            newSig.WindowSizeStr = WindowSizeStr;
             newSig.StepCounter = SignatureSettings.Count + 1;
             SignatureSettings.Add(newSig);
             _signatureStepSelected(newSig);
@@ -296,8 +302,70 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     //_oldTabIndex = _currentTabIndex;
                     OnPropertyChanged();
                 }
-            } 
+            }
         }
+        public string DatawriteOutFrequencyStr
+        {
+            get { return _model.DatawriteOutFrequencyStr; }
+            set
+            {
+                if (_model.DatawriteOutFrequencyStr != value)
+                {
+                    _model.DatawriteOutFrequencyStr = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        public string DatawriteOutFrequencyUnit
+        {
+            get { return _model.DatawriteOutFrequencyUnit; }
+            set
+            {
+                if (_model.DatawriteOutFrequencyUnit != value)
+                {
+                    _model.DatawriteOutFrequencyUnit = value;
+                    OnPropertyChanged();
+                    if (value == "Month")
+                    {
+                        DatawriteOutFrequencyStr = "1";
+                    }
+                }
+            }
+        }
+        public List<string> DatawriteOutFrequencyUnits { get { return _model.DatawriteOutFrequencyUnits; } }
+        public string WindowSizeStr
+        {
+            get { return _model.WindowSizeStr; }
+            set
+            {
+                if (_model.WindowSizeStr != value)
+                {
+                    _model.WindowSizeStr = value;
+                    OnPropertyChanged();
+                    foreach (var sigSetting in SignatureSettings)
+                    {
+                        sigSetting.WindowSizeStr = value;
+                    }
+                }
+            }
+        }
+        public string WindowOverlapStr
+        {
+            get { return _model.WindowOverlapStr; }
+            set
+            {
+                if (_model.WindowOverlapStr != value)
+                {
+                    _model.WindowOverlapStr = value;
+                    OnPropertyChanged();
+                    foreach (var sigSetting in SignatureSettings)
+                    {
+                        sigSetting.WindowOverlapStr = value;
+                    }
+                }
+            }
+        }
+
     }
 
 

@@ -104,15 +104,22 @@ namespace ArchiveSprinterGUI.ViewModels
             Thread.Sleep(500);
             try
             {
-                await Task.Run(async () => { await _signatureCalculation(); });
-                
+                await Task.Run(async () => { await _signatureCalculation(); });                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            Thread.Sleep(500);
+            try
+            {
+                await Task.Run(async () => { await _writeSignatureResults(); });
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
             }
         }
-
         private void DataReadingDone(object sender)
         {
             DataMngr.DataCompleted = true;
@@ -164,5 +171,43 @@ namespace ArchiveSprinterGUI.ViewModels
                 await Task.Factory.StartNew(() => item.Model.Process(DataMngr));
             }
         }
+        private async Task _writeSignatureResults()
+        {
+            DataMngr.DatawriteOutFrequency = _settingsVM.Model.DatawriteOutFrequency;
+            DataMngr.DatawriteOutFrequencyUnit = _settingsVM.Model.DatawriteOutFrequencyUnit;
+            DataMngr.WindowSize = _settingsVM.Model.WindowSize;
+            DataMngr.WindowOverlap = _settingsVM.Model.WindowOverlap;
+            DataMngr.NumberOfSignatures = SettingsVM.SignatureSettings.Count();
+            int columnCount = 0;
+            foreach (var item in SettingsVM.SignatureSettings)
+            {
+                switch (item.SignatureName)
+                {
+                    case "Covariance":
+                        var c = item.InputChannels.Count;
+                        columnCount += c * (c + 1) / 2;
+                        break;
+                    case "Quartiles":
+                        foreach (var signal in item.InputChannels)
+                        {
+                            columnCount += 3;
+                        }
+                        break;
+                    case "Histogram":
+                        var hist = (Histogram)item.Model;
+                        columnCount += item.InputChannels.Count * hist.NumberOfBins;
+                        break;
+                    default:
+                        foreach (var signal in item.InputChannels)
+                        {
+                            columnCount++;
+                        }
+                        break;
+                }
+            }
+            DataMngr.NumberOfColumns = columnCount;
+            await Task.Factory.StartNew(() => DataMngr.WriteResults());
+        }
+
     }
 }

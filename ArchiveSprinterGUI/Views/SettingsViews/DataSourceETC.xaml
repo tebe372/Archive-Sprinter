@@ -1,0 +1,37 @@
+﻿<UserControl x:Class="ArchiveSprinterGUI.Views.SettingsViews.DataSourceETC"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ArchiveSprinterGUI.Views.SettingsViews"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <local:DataSourceView DataContext="{Binding DataSourceVM}" Grid.Row="0"/>
+        <Grid Grid.Row="1"  Margin="2,20,0,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Window Size: " Grid.Row="0" Grid.Column="0" Margin="2"/>
+            <TextBox Text="{Binding WindowSizeStr}" Grid.Row="0" Grid.Column="1" Width="100" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Margin="0,1" Width="50" Text=" seconds" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <Label Content="Window Overlap: " Grid.Row="1" Grid.Column="0" Margin="2"/>
+            <TextBox Text="{Binding WindowOverlapStr}" Grid.Row="1" Grid.Column="1" Width="100" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,1" Width="50" Text=" seconds" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <Label Content="Signature Output Update Frequency: " Grid.Row="2" Grid.Column="0" Margin="2"/>
+            <TextBox Text="{Binding DatawriteOutFrequencyStr}" Grid.Row="2" Grid.Column="1" Width="100" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <ComboBox SelectedItem="{Binding DatawriteOutFrequencyUnit}" Grid.Row="2" Grid.Column="2" Width="100" ItemsSource="{Binding DatawriteOutFrequencyUnits}" Margin="5,2,0,2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        </Grid>
+    </Grid>
+</UserControl>

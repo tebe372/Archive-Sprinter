@@ -1,8 +1,10 @@
 ﻿using AS.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AS.DataManager
@@ -27,6 +29,62 @@ namespace AS.DataManager
         public List<DateTime> EndTimeStamps { get; set; }
         public Dictionary<DateTime, DateTime> TimePairs { get; set; }
         public bool FirstFile { get; set; }
+        public int WriteOutIntervalInSeconds { get; set; }
+        private int _datawriteOutFrequency;
+        public int DatawriteOutFrequency {
+            set {
+                if (_datawriteOutFrequency != value)
+                {
+                    _datawriteOutFrequency = value;
+                    //if (!string.IsNullOrEmpty(_datawriteOutFrequencyUnit))
+                    //{
+                    //    WriteOutIntervalInSeconds = _convertWriteOutIntervalToSeconds(_datawriteOutFrequency, _datawriteOutFrequencyUnit);
+                    //}
+                }
+            }
+            get { return _datawriteOutFrequency; }
+        }
+        private string _datawriteOutFrequencyUnit;
+        public string DatawriteOutFrequencyUnit 
+        {
+            get { return _datawriteOutFrequencyUnit; }
+            set
+            {
+                if (_datawriteOutFrequencyUnit != value)
+                {
+                    _datawriteOutFrequencyUnit = value;
+                    //if (_datawriteOutFrequency != 0)
+                    //{
+                    //    WriteOutIntervalInSeconds = _convertWriteOutIntervalToSeconds(_datawriteOutFrequency, _datawriteOutFrequencyUnit);
+                    //}
+                }
+            }
+        }
+
+        public int NumberOfColumns { get; set; }
+        public DateTime NextTimeStamp { get; set; }
+        public DateTime CurrentTimeStamp { get; set; }
+        public int WindowOverlap { get; set; }
+        public int WindowSize { get; set; }
+        public int NumberOfSignatures { get; set; }
+        public List<string> FinishedSignatures { get; set; } = new List<string>();
+
+        private DateTime _getNextWriteOutTime(DateTime current, int interval, string unit)
+        {
+            switch (unit)
+            {
+                case "Hours":
+                    return current.AddHours(interval);
+                case "Days":
+                    return current.AddDays(interval);
+                case "Weeks":
+                    return current.AddDays(interval * 7);
+                case "Months":
+                    return current.AddMonths(interval);
+                default:
+                    return current;
+            }
+        }
         public void AddData(List<Signal> e)
         {
             if (e != null && e.Count > 0)
@@ -164,7 +222,6 @@ namespace AS.DataManager
             //EndTimeStamps.RemoveRange(0, i1);
             return true;
         }
-
         private int? _findEndTimeFrame(DateTime endT, int beginIdx, List<DateTime> endTimeStamps)
         {
             for ( int idx = beginIdx;  idx < endTimeStamps.Count;  idx++)
@@ -187,5 +244,103 @@ namespace AS.DataManager
             FirstFile = true;
             DataCompleted = false;
         }
+        public void WriteResults()
+        {
+            CurrentTimeStamp = TimeZero;
+            NextTimeStamp = _getNextWriteOutTime(CurrentTimeStamp, DatawriteOutFrequency, DatawriteOutFrequencyUnit);
+            while (true)
+            {
+                var timeSpan = NextTimeStamp - CurrentTimeStamp;
+                var expectedRows = (timeSpan.TotalSeconds - WindowSize) / (WindowSize - WindowOverlap) + 1;
+                var timeStampsInRange = _results.Keys.Where(x => x >= CurrentTimeStamp && x < NextTimeStamp);
+                var rows = timeStampsInRange.Count();
+                if (NumberOfSignatures == FinishedSignatures.Count)
+                {
+                    var filename = "Signature_" + CurrentTimeStamp.ToString("yyyyMMdd_HHmmss") + ".csv";
+                    List<string> titleRow = new List<string> { "Signature" };
+                    List<string> PMURow = new List<string> { "PMUName" };
+                    List<string> SignalRow = new List<string> { "SignalName" };
+                    bool firstTimeStamp = true;
+                    using (StreamWriter outputFile = new StreamWriter(filename))
+                    {
+                        foreach (var time in timeStampsInRange)
+                        {
+                            List<string> thisRow = new List<string> { time.ToString("yyyyMMdd_HHmmss") };
+                            var signatures = _results[time];
+                            if (signatures.Count == NumberOfColumns)
+                            {
+                                var groupedTitle = signatures.GroupBy(x => x.Title).OrderBy(x => x.Key);
+                                foreach (var group in groupedTitle)
+                                {
+                                    var title = group.Key;
+                                    var groupedByPMU = group.GroupBy(x => x.PMUName).OrderBy(x => x.Key);
+                                    foreach (var group2 in groupedByPMU)
+                                    {
+                                        var pmu = group2.Key;
+                                        var orderedByName = group2.OrderBy(x => x.SignalName);
+                                        foreach (var sig in orderedByName)
+                                        {
+                                            if (firstTimeStamp)
+                                            {
+                                                titleRow.Add(title);
+                                                PMURow.Add(pmu);
+                                                SignalRow.Add(sig.SignalName);
+                                            }
+                                            thisRow.Add(sig.Value.ToString());
+                                        }
+                                    }
+                                }
+                            }
+                            if (firstTimeStamp)
+                            {
+                                outputFile.WriteLine(String.Join(",", titleRow));
+                                outputFile.WriteLine(String.Join(",", PMURow));
+                                outputFile.WriteLine(String.Join(",", SignalRow));
+                            }
+                            outputFile.WriteLine(String.Join(",", thisRow));
+                            firstTimeStamp = false;
+                        }
+                    }
+                    break;
+                }
+                else if (rows == expectedRows)
+                {
+
+                    CurrentTimeStamp = NextTimeStamp;
+                    NextTimeStamp = _getNextWriteOutTime(CurrentTimeStamp, DatawriteOutFrequency, DatawriteOutFrequencyUnit);
+                }
+                else
+                {
+                    Thread.Sleep(500);
+                }
+            }
+        }
+        private Dictionary<DateTime, List<SignatureResult>> _results = new Dictionary<DateTime, List<SignatureResult>>();
+        public void AddResults(DateTime timeStamp, string title, string pMUName, string signalName, double value)
+        {
+            if (!_results.ContainsKey(timeStamp))
+            {
+                _results[timeStamp] = new List<SignatureResult>();
+            }
+            _results[timeStamp].Add(new SignatureResult(timeStamp, title, pMUName, signalName, value));
+        }
+
+    }
+    public class SignatureResult
+    {
+        public SignatureResult(DateTime timeStamp, string title, string pMUName, string signalName, double value)
+        {
+            TimeStamp = timeStamp;
+            Title = title;
+            PMUName = pMUName;
+            SignalName = signalName;
+            Value = value;
+        }
+
+        public string Title { get; set; }
+        public DateTime TimeStamp { get; set; }
+        public string PMUName { get; set; }
+        public string SignalName { get; set; }
+        public double Value { get; set; }
     }
 }

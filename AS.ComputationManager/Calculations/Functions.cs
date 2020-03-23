@@ -212,5 +212,9 @@ namespace AS.ComputationManager.Calculations
             }
             return re;
         }
+        public static void Interpolate(List<bool> flags, List<double> data, int maxPatch)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -122,12 +122,14 @@ namespace AS.Config
                     {
                         mean = SignatureCalculations.Mean(item.Data);
                     }
+                    dataMngr.AddResults(startT, "Mean", item.PMUName, item.SignalName, mean);
                     Console.WriteLine("Mean:");
                     Console.WriteLine(mean);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
             }
+            dataMngr.FinishedSignatures.Add("Mean");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -177,12 +179,14 @@ namespace AS.Config
                     {
                         variance = SignatureCalculations.Variance(item.Data);
                     }
+                    dataMngr.AddResults(startT, "Variance", item.PMUName, item.SignalName, variance);
                     Console.WriteLine("Variance:");
                     Console.WriteLine(variance);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
-            }            
+            }
+            dataMngr.FinishedSignatures.Add("Variance");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -233,12 +237,14 @@ namespace AS.Config
                     {
                         std = SignatureCalculations.Stdev(item.Data);
                     }
+                    dataMngr.AddResults(startT, "Standard Deviation", item.PMUName, item.SignalName, std);
                     Console.WriteLine("Standard Deviation:");
                     Console.WriteLine(std);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
             }
+            dataMngr.FinishedSignatures.Add("Standard Deviation");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -289,12 +295,14 @@ namespace AS.Config
                     {
                         kurt = SignatureCalculations.Kurtosis(item.Data);
                     }
+                    dataMngr.AddResults(startT, "Kurtosis", item.PMUName, item.SignalName, kurt);
                     Console.WriteLine("Kurtosis:");
                     Console.WriteLine(kurt);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
             }
+            dataMngr.FinishedSignatures.Add("Kurtosis");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -345,12 +353,14 @@ namespace AS.Config
                     {
                         skew = SignatureCalculations.Skewness(item.Data);
                     }
+                    dataMngr.AddResults(startT, "Skewness", item.PMUName, item.SignalName, skew);
                     Console.WriteLine("Skewness:");
                     Console.WriteLine(skew);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
             }
+            dataMngr.FinishedSignatures.Add("Skewness");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -389,6 +399,7 @@ namespace AS.Config
     public class Periodogram : SignatureSetting
     {
         public override string SignatureName { get { return "Periodogram"; } }
+        public int MaxPatch { get; set; } // maximum number of continuous NAN that an be interpolated 
 
         public override void Process(DataStore dataMngr)
         {
@@ -398,11 +409,13 @@ namespace AS.Config
         public override void ProcessNANData(Signal sig)
         {
             // interpolate
+            Functions.Interpolate(sig.Flags, sig.Data, MaxPatch);
         }
     }
     public class GMSCSpectrum : SignatureSetting
     {
         public override string SignatureName { get { return "Generalized Magnitude Squared Coherence (GMSC) Spectrum"; } }
+        public int MaxPatch { get; set; } // maximum number of continuous NAN that an be interpolated 
 
         public override void Process(DataStore dataMngr)
         {
@@ -485,12 +498,14 @@ namespace AS.Config
                     {
                         med = SignatureCalculations.Median(item.Data);
                     }
+                    dataMngr.AddResults(startT, "Median", item.PMUName, item.SignalName, med);
                     Console.WriteLine("Median:");
                     Console.WriteLine(med);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
             }
+            dataMngr.FinishedSignatures.Add("Median");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -541,12 +556,14 @@ namespace AS.Config
                     {
                         max = SignatureCalculations.Maximum(item.Data);
                     }
+                    dataMngr.AddResults(startT, "Maximum", item.PMUName, item.SignalName, max);
                     Console.WriteLine("Maximum:");
                     Console.WriteLine(max);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
             }
+            dataMngr.FinishedSignatures.Add("Maximum");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -597,12 +614,14 @@ namespace AS.Config
                     {
                         min = SignatureCalculations.Minimum(item.Data);
                     }
+                    dataMngr.AddResults(startT, "Minimum", item.PMUName, item.SignalName, min);
                     Console.WriteLine("Minimum:");
                     Console.WriteLine(min);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
             }
+            dataMngr.FinishedSignatures.Add("Minimum");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -653,12 +672,14 @@ namespace AS.Config
                     {
                         range = SignatureCalculations.Range(item.Data);
                     }
+                    dataMngr.AddResults(startT, "Range", item.PMUName, item.SignalName, range);
                     Console.WriteLine("Range:");
                     Console.WriteLine(range);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
             }
+            dataMngr.FinishedSignatures.Add("Range");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -709,12 +730,14 @@ namespace AS.Config
                     {
                         rise = SignatureCalculations.Rise(item.Data);
                     }
+                    dataMngr.AddResults(startT, "Rise", item.PMUName, item.SignalName, rise);
                     Console.WriteLine("Rise:");
                     Console.WriteLine(rise);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
             }
+            dataMngr.FinishedSignatures.Add("Rise");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -725,6 +748,7 @@ namespace AS.Config
     public class Histogram : SignatureSetting
     {
         public override string SignatureName { get { return "Histogram"; } }
+        public int NumberOfBins { get; set; }
 
         public override void Process(DataStore dataMngr)
         {

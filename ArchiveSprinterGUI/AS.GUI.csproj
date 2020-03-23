@@ -124,6 +124,9 @@
     <Compile Include="Views\SettingsViews\DataQualityAndCustomizationView.xaml.cs">
       <DependentUpon>DataQualityAndCustomizationView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\DataSourceETC.xaml.cs">
+      <DependentUpon>DataSourceETC.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsViews\DataSourceView.xaml.cs">
       <DependentUpon>DataSourceView.xaml</DependentUpon>
     </Compile>
@@ -198,6 +201,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsViews\DataQualityAndCustomizationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\DataSourceETC.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
