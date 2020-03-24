@@ -28,6 +28,8 @@ namespace ArchiveSprinterGUI.ViewModels
             MainViewSelected = new RelayCommand(_switchView);
             StartArchiveSprinter = new RelayCommand(_startArchiveSprinter);
             DataMngr = new DataStore();
+            SaveConfigFile = new RelayCommand(_saveConfigFile);
+            OpenConfigFile = new RelayCommand(_openConfigFile);
         }
         private SampleDataMngr _sampleDataMgr;
         private ViewModelBase _currentView;
@@ -208,6 +210,15 @@ namespace ArchiveSprinterGUI.ViewModels
             DataMngr.NumberOfColumns = columnCount;
             await Task.Factory.StartNew(() => DataMngr.WriteResults());
         }
-
+        public ICommand SaveConfigFile { get; set; }
+        private void _saveConfigFile(object obj)
+        {
+            SettingsVM.SaveConfigFile();
+        }
+        public ICommand OpenConfigFile { get; set; }
+        private void _openConfigFile(object obj)
+        {
+            SettingsVM.OpenConfigFile();
+        }
     }
 }

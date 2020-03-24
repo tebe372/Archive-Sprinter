@@ -1,5 +1,6 @@
 ﻿using AS.Core.Models;
 using AS.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,7 @@ namespace AS.Core.ViewModels
 
         private Signal _model;
 
+        [JsonIgnore]
         public bool IsChecked
         {
             get { return _model.IsChecked; }
@@ -45,21 +47,27 @@ namespace AS.Core.ViewModels
         public string SignalName
         {
             get { return _model.SignalName; }
+            set { _model.SignalName = value; }
         }
+        [JsonIgnore]
         public string Type
         {
             get { return _model.TypeAbbreviation; }
         }
+        [JsonIgnore]
         public string Unit
         {
             get { return _model.Unit; }
         }
+        [JsonIgnore]
         public List<SignalTree> SignalTreeContained { get; set; } = new List<SignalTree>();
+        [JsonIgnore]
         public int SamplingRate 
         {
             set { _model.SamplingRate = value; }
-            get { return _model.SamplingRate; } 
+            get { return _model.SamplingRate; }
         }
+        [JsonIgnore]
         public string TypeAbbreviation 
         {
             set { _model.TypeAbbreviation = value; }
@@ -68,13 +76,15 @@ namespace AS.Core.ViewModels
         public string PMUName
         {
             get { return _model.PMUName; }
-            set { _model.PMUName = value; } 
+            set { _model.PMUName = value; }
         }
+        [JsonIgnore]
         public List<double> Data
         {
             get { return _model.Data; }
             //set { _model.Data = value; }
         }
+        [JsonIgnore]
         public List<double> TimeStampNumber
         {
             get { return _model.TimeStampNumber; }

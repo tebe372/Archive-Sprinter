@@ -1,6 +1,7 @@
 ﻿using AS.ComputationManager.Calculations;
 using AS.Core.Models;
 using AS.DataManager;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,7 @@ namespace AS.Config
         public int WindowSize { get; set; }
         public int WindowOverlap { get; set; }
         private string _windowSizeStr;
+        [JsonIgnore]
         public string WindowSizeStr 
         {
             get { return _windowSizeStr; }
@@ -32,6 +34,7 @@ namespace AS.Config
             } 
         }
         private string _windowOverlapStr;
+        [JsonIgnore]
         public string WindowOverlapStr 
         {
             get { return _windowOverlapStr; }
@@ -43,10 +46,12 @@ namespace AS.Config
                     WindowOverlap = Convert.ToInt32(value);
                     WindowOverlapNumberOfSamples = WindowOverlap * SamplingRate;
                 }
-            } 
+            }
         }
+        [JsonIgnore]
         public bool CheckNanResult { get; set; }
         public bool OmitNan { get; set; }
+        [JsonIgnore]
         public List<string> InputSignals { get; set; }
         private int _samplingRate;
         public int SamplingRate 
@@ -60,9 +65,11 @@ namespace AS.Config
                     WindowOverlapNumberOfSamples = WindowOverlap * value;
                     WindowSizeNumberOfSamples = WindowSize * value;
                 }
-            } 
+            }
         }
+        [JsonIgnore]
         public int WindowSizeNumberOfSamples { get; set; }
+        [JsonIgnore]
         public int WindowOverlapNumberOfSamples { get; set; }
         public void RemoveNanValue(Signal sig)
         {

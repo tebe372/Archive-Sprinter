@@ -1,5 +1,6 @@
 ﻿using AS.Core.ViewModels;
 using AS.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -19,6 +20,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             _inputChannels = new ObservableCollection<SignalViewModel>();
         }
         private int _stepCounter;
+        [JsonIgnore]
         public int StepCounter 
         {
             get { return _stepCounter; }
@@ -28,6 +30,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         }
 
         private bool _isSelected;
+        [JsonIgnore]
         public bool IsSelected
         {
             get { return _isSelected; }
@@ -43,6 +46,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             }
         }
         private bool _isExpanded;
+        [JsonIgnore]
         public bool IsExpanded
         {
             get
@@ -55,7 +59,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-        public ObservableCollection<SignalViewModel> _inputChannels;
+        private ObservableCollection<SignalViewModel> _inputChannels;
         public ObservableCollection<SignalViewModel> InputChannels
         {
             get

@@ -4,6 +4,7 @@ using AS.IO;
 using AS.SampleDataManager;
 using AS.Utilities;
 using Microsoft.WindowsAPICodePack.Dialogs;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -23,6 +24,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             BrowseInputFileDir = new RelayCommand(_browseInputFile);
         }
         private DataSourceSetting _model;
+        [JsonIgnore]
         public DataSourceSetting Model
         {
             get { return _model; }
@@ -141,6 +143,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
+        [JsonIgnore]
         public ICommand BrowseInputFileDir { get; set; }
         private void _browseInputFile(object obj)
         {

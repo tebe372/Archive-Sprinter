@@ -74,6 +74,12 @@
                 <Button Width="20" Height="20" Command="{Binding StartArchiveSprinter}">
                     <Image Source="/ArchiveSprinterGUI;component/Resources/Run_16x.png" Stretch="Uniform"/>
                 </Button>
+                <Button Width="20" Height="20" Command="{Binding SaveConfigFile}">
+                    <Image Source="/ArchiveSprinterGUI;component/Resources/Save24.png" Stretch="Uniform"/>
+                </Button>
+                <Button Width="20" Height="20" Command="{Binding OpenConfigFile}">
+                    <Image Source="/ArchiveSprinterGUI;component/Resources/open.gif" Stretch="Uniform"/>
+                </Button>
                 <!--<Button ToolTip="Save Config File" Width="22" Height="22" Margin="2" Command="{Binding ProjectControlVM.SaveConfigFile}" CommandParameter="{Binding}" Visibility="{Binding CurrentView, Converter={StaticResource ViewVisibilityConverter}}">
                     <Image Source="/ArchiveWalker;component/MyResources/Save24.png"/>
                 </Button>

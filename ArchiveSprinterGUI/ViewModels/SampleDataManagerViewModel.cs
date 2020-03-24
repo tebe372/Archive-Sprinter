@@ -111,7 +111,6 @@ namespace ArchiveSprinterGUI.ViewModels
                 }
             }
         }
-
         public ObservableCollection<SignalTree> SortSignalsByType(ObservableCollection<SignalViewModel> signalsVM)
         {
             ObservableCollection<SignalTree> signalTypeTreeGroupedBySamplingRate = new ObservableCollection<SignalTree>();
@@ -1094,7 +1093,20 @@ namespace ArchiveSprinterGUI.ViewModels
             }
             return pmuSignalTreeGroupedBySamplingRate;
         }
-        
+        internal SignalViewModel FindSignal(string pMUName, string signalName)
+        {
+            if (SignalsVM != null)
+            {
+                foreach (var sig in SignalsVM)
+                {
+                    if (sig.PMUName == pMUName && sig.SignalName == signalName)
+                    {
+                        return sig;
+                    }
+                }
+            }
+            return null;            
+        }
     }
 }
     

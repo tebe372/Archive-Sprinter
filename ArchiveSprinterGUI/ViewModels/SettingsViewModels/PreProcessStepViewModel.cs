@@ -8,12 +8,14 @@ using AS.Utilities;
 using System.Collections.ObjectModel;
 using AS.Core.ViewModels;
 using AS.Core.Models;
+using Newtonsoft.Json;
 
 namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 {
     public class PreProcessStepViewModel : StepViewModel
     {
         private PreProcessStep _model;
+        [JsonIgnore]
         public PreProcessStep Model
         {
             get
@@ -28,6 +30,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         public string Name { get; set; }
 
         private bool _isComplete;
+        [JsonIgnore]
         public bool IsComplete
         {
             get { return _isComplete; }

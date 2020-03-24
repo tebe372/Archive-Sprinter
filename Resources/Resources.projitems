@@ -13,5 +13,6 @@
     <Content Include="$(MSBuildThisFileDirectory)Images\open.gif" />
     <Content Include="$(MSBuildThisFileDirectory)Images\RemoveCommand_16x.png" />
     <Content Include="$(MSBuildThisFileDirectory)Images\Run_16x.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\Save24.png" />
   </ItemGroup>
 </Project>

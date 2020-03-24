@@ -1,6 +1,7 @@
 ﻿using AS.Config;
 using AS.Core.ViewModels;
 using AS.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,10 +12,12 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
     public class SignatureSettingViewModel : StepViewModel
     {
         private SignatureSetting _model;
-
-        public SignatureSettingViewModel(string sig) : base()
+        //public SignatureSettingViewModel() : base() {
+        //}
+        [JsonConstructor]
+        public SignatureSettingViewModel(string signatureName) : base()
         {
-            switch (sig)
+            switch (signatureName)
             {
                 case "Mean":
                     _model = new Mean();
@@ -68,10 +71,12 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     _model = new Histogram();
                     break;
                 default:
+                    _model = null;
                     break;
             }
         }
 
+        [JsonIgnore]
         public SignatureSetting Model
         {
             get { return _model; }
@@ -80,24 +85,26 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             get { return _model.SignatureName; }
         }
+        [JsonProperty("WindowSize")]
         public string WindowSizeStr
         {
             get { return _model.WindowSizeStr; }
             set
             {
-                if (_model.WindowSizeStr != value)
+                if (_model != null && _model.WindowSizeStr != value)
                 {
                     _model.WindowSizeStr = value;
                     OnPropertyChanged();
                 }
             }
         }
+        [JsonProperty("WindowOverlap")]
         public string WindowOverlapStr
         {
             get { return _model.WindowOverlapStr; }
             set
             {
-                if (_model.WindowOverlapStr != value)
+                if (_model != null && _model.WindowOverlapStr != value)
                 {
                     _model.WindowOverlapStr = value;
                     OnPropertyChanged();
@@ -109,8 +116,11 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             get { return _model.OmitNan; }
             set
             {
-                _model.OmitNan = value;
-                OnPropertyChanged();
+                if (_model != null && _model.OmitNan != value)
+                {
+                    _model.OmitNan = value;
+                    OnPropertyChanged();
+                }
             }
         }
 

@@ -9,19 +9,25 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using System.IO;
+using Microsoft.WindowsAPICodePack.Dialogs;
 
 namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 {
     public class SettingsViewModel : ViewModelBase
     {
         private Configuration _model;
+        [JsonIgnore]
         public Configuration Model
         {
             get { return _model; }
         }
+        [JsonIgnore]
         public SampleDataManagerViewModel SampleDataMngr { get; set; }
 
         private StepViewModel _selectedStep;
+        [JsonIgnore]
         public StepViewModel SelectedStep
         {
             get { return _selectedStep; }
@@ -35,7 +41,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         private ObservableCollection<PreProcessStepViewModel> _preProcessSteps;
         public ObservableCollection<PreProcessStepViewModel> PreProcessSteps
         {
-           get { return _preProcessSteps; }
+            get { return _preProcessSteps; }
             set
             {
                 _preProcessSteps = value;
@@ -63,7 +69,16 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             DeleteASignatureStep = new RelayCommand(_deleteASignatureStep);
             DeSelectAllSteps = new RelayCommand(_deSelectAllSteps);
         }
-        public DataSourceSettingViewModel DataSourceVM { get; set; } = new DataSourceSettingViewModel();
+        private DataSourceSettingViewModel _dataSourceVM = new DataSourceSettingViewModel();
+        public DataSourceSettingViewModel DataSourceVM 
+        {
+            get { return _dataSourceVM; }
+            set
+            {
+                _dataSourceVM = value;
+                OnPropertyChanged();
+            }
+        }
         private List<DataSourceSettingViewModel> _dataSourceVMList = new List<DataSourceSettingViewModel>();
         public List<DataSourceSettingViewModel> DataSourceVMList
         {  // List of input file information
@@ -71,6 +86,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             set{ _dataSourceVMList = value; }
         }
 
+        [JsonIgnore]
         public ICommand DataConfigStepSelected { get; set; }
         private void _dataConfigStepSelected(object obj)
         {
@@ -81,6 +97,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 
         }
 
+        [JsonIgnore]
         public ICommand DataConfigStepAdded { get; set; }
         private void _dataConfigStepAdded(object obj)
         {
@@ -95,6 +112,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 
         }
 
+        [JsonIgnore]
         public ICommand DeleteDataConfigStep { get; set; }
         private void _deleteDataConfigStep(object obj)
         {
@@ -210,9 +228,13 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
+        [JsonIgnore]
         public List<String> DQFilterList => _model.DQFilterList;
+        [JsonIgnore]
         public List<String> CustomizationList => _model.CustomizationList;
+        [JsonIgnore]
         public List<SignatureCalMenu> SignatureList => _model.SignatureList;
+        [JsonIgnore]
         public ICommand SignatureCalAdded { get; set; }
         private void _addASignatureStep(object obj)
         {
@@ -222,8 +244,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             newSig.WindowSizeStr = WindowSizeStr;
             newSig.StepCounter = SignatureSettings.Count + 1;
             SignatureSettings.Add(newSig);
+            Model.SignatureSettings.Add(newSig.Model);
             _signatureStepSelected(newSig);
         }
+        [JsonIgnore]
         public ICommand SignatureStepSelected { get; set; }
         private void _signatureStepSelected(object obj)
         {
@@ -239,6 +263,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 SampleDataMngr.DetermineCheckStatusOfGroupedSignals();
             }
         }
+        [JsonIgnore]
         public ICommand DeleteASignatureStep { get; set; }
         private void _deleteASignatureStep(object obj)
         {
@@ -257,6 +282,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                             step.StepCounter -= 1;
                         }
                     }
+                    Model.SignatureSettings.Remove(stepRemove.Model);
                 }
                 catch (Exception)
                 {
@@ -270,6 +296,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
+        [JsonIgnore]
         public ICommand DeSelectAllSteps { get; set; }
         private void _deSelectAllSteps(object obj)
         {
@@ -284,9 +311,17 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 SampleDataMngr.DetermineCheckStatusOfGroupedSignals();
             }
         }
-        public ObservableCollection<SignatureSettingViewModel> SignatureSettings { get; internal set; } = new ObservableCollection<SignatureSettingViewModel>();
+        private ObservableCollection<SignatureSettingViewModel> _signatureSettings = new ObservableCollection<SignatureSettingViewModel>();
+        public ObservableCollection<SignatureSettingViewModel> SignatureSettings 
+        {
+            get { return _signatureSettings; }
+            set { _signatureSettings = value;
+                OnPropertyChanged();
+            } 
+        }
         //private int _oldTabIndex;
         private int _currentTabIndex;
+        [JsonIgnore]
         public int CurrentTabIndex 
         {
             get { return _currentTabIndex; }
@@ -304,6 +339,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
+        [JsonProperty("DatawriteOutFrequency")]
         public string DatawriteOutFrequencyStr
         {
             get { return _model.DatawriteOutFrequencyStr; }
@@ -316,6 +352,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
+        [JsonProperty("DatawriteOutFrequencyUnit")]
         public string DatawriteOutFrequencyUnit
         {
             get { return _model.DatawriteOutFrequencyUnit; }
@@ -332,7 +369,9 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
+        [JsonIgnore]
         public List<string> DatawriteOutFrequencyUnits { get { return _model.DatawriteOutFrequencyUnits; } }
+        [JsonProperty("WindowSize")]
         public string WindowSizeStr
         {
             get { return _model.WindowSizeStr; }
@@ -349,6 +388,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
+        [JsonProperty("WindowOverlap")]
         public string WindowOverlapStr
         {
             get { return _model.WindowOverlapStr; }
@@ -365,8 +405,113 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
+        internal void SaveConfigFile()
+        {
+            _model.SaveConfigFile();
+            var config = JsonConvert.SerializeObject(this, Formatting.Indented);
+            Console.WriteLine(config);
+            using (StreamWriter outputFile = new StreamWriter("Configvm.json"))
+            {
+                outputFile.WriteLine(config);
+            }
+        }
+        private string _configFile;
+        [JsonIgnore]
+        public string ConfigFile 
+        {
+            get { return _configFile; }
+            set 
+            {
+                _configFile = value;
+            }
+        }
+        [JsonIgnore]
+        public string PreviousFileDirectory { get; private set; }
+        internal void OpenConfigFile()
+        {
+            using (var fbd = new CommonOpenFileDialog())
+            {
+                fbd.InitialDirectory = PreviousFileDirectory;
+                fbd.IsFolderPicker = false;
+                fbd.AddToMostRecentlyUsedList = true;
+                fbd.AllowNonFileSystemItems = false;
+                fbd.DefaultDirectory = PreviousFileDirectory;
+                fbd.EnsureFileExists = true;
+                fbd.EnsurePathExists = true;
+                fbd.EnsureReadOnly = false;
+                fbd.EnsureValidNames = true;
+                fbd.Multiselect = false;
+                fbd.ShowPlacesList = true;
+                fbd.RestoreDirectory = true;
+                fbd.Title = "Please Select Archive Sprinter Config file.";
+                fbd.Filters.Add(new CommonFileDialogFilter("Json files", "*.json"));
+                fbd.Filters.Add(new CommonFileDialogFilter("All files", "*.*"));
+                CommonFileDialogResult result = fbd.ShowDialog();
+                if (result == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(fbd.FileName))
+                {
+                    ConfigFile = fbd.FileName;
+                    PreviousFileDirectory = Path.GetDirectoryName(fbd.FileName);
+                }
+            }
+            if (File.Exists(ConfigFile))
+            {
+                _readConfigFile(ConfigFile);
+                //_model.ReadConfigFile(ConfigFile);
+            }
+        }
+        private void _readConfigFile(string configFile)
+        {
+            using (StreamReader reader = File.OpenText(configFile))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                var config = (SettingsViewModel)serializer.Deserialize(reader, typeof(SettingsViewModel));
+                WindowOverlapStr = config.WindowOverlapStr;
+                WindowSizeStr = config.WindowSizeStr;
+                DataSourceVM = config.DataSourceVM;
+                DatawriteOutFrequencyStr = config.DatawriteOutFrequencyStr;
+                DatawriteOutFrequencyUnit = config.DatawriteOutFrequencyUnit;
+                PreProcessSteps = new ObservableCollection<PreProcessStepViewModel>();
+                SignatureSettings = new ObservableCollection<SignatureSettingViewModel>();
+                foreach (var pre in config.PreProcessSteps)
+                {
+                    var newStep = new PreProcessStepViewModel(pre.Name);
+                    newStep.StepCounter = PreProcessSteps.Count + 1;
+                    PreProcessSteps.Add(newStep);
+                    foreach (var sig in pre.InputChannels)
+                    {
+                        var foundSig = SampleDataMngr.FindSignal(sig.PMUName, sig.SignalName);
+                        if (foundSig != null)
+                        {
+                            newStep.InputChannels.Add(foundSig);
+                        }
+                    }
+                }
+                foreach (var signature in config.SignatureSettings)
+                {
+                    var newSig = new SignatureSettingViewModel(signature.SignatureName);
+                    newSig.WindowOverlapStr = WindowOverlapStr;
+                    newSig.WindowSizeStr = WindowSizeStr;
+                    newSig.StepCounter = SignatureSettings.Count + 1;
+                    newSig.OmitNan = signature.OmitNan;
+                    SignatureSettings.Add(newSig);
+                    Model.SignatureSettings.Add(newSig.Model);
+                    foreach (var sig in signature.InputChannels)
+                    {
+                        var foundSig = SampleDataMngr.FindSignal(sig.PMUName, sig.SignalName);
+                        if (foundSig != null)
+                        {
+                            newSig.InputChannels.Add(foundSig);
+                        }
+                    }
+                }
+            }
+        }
 
+        //string jsonTypeNameAll = JsonConvert.SerializeObject(SignatureSettings, Formatting.Indented, new JsonSerializerSettings
+        //{
+        //    TypeNameHandling = TypeNameHandling.All
+        //});
+
+        //Console.WriteLine(jsonTypeNameAll);
     }
-
-
 }

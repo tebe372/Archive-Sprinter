@@ -49,6 +49,5 @@ namespace AS.SampleDataManager
 
             SignalsUpdated?.Invoke(this, null);
         }
-
     }
 }

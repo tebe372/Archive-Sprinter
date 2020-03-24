@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using AS.Core.Models;
+using Newtonsoft.Json;
 
 namespace AS.Config
 {
     public class Configuration
     {
         public List<DataSourceSetting> InputFiles = new List<DataSourceSetting> { }; // List of input file information
-        // TODO: information about processing windows
 
         public List<PreProcessStep> PreProcessSteps = new List<PreProcessStep> { };  // Customization & Data Quality steps
-        public List<SignatureSetting> SignatureSettings { get; set; }  // Signature calculation settings
 
+        public List<SignatureSetting> SignatureSettings { get; set; } = new List<SignatureSetting>();  // Signature calculation settings
+        [JsonIgnore]
         public readonly List<string> DQFilterList = new List<string> {
             //"Status Flags",
                                                                                 "Zeros",
@@ -28,6 +30,7 @@ namespace AS.Config
             //     "Entire PMU",
             //     "Angle Wrapping"
         };
+        [JsonIgnore]
         public readonly List<string> CustomizationList = new List<string> { //"Scalar Repetition",
                                                                            // "Addition", 
                                                                             "Subtraction",
@@ -47,7 +50,8 @@ namespace AS.Config
             //    "Angle Conversion", 
             //    "Duplicate Signals"
         };
-        public List<SignatureCalMenu> SignatureList { get; set; } = new List<SignatureCalMenu> { 
+        [JsonIgnore]
+        public List<SignatureCalMenu> SignatureList { get; set; } = new List<SignatureCalMenu> {
             new SignatureCalMenu ("Sample Statistics", new List<SignatureCalMenu>{
                 new SignatureCalMenu("Mean"),
                 new SignatureCalMenu("Variance"),
@@ -72,10 +76,14 @@ namespace AS.Config
             new SignatureCalMenu("Rise"),
             new SignatureCalMenu("Histogram")
         };
+        [JsonProperty("WindowSize")]
         public int WindowSize { get; set; }
+        [JsonProperty("WindowOverlap")]
         public int WindowOverlap { get; set; }
+        [JsonProperty("DatawriteOutFrequency")]
         public int DatawriteOutFrequency { get; set; }
         private string _windowSizeStr;
+        [JsonIgnore]
         public string WindowSizeStr
         {
             get { return _windowSizeStr; }
@@ -89,6 +97,7 @@ namespace AS.Config
             }
         }
         private string _windowOverlapStr;
+        [JsonIgnore]
         public string WindowOverlapStr
         {
             get { return _windowOverlapStr; }
@@ -102,6 +111,7 @@ namespace AS.Config
             }
         }
         private string _datawriteOutFrequencyStr;
+        [JsonIgnore]
         public string DatawriteOutFrequencyStr
         {
             get { return _datawriteOutFrequencyStr; }
@@ -114,12 +124,32 @@ namespace AS.Config
                 }
             }
         }
+        [JsonProperty("DatawriteOutFrequencyUnit")]
         public string DatawriteOutFrequencyUnit { get; set; }
+        [JsonIgnore]
         public List<string> DatawriteOutFrequencyUnits { get; set; } = new List<string> { "Hours", "Days", "Weeks", "Month" };
         public void AddConfigStep(string stepName)
         {
             // Create new filter specification
             // Add to list of steps
+        }
+        public void SaveConfigFile()
+        {
+            var config = JsonConvert.SerializeObject(this, Formatting.None);
+            Console.WriteLine(config);
+            using (StreamWriter outputFile = new StreamWriter("Config.json"))
+            {
+                outputFile.WriteLine(config);
+            }
+        }
+
+        public void ReadConfigFile(string configFile)
+        {
+            using (StreamReader reader = File.OpenText(configFile))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                var config = (Configuration)serializer.Deserialize(reader, typeof(Configuration));
+            }
         }
     }
     public class SignatureCalMenu {
