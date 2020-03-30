@@ -59,6 +59,22 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
+
+        [JsonIgnore]
+        private string _currentCursor;
+        [JsonIgnore]
+        public string CurrentCursor
+        {
+            get
+            {
+                return _currentCursor;
+            }
+            set
+            {
+                _currentCursor = value;
+                OnPropertyChanged();
+            }
+        }
         private ObservableCollection<SignalViewModel> _inputChannels;
         public ObservableCollection<SignalViewModel> InputChannels
         {
@@ -71,6 +87,11 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 _inputChannels = value;
                 OnPropertyChanged();
             }
+        }
+
+        public virtual void AddSignal(SignalViewModel signal)
+        {
+            InputChannels.Add(signal);
         }
     }
 }

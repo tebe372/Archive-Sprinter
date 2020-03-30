@@ -200,7 +200,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             if (tree.Signal != null)
             {
-                SelectedStep.InputChannels.Add(tree.Signal);
+                SelectedStep.AddSignal(tree.Signal);
             }
             else
             {

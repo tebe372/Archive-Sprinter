@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ArchiveSprinterGUI.ViewModels.SettingsViewModels;
 
 namespace ArchiveSprinterGUI.Views.SettingsViews
 {
@@ -27,12 +28,13 @@ namespace ArchiveSprinterGUI.Views.SettingsViews
 
         private void MinuendOrDividentTextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-
+            
+            ((PreProcessStepViewModel)((TextBox)sender).DataContext).CurrentCursor = "Minuend";
         }
 
         private void SubtrahendOrDivisorTextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-
+            ((PreProcessStepViewModel)((TextBox)sender).DataContext).CurrentCursor = "Subtrahend";
         }
 
         private void MinuendOrDividentTextBoxLostFocus(object sender, RoutedEventArgs e)

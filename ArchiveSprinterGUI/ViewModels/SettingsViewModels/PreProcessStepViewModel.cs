@@ -29,6 +29,43 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         }      
         public string Name { get; set; }
 
+        public SignalViewModel Minuend
+        {
+            get
+            {
+                if (parameters.ContainsKey("Minuend"))
+                {
+                    return parameters["Minuend"];
+                }
+                return null;
+            }
+            set
+            {
+                parameters["Minuend"] = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public SignalViewModel Subtrahend
+        {
+            get
+            {
+                if (parameters.ContainsKey("Subtrahend"))
+                {
+                    return parameters["Subtrahend"];
+                }
+                return new SignalViewModel();
+            }
+            set
+            {
+                parameters["Subtrahend"] = value;
+                OnPropertyChanged();
+            }
+        }
+
+
+        private Dictionary<string, SignalViewModel> parameters = new Dictionary<string,SignalViewModel>();
+
         private bool _isComplete;
         [JsonIgnore]
         public bool IsComplete
@@ -64,59 +101,91 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             }
 
         }
+         
+        public override void AddSignal(SignalViewModel signal)
+        {
+            switch (Name)
+            {
+                case "Zeros":
+                case "Missing":
+                    InputChannels.Add(signal); // redundant with baseclass function
+                    break;
+                case "Subtraction":
+                    // Set parameter
+                    SetFocusedTextBox(signal);
+                    break;
+
+            }
+        }
+
+        internal bool SetFocusedTextBox(SignalViewModel signal)
+        {
+            if (CurrentCursor == "")
+            {
+                //No textbox selected
+                throw new Exception("Error! Please select a valid text box for this input signal!");
+            } else if (CurrentCursor == "Minuend")
+            {
+                // Subtraction 
+                if (signal.IsChecked)
+                {
+                    // Check to make sure subtrahend and minuend aren't the same signal
+                    if (Subtrahend != null && Subtrahend == signal)
+                    {
+                        throw new Exception("Minuend cannot be the same as the subtrahend!");
+                    }
+                    else // Set this as the minuend
+                    {
+                        Minuend = signal;
+                        Minuend.IsChecked = false;
+                    }
+                }
+                else
+                {
+                    // Check box unchecked, want to delete content in box
+                    if (signal == Minuend)
+                    {
+                        Minuend = new SignalViewModel(); // Set as blank value
+                    }
+                }
+                
+                CurrentCursor = "";
+                return true;
+            } else if (CurrentCursor == "Subtrahend")
+            {
+                // Subtraction 
+                if (signal.IsChecked)
+                {
+                    // Check to make sure subtrahend and minuend aren't the same signal
+                    if (Minuend != null && Minuend == signal)
+                    {
+                        throw new Exception("Subtrahend cannot be the same as the minuend!");
+                    }
+                    else // Set this as the minuend
+                    {
+                        Subtrahend = signal;
+                        Subtrahend.IsChecked = false;
+                    }
+                }
+                else
+                {
+                    // Check box unchecked, want to delete content in box
+                    if (signal == Minuend)
+                    {
+                        Subtrahend = new SignalViewModel(); // Set as blank value
+                    }
+                }
+
+                CurrentCursor = "";
+                return true;
+            }
+                return false;
+        }
 
         internal void GetSignalNameList()
         {
             _model.InputSignals = InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList();
         }
     }
-    /*
-    public class DropOutZeroFiltViewModel : PreProcessStepViewModel
-    {
-        public DropOutZeroFiltViewModel(DropOutZeroFilt m)
-        {
-            _model = m;
-        }
-        private DropOutZeroFilt _model;
-        public override PreProcessStep Model
-        {
-            get { return _model; }
-        }
-        private bool _setToNaN;
-        public bool SetToNaN 
-        {
-            get
-            {
-                return _model.SetToNaN;
-            }
-            set { _model.SetToNaN = value; } 
-        }
-
-        //private DropOutZeroFilt _model;
-        //public override PreProcessStep Model { get { return _model; } }
-    }
-   
-    public class SubtractionCustViewModel : PreProcessStepViewModel
-    {
-        private SignalViewModel _minuend;
-        public SignalViewModel Minuend
-        {
-            get { return _minuend; }
-            set {
-                _minuend = value;
-                OnPropertyChanged();
-            }
-        }
-        private SignalViewModel _subtrahend;
-        public SignalViewModel Subtrahend
-        {
-            get { return _subtrahend; }
-            set
-            {
-                _subtrahend = value;
-                OnPropertyChanged();
-            }
-        }
-    }
-    */
+    
 }
