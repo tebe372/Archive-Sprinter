@@ -7,7 +7,7 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <TabControl TabStripPlacement="Top" SelectedIndex="{Binding CurrentTabIndex}">
-        <TabItem Header="Data Source etc.">
+        <TabItem Header="Data Source">
             <local:DataSourceETC/>
         </TabItem>
         <TabItem Header="Data Quality and Customization">
@@ -16,7 +16,7 @@
         <TabItem Header="Signature Calculations">
             <local:SignatureCalSettingsView/>
         </TabItem>
-        <TabItem Header="Date Writer">
+        <TabItem Header="Data Writer">
             <local:DataWriterView/>
         </TabItem>
     </TabControl>

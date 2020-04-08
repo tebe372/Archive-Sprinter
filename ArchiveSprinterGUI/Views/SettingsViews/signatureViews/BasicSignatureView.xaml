@@ -26,12 +26,12 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Label Grid.Row="0" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Window Size:" HorizontalAlignment="Left"/>
+            <!--<Label Grid.Row="0" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Window Size:" HorizontalAlignment="Left"/>
             <TextBox IsEnabled="False" Grid.Row="0" Grid.Column="1" Margin="0,1" Width="120" Text="{Binding WindowSizeStr, UpdateSourceTrigger=LostFocus}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
             <TextBlock Grid.Row="0" Grid.Column="2" Margin="0,1" Width="50" Text=" seconds" VerticalAlignment="Center" HorizontalAlignment="Left"/>
             <Label Grid.Row="1" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Window Overlap:" HorizontalAlignment="Left"/>
             <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="1" Margin="0,1" Width="120" Text="{Binding WindowOverlapStr, UpdateSourceTrigger=LostFocus}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-            <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,1" Width="50" Text=" seconds" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,1" Width="50" Text=" seconds" VerticalAlignment="Center" HorizontalAlignment="Left"/>-->
             <Label Grid.Row="2" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Omit Nan?" HorizontalAlignment="Left"/>
             <CheckBox Grid.Row="2" Grid.Column="1" Margin="0,1" Width="120" IsChecked="{Binding OmitNan}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
         </Grid>
