@@ -178,11 +178,13 @@ namespace AS.DataManager
                         //thisSig.Data = firstSig.Data;
                         thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
                         thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
+                        thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
                     }
                     else
                     {
                         thisSig.Data = firstSig.Data.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
                         thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
+                        thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
                     }
                 }
                 else
@@ -190,11 +192,13 @@ namespace AS.DataManager
                     // if need to put several fragment together, find the first partial piece first
                     thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
                     thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
+                    thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
                     // if there are middle pieces, add the middle pieces which should be whole pieces
                     for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
                     {
                         thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
                         thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                        thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
                     }
                     // then add the last piece, which could be a partial piece too
                     //var lastSig = sig[possibleTimeStamps[possibleTimeStamps.Count - 1]];
@@ -216,6 +220,7 @@ namespace AS.DataManager
                 {
                     thisSig.Data.RemoveRange(windowSize, thisSig.Data.Count - windowSize);
                     thisSig.Flags.RemoveRange(windowSize, thisSig.Flags.Count - windowSize);
+                    thisSig.TimeStamps.RemoveRange(windowSize, thisSig.TimeStamps.Count - windowSize);
                     signals.Add(thisSig);
                 }
             }
@@ -243,6 +248,8 @@ namespace AS.DataManager
             TimePairs.Clear();
             FirstFile = true;
             DataCompleted = false;
+            FinishedSignatures.Clear();
+            _results.Clear();
         }
         public void WriteResults()
         {
@@ -257,16 +264,17 @@ namespace AS.DataManager
                 if (NumberOfSignatures == FinishedSignatures.Count)
                 {
                     var filename = "Signature_" + CurrentTimeStamp.ToString("yyyyMMdd_HHmmss") + ".csv";
-                    List<string> titleRow = new List<string> { "Signature" };
-                    List<string> PMURow = new List<string> { "PMUName" };
-                    List<string> SignalRow = new List<string> { "SignalName" };
+                    List<string> titleRow = new List<string> { "Time", "Time" };
+                    List<string> PMURow = new List<string> { "Time", "Time" };
+                    List<string> SignalRow = new List<string> { "Start Time", "End Time" };
                     bool firstTimeStamp = true;
                     using (StreamWriter outputFile = new StreamWriter(filename))
                     {
                         foreach (var time in timeStampsInRange)
                         {
-                            List<string> thisRow = new List<string> { time.ToString("yyyyMMdd_HHmmss") };
                             var signatures = _results[time];
+                            var endTime = signatures.FirstOrDefault().EndTimestamp;
+                            List<string> thisRow = new List<string> { time.ToString("yyyyMMdd_HHmmss.ffffff"), endTime.ToString("yyyyMMdd_HHmmss.ffffff") };
                             if (signatures.Count == NumberOfColumns)
                             {
                                 var groupedTitle = signatures.GroupBy(x => x.Title).OrderBy(x => x.Key);
@@ -316,25 +324,26 @@ namespace AS.DataManager
             }
         }
         private Dictionary<DateTime, List<SignatureResult>> _results = new Dictionary<DateTime, List<SignatureResult>>();
-        public void AddResults(DateTime timeStamp, string title, string pMUName, string signalName, double value)
+        public void AddResults(DateTime timeStamp, string title, string pMUName, string signalName, double value, DateTime lastTimeStamp)
         {
             if (!_results.ContainsKey(timeStamp))
             {
                 _results[timeStamp] = new List<SignatureResult>();
             }
-            _results[timeStamp].Add(new SignatureResult(timeStamp, title, pMUName, signalName, value));
+            _results[timeStamp].Add(new SignatureResult(timeStamp, lastTimeStamp, title, pMUName, signalName, value));
         }
 
     }
     public class SignatureResult
     {
-        public SignatureResult(DateTime timeStamp, string title, string pMUName, string signalName, double value)
+        public SignatureResult(DateTime timeStamp, DateTime endTtimeStamp, string title, string pMUName, string signalName, double value)
         {
             TimeStamp = timeStamp;
             Title = title;
             PMUName = pMUName;
             SignalName = signalName;
             Value = value;
+            EndTimestamp = endTtimeStamp;
         }
 
         public string Title { get; set; }
@@ -342,5 +351,6 @@ namespace AS.DataManager
         public string PMUName { get; set; }
         public string SignalName { get; set; }
         public double Value { get; set; }
+        public DateTime EndTimestamp { get; set; }
     }
 }

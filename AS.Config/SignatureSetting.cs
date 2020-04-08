@@ -129,7 +129,7 @@ namespace AS.Config
                     {
                         mean = SignatureCalculations.Mean(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Mean", item.PMUName, item.SignalName, mean);
+                    dataMngr.AddResults(startT, "Mean", item.PMUName, item.SignalName, mean, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Mean:");
                     Console.WriteLine(mean);
                 }
@@ -186,7 +186,7 @@ namespace AS.Config
                     {
                         variance = SignatureCalculations.Variance(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Variance", item.PMUName, item.SignalName, variance);
+                    dataMngr.AddResults(startT, "Variance", item.PMUName, item.SignalName, variance, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Variance:");
                     Console.WriteLine(variance);
                 }
@@ -244,7 +244,7 @@ namespace AS.Config
                     {
                         std = SignatureCalculations.Stdev(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Standard Deviation", item.PMUName, item.SignalName, std);
+                    dataMngr.AddResults(startT, "Standard Deviation", item.PMUName, item.SignalName, std, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Standard Deviation:");
                     Console.WriteLine(std);
                 }
@@ -302,7 +302,7 @@ namespace AS.Config
                     {
                         kurt = SignatureCalculations.Kurtosis(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Kurtosis", item.PMUName, item.SignalName, kurt);
+                    dataMngr.AddResults(startT, "Kurtosis", item.PMUName, item.SignalName, kurt, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Kurtosis:");
                     Console.WriteLine(kurt);
                 }
@@ -360,7 +360,7 @@ namespace AS.Config
                     {
                         skew = SignatureCalculations.Skewness(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Skewness", item.PMUName, item.SignalName, skew);
+                    dataMngr.AddResults(startT, "Skewness", item.PMUName, item.SignalName, skew, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Skewness:");
                     Console.WriteLine(skew);
                 }
@@ -505,7 +505,7 @@ namespace AS.Config
                     {
                         med = SignatureCalculations.Median(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Median", item.PMUName, item.SignalName, med);
+                    dataMngr.AddResults(startT, "Median", item.PMUName, item.SignalName, med, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Median:");
                     Console.WriteLine(med);
                 }
@@ -563,7 +563,7 @@ namespace AS.Config
                     {
                         max = SignatureCalculations.Maximum(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Maximum", item.PMUName, item.SignalName, max);
+                    dataMngr.AddResults(startT, "Maximum", item.PMUName, item.SignalName, max, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Maximum:");
                     Console.WriteLine(max);
                 }
@@ -621,7 +621,7 @@ namespace AS.Config
                     {
                         min = SignatureCalculations.Minimum(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Minimum", item.PMUName, item.SignalName, min);
+                    dataMngr.AddResults(startT, "Minimum", item.PMUName, item.SignalName, min, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Minimum:");
                     Console.WriteLine(min);
                 }
@@ -679,7 +679,7 @@ namespace AS.Config
                     {
                         range = SignatureCalculations.Range(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Range", item.PMUName, item.SignalName, range);
+                    dataMngr.AddResults(startT, "Range", item.PMUName, item.SignalName, range, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Range:");
                     Console.WriteLine(range);
                 }
@@ -737,7 +737,7 @@ namespace AS.Config
                     {
                         rise = SignatureCalculations.Rise(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Rise", item.PMUName, item.SignalName, rise);
+                    dataMngr.AddResults(startT, "Rise", item.PMUName, item.SignalName, rise, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Rise:");
                     Console.WriteLine(rise);
                 }
