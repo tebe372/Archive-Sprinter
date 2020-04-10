@@ -17,6 +17,7 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
@@ -32,6 +33,11 @@
             <Label Content="Signature Output Update Frequency: " Grid.Row="2" Grid.Column="0" Margin="2"/>
             <TextBox Text="{Binding DatawriteOutFrequencyStr}" Grid.Row="2" Grid.Column="1" Width="100" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
             <ComboBox SelectedItem="{Binding DatawriteOutFrequencyUnit}" Grid.Row="2" Grid.Column="2" Width="100" ItemsSource="{Binding DatawriteOutFrequencyUnits}" Margin="5,2,0,2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Label Content="Signature Output Directory: " Grid.Row="3" Grid.Column="0" Margin="2"/>
+            <TextBox Text="{Binding SignatureOutputDir}" Grid.Row="3" Grid.Column="1" Width="100" Margin="2" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Button Grid.Column="2" Grid.Row="3" Command="{Binding SelectSignatureOutputDir}" ToolTip="Select Signature Output Directory" Width="25" Height="25" HorizontalAlignment="Left" Margin="2">
+                <Image Source="/ArchiveSprinterGUI;component/Resources/open.gif" Stretch="Uniform"/>
+            </Button>
         </Grid>
     </Grid>
 </UserControl>

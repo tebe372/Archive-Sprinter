@@ -106,7 +106,15 @@ namespace AS.Config
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        break;
+                        if (endT <= dataMngr.FinalTimeStamp)
+                        {
+                            startT = endT.AddSeconds(-WindowOverlap);
+                            endT = startT.AddSeconds(WindowSize);
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                     else
                     {
@@ -482,7 +490,15 @@ namespace AS.Config
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        break;
+                        if (endT <= dataMngr.FinalTimeStamp)
+                        {
+                            startT = endT.AddSeconds(-WindowOverlap);
+                            endT = startT.AddSeconds(WindowSize);
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
                     else
                     {

@@ -83,12 +83,14 @@ namespace ArchiveSprinterGUI.ViewModels
         private async void _startArchiveSprinter(object obj)
         {
             //scan through all the steps of configuration and figure out needed signals.
+            var neededSignalList = _getAllNeededSignals();
 
             //send list of signals to reader control
 
             //read files first by sending this source parameter
             var source = SettingsVM.DataSourceVM.Model;
             var data = new FileReadingManager(source);
+            data.NeededSignalList = neededSignalList;
             data.FileReadingDone += FileReadingDone;
             data.DataReadingDone += DataReadingDone;
             DataMngr.Clean();
@@ -122,9 +124,25 @@ namespace ArchiveSprinterGUI.ViewModels
                 MessageBox.Show(ex.Message);
             }
         }
-        private void DataReadingDone(object sender)
+
+        private List<string> _getAllNeededSignals()
+        {
+            var signalList = new List<string>();
+            foreach (var item in SettingsVM.PreProcessSteps)
+            {
+                signalList.AddRange(item.InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList());
+            }
+            foreach (var item in SettingsVM.SignatureSettings)
+            {
+                signalList.AddRange(item.InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList());
+            }
+            return signalList.Distinct().ToList();
+        }
+
+        private void DataReadingDone(object sender, DateTime e)
         {
             DataMngr.DataCompleted = true;
+            DataMngr.FinalTimeStamp = e;
         }
 
         public DataStore DataMngr { get; set; }
@@ -180,6 +198,7 @@ namespace ArchiveSprinterGUI.ViewModels
             DataMngr.WindowSize = _settingsVM.Model.WindowSize;
             DataMngr.WindowOverlap = _settingsVM.Model.WindowOverlap;
             DataMngr.NumberOfSignatures = SettingsVM.SignatureSettings.Count();
+            DataMngr.SignatureOutputDir = SettingsVM.SignatureOutputDir;
             int columnCount = 0;
             foreach (var item in SettingsVM.SignatureSettings)
             {

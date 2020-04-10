@@ -151,6 +151,7 @@ namespace AS.Config
                 var config = (Configuration)serializer.Deserialize(reader, typeof(Configuration));
             }
         }
+        public string SignatureOutputDir { get; set; }
     }
     public class SignatureCalMenu {
         public SignatureCalMenu(string sig)

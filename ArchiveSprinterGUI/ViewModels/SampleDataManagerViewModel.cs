@@ -409,7 +409,7 @@ namespace ArchiveSprinterGUI.ViewModels
                                                                     var CGroup = new SignalTree("Phase C");
                                                                     CGroup.SignalCheckStatusChanged += _signalCheckStatusChanged;
                                                                     CGroup.Parent = mGroup;
-                                                                    CGroup.Signal.TypeAbbreviation = "VMC";
+                                                                    //CGroup.Signal.TypeAbbreviation = "VMC";
                                                                     foreach (var signal in phase)
                                                                     {
                                                                         var s = new SignalTree(signal);

@@ -27,6 +27,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AS.DataManager", "AS.DataMa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Numerics", "..\numerics\src\Numerics\Numerics.csproj", "{222EA06B-875C-4676-B746-7994B85B9086}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "DataReaderBase", "..\..\PDAT\DataReaderBase\DataReaderBase\DataReaderBase.vbproj", "{EF399FF1-82CA-4BF9-8162-217B162466C6}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PDAT_Reader", "..\..\PDAT\PDAT_Reader\PDAT_Reader.vbproj", "{E47435AC-0919-4D8B-AA34-930CB58A8D97}"
+	ProjectSection(ProjectDependencies) = postProject
+		{EF399FF1-82CA-4BF9-8162-217B162466C6} = {EF399FF1-82CA-4BF9-8162-217B162466C6}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Resources\Resources.projitems*{b8f54723-3799-4777-9bef-5e29991632b2}*SharedItemsImports = 13
@@ -76,6 +83,14 @@ Global
 		{222EA06B-875C-4676-B746-7994B85B9086}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{222EA06B-875C-4676-B746-7994B85B9086}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{222EA06B-875C-4676-B746-7994B85B9086}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EF399FF1-82CA-4BF9-8162-217B162466C6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EF399FF1-82CA-4BF9-8162-217B162466C6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EF399FF1-82CA-4BF9-8162-217B162466C6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EF399FF1-82CA-4BF9-8162-217B162466C6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E47435AC-0919-4D8B-AA34-930CB58A8D97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E47435AC-0919-4D8B-AA34-930CB58A8D97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E47435AC-0919-4D8B-AA34-930CB58A8D97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E47435AC-0919-4D8B-AA34-930CB58A8D97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

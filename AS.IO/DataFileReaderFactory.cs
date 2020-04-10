@@ -15,6 +15,7 @@ namespace AS.IO
             switch (type)
             {
                 case DataFileType.pdat:
+                    newReader = new PDATFileReader();
                     break;
                 case DataFileType.csv:
                     newReader = new CSVFileReader();

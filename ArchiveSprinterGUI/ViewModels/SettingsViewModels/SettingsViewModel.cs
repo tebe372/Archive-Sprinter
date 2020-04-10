@@ -56,6 +56,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             _preProcessSteps = new ObservableCollection<PreProcessStepViewModel>();
             _currentTabIndex = 0;
             //_oldTabIndex = 0;
+            _previousOutputDirectory = Environment.CurrentDirectory;
 
             SampleDataMngr = new SampleDataManagerViewModel();
             SampleDataMngr.SignalCheckStatusChanged += _signalCheckStatusChanged;
@@ -68,6 +69,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             SignatureStepSelected = new RelayCommand(_signatureStepSelected);
             DeleteASignatureStep = new RelayCommand(_deleteASignatureStep);
             DeSelectAllSteps = new RelayCommand(_deSelectAllSteps);
+            SelectSignatureOutputDir = new RelayCommand(_selectSignatureOutputDir);
         }
         private DataSourceSettingViewModel _dataSourceVM = new DataSourceSettingViewModel();
         public DataSourceSettingViewModel DataSourceVM 
@@ -405,14 +407,38 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
+        [JsonIgnore]
+        private string _previousSaveFileDirectory;
         internal void SaveConfigFile()
         {
             _model.SaveConfigFile();
             var config = JsonConvert.SerializeObject(this, Formatting.Indented);
             Console.WriteLine(config);
-            using (StreamWriter outputFile = new StreamWriter("Configvm.json"))
+
+            using (var fbd = new CommonSaveFileDialog())
             {
-                outputFile.WriteLine(config);
+                fbd.InitialDirectory = _previousSaveFileDirectory;
+                fbd.AddToMostRecentlyUsedList = true;
+                fbd.DefaultDirectory = _previousSaveFileDirectory;
+                fbd.EnsureFileExists = true;
+                fbd.EnsurePathExists = true;
+                fbd.EnsureReadOnly = false;
+                fbd.EnsureValidNames = true;
+                fbd.ShowPlacesList = true;
+                fbd.RestoreDirectory = true;
+                fbd.Title = "Please Select a Directory to Save Config file.";
+                fbd.Filters.Add(new CommonFileDialogFilter("Json files", "*.json"));
+                fbd.Filters.Add(new CommonFileDialogFilter("All files", "*.*"));
+                CommonFileDialogResult result = fbd.ShowDialog();
+                if (result == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(fbd.FileName))
+                {
+                    ConfigFile = fbd.FileName;
+                    _previousSaveFileDirectory = Path.GetDirectoryName(fbd.FileName);
+                    using (StreamWriter outputFile = new StreamWriter(ConfigFile))
+                    {
+                        outputFile.WriteLine(config);
+                    }
+                }
             }
         }
         private string _configFile;
@@ -426,16 +452,16 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             }
         }
         [JsonIgnore]
-        public string PreviousFileDirectory { get; private set; }
+        private string _previousFileDirectory;
         internal void OpenConfigFile()
         {
             using (var fbd = new CommonOpenFileDialog())
             {
-                fbd.InitialDirectory = PreviousFileDirectory;
+                fbd.InitialDirectory = _previousFileDirectory;
                 fbd.IsFolderPicker = false;
                 fbd.AddToMostRecentlyUsedList = true;
                 fbd.AllowNonFileSystemItems = false;
-                fbd.DefaultDirectory = PreviousFileDirectory;
+                fbd.DefaultDirectory = _previousFileDirectory;
                 fbd.EnsureFileExists = true;
                 fbd.EnsurePathExists = true;
                 fbd.EnsureReadOnly = false;
@@ -450,7 +476,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 if (result == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(fbd.FileName))
                 {
                     ConfigFile = fbd.FileName;
-                    PreviousFileDirectory = Path.GetDirectoryName(fbd.FileName);
+                    _previousFileDirectory = Path.GetDirectoryName(fbd.FileName);
                 }
             }
             if (File.Exists(ConfigFile))
@@ -470,6 +496,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 DataSourceVM = config.DataSourceVM;
                 DatawriteOutFrequencyStr = config.DatawriteOutFrequencyStr;
                 DatawriteOutFrequencyUnit = config.DatawriteOutFrequencyUnit;
+                SignatureOutputDir = config.SignatureOutputDir;
                 PreProcessSteps = new ObservableCollection<PreProcessStepViewModel>();
                 SignatureSettings = new ObservableCollection<SignatureSettingViewModel>();
                 foreach (var pre in config.PreProcessSteps)
@@ -506,6 +533,49 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
+        public string SignatureOutputDir
+        {
+            get { return _model.SignatureOutputDir; }
+            set
+            {
+                if (_model.SignatureOutputDir != value)
+                {
+                    _model.SignatureOutputDir = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private string _previousOutputDirectory;
+        [JsonIgnore]
+        public ICommand SelectSignatureOutputDir { get; set; }
+        private void _selectSignatureOutputDir(object obj)
+        {
+            using (var fbd = new CommonOpenFileDialog())
+            {
+                fbd.InitialDirectory = _previousOutputDirectory;
+                fbd.IsFolderPicker = true;
+                fbd.AddToMostRecentlyUsedList = true;
+                fbd.AllowNonFileSystemItems = false;
+                fbd.DefaultDirectory = _previousOutputDirectory;
+                fbd.EnsureFileExists = true;
+                fbd.EnsurePathExists = true;
+                fbd.EnsureReadOnly = false;
+                fbd.EnsureValidNames = true;
+                fbd.Multiselect = false;
+                fbd.ShowPlacesList = true;
+                fbd.RestoreDirectory = true;
+                fbd.Title = "Please Select Signature Output Directory.";
+                //fbd.Filters.Add(new CommonFileDialogFilter("CSV files", "*.csv"));
+                //fbd.Filters.Add(new CommonFileDialogFilter("All files", "*.*"));
+                CommonFileDialogResult result = fbd.ShowDialog();
+                if (result == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(fbd.FileName))
+                {
+                    SignatureOutputDir = fbd.FileName;
+                    _previousOutputDirectory = fbd.FileName;
+                }
+            }
+        }
+
 
         //string jsonTypeNameAll = JsonConvert.SerializeObject(SignatureSettings, Formatting.Indented, new JsonSerializerSettings
         //{

@@ -43,20 +43,33 @@ namespace AS.IO
                     throw ex;
                 }
                 Array.Sort(allFiles);
+                DateTime lastTimeStamp = new DateTime();
                 foreach (var file in allFiles)
                 {
                     if (Utilities.CheckDataFileMatch(file, FileType))
                     {
                         var signals = reader.Read(file);
-                        OnFileReadingDone(signals);
+                        var keepSig = new List<Signal>();
+                        foreach (var item in signals)
+                        {
+                            var sig = item.PMUName + "_" + item.SignalName;
+                            if (NeededSignalList.Contains(sig))
+                            {
+                                keepSig.Add(item);
+                            }
+                        }
+                        lastTimeStamp = keepSig.FirstOrDefault().TimeStamps.LastOrDefault();
+                        OnFileReadingDone(keepSig);
                     }
                 }
-                OnDataReadingDone();
+                OnDataReadingDone(lastTimeStamp);
             }
         }
 
         public string SourceDirectory { get; set; }
         public DataFileType FileType { get; set; }
+        public List<string> NeededSignalList { get; set; }
+
         //used when done reading one file
         public delegate void FileReadingDoneEventhandler(object sender, List<Signal> e);
         public event FileReadingDoneEventhandler FileReadingDone;
@@ -65,11 +78,11 @@ namespace AS.IO
             FileReadingDone?.Invoke(this, e);
         }
         //used when done reading all files in the directory
-        public delegate void DataReadingDoneEventhandler(object sender);
+        public delegate void DataReadingDoneEventhandler(object sender, DateTime e);
         public event DataReadingDoneEventhandler DataReadingDone;
-        protected virtual void OnDataReadingDone()
+        protected virtual void OnDataReadingDone(DateTime e)
         {
-            DataReadingDone?.Invoke(this);
+            DataReadingDone?.Invoke(this, e);
         }
 
 

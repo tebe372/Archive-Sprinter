@@ -68,6 +68,8 @@ namespace AS.DataManager
         public int WindowSize { get; set; }
         public int NumberOfSignatures { get; set; }
         public List<string> FinishedSignatures { get; set; } = new List<string>();
+        public string SignatureOutputDir { get; set; }
+        public DateTime FinalTimeStamp { get; set; }
 
         private DateTime _getNextWriteOutTime(DateTime current, int interval, string unit)
         {
@@ -261,68 +263,103 @@ namespace AS.DataManager
                 var expectedRows = (timeSpan.TotalSeconds - WindowSize) / (WindowSize - WindowOverlap) + 1;
                 var timeStampsInRange = _results.Keys.Where(x => x >= CurrentTimeStamp && x < NextTimeStamp);
                 var rows = timeStampsInRange.Count();
-                if (NumberOfSignatures == FinishedSignatures.Count)
-                {
-                    var filename = "Signature_" + CurrentTimeStamp.ToString("yyyyMMdd_HHmmss") + ".csv";
-                    List<string> titleRow = new List<string> { "Time", "Time" };
-                    List<string> PMURow = new List<string> { "Time", "Time" };
-                    List<string> SignalRow = new List<string> { "Start Time", "End Time" };
-                    bool firstTimeStamp = true;
-                    using (StreamWriter outputFile = new StreamWriter(filename))
-                    {
-                        foreach (var time in timeStampsInRange)
-                        {
-                            var signatures = _results[time];
-                            var endTime = signatures.FirstOrDefault().EndTimestamp;
-                            List<string> thisRow = new List<string> { time.ToString("yyyyMMdd_HHmmss.ffffff"), endTime.ToString("yyyyMMdd_HHmmss.ffffff") };
-                            if (signatures.Count == NumberOfColumns)
-                            {
-                                var groupedTitle = signatures.GroupBy(x => x.Title).OrderBy(x => x.Key);
-                                foreach (var group in groupedTitle)
-                                {
-                                    var title = group.Key;
-                                    var groupedByPMU = group.GroupBy(x => x.PMUName).OrderBy(x => x.Key);
-                                    foreach (var group2 in groupedByPMU)
-                                    {
-                                        var pmu = group2.Key;
-                                        var orderedByName = group2.OrderBy(x => x.SignalName);
-                                        foreach (var sig in orderedByName)
-                                        {
-                                            if (firstTimeStamp)
-                                            {
-                                                titleRow.Add(title);
-                                                PMURow.Add(pmu);
-                                                SignalRow.Add(sig.SignalName);
-                                            }
-                                            thisRow.Add(sig.Value.ToString());
-                                        }
-                                    }
-                                }
-                            }
-                            if (firstTimeStamp)
-                            {
-                                outputFile.WriteLine(String.Join(",", titleRow));
-                                outputFile.WriteLine(String.Join(",", PMURow));
-                                outputFile.WriteLine(String.Join(",", SignalRow));
-                            }
-                            outputFile.WriteLine(String.Join(",", thisRow));
-                            firstTimeStamp = false;
-                        }
-                    }
-                    break;
-                }
-                else if (rows == expectedRows)
-                {
+                var timeStampsAfter = _results.Keys.Where(x => x >= NextTimeStamp);
 
+                if (rows == expectedRows)
+                {
+                    _writeASignatureOutput(timeStampsInRange);
                     CurrentTimeStamp = NextTimeStamp;
                     NextTimeStamp = _getNextWriteOutTime(CurrentTimeStamp, DatawriteOutFrequency, DatawriteOutFrequencyUnit);
                 }
+                else if (NumberOfSignatures == FinishedSignatures.Count)
+                {
+                    if (timeStampsAfter.Count() > 0)
+                    {
+                        if (timeStampsInRange.Count() > 0)
+                        {
+                            _writeASignatureOutput(timeStampsInRange);
+                        }
+                        CurrentTimeStamp = NextTimeStamp;
+                        NextTimeStamp = _getNextWriteOutTime(CurrentTimeStamp, DatawriteOutFrequency, DatawriteOutFrequencyUnit);
+                    }
+                    else
+                    {
+                        if (timeStampsInRange.Count() > 0)
+                        {
+                            _writeASignatureOutput(timeStampsInRange);
+                        }
+                        break;
+                    }
+                }
                 else
                 {
-                    Thread.Sleep(500);
+                    if (timeStampsAfter.Count() > 0)
+                    {
+                        if (timeStampsInRange.Count() > 0)
+                        {
+                            _writeASignatureOutput(timeStampsInRange);
+                        }
+                        CurrentTimeStamp = NextTimeStamp;
+                        NextTimeStamp = _getNextWriteOutTime(CurrentTimeStamp, DatawriteOutFrequency, DatawriteOutFrequencyUnit);
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                    }
                 }
             }
         }
+
+        private void _writeASignatureOutput(IEnumerable<DateTime> timeStampsInRange)
+        {
+            var filename = SignatureOutputDir + "//Signature_" + CurrentTimeStamp.ToString("yyyyMMdd_HHmmss") + ".csv";
+            List<string> titleRow = new List<string> { "Time", "Time" };
+            List<string> PMURow = new List<string> { "Time", "Time" };
+            List<string> SignalRow = new List<string> { "Start Time", "End Time" };
+            bool firstTimeStamp = true;
+            using (StreamWriter outputFile = new StreamWriter(filename))
+            {
+                foreach (var time in timeStampsInRange)
+                {
+                    var signatures = _results[time];
+                    var endTime = signatures.FirstOrDefault().EndTimestamp;
+                    List<string> thisRow = new List<string> { time.ToString("yyyyMMdd_HHmmss.ffffff"), endTime.ToString("yyyyMMdd_HHmmss.ffffff") };
+                    if (signatures.Count == NumberOfColumns)
+                    {
+                        var groupedTitle = signatures.GroupBy(x => x.Title).OrderBy(x => x.Key);
+                        foreach (var group in groupedTitle)
+                        {
+                            var title = group.Key;
+                            var groupedByPMU = group.GroupBy(x => x.PMUName).OrderBy(x => x.Key);
+                            foreach (var group2 in groupedByPMU)
+                            {
+                                var pmu = group2.Key;
+                                var orderedByName = group2.OrderBy(x => x.SignalName);
+                                foreach (var sig in orderedByName)
+                                {
+                                    if (firstTimeStamp)
+                                    {
+                                        titleRow.Add(title);
+                                        PMURow.Add(pmu);
+                                        SignalRow.Add(sig.SignalName);
+                                    }
+                                    thisRow.Add(sig.Value.ToString());
+                                }
+                            }
+                        }
+                    }
+                    if (firstTimeStamp)
+                    {
+                        outputFile.WriteLine(String.Join(",", titleRow));
+                        outputFile.WriteLine(String.Join(",", PMURow));
+                        outputFile.WriteLine(String.Join(",", SignalRow));
+                    }
+                    outputFile.WriteLine(String.Join(",", thisRow));
+                    firstTimeStamp = false;
+                }
+            }
+        }
+
         private Dictionary<DateTime, List<SignatureResult>> _results = new Dictionary<DateTime, List<SignatureResult>>();
         public void AddResults(DateTime timeStamp, string title, string pMUName, string signalName, double value, DateTime lastTimeStamp)
         {

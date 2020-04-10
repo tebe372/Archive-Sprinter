@@ -46,9 +46,18 @@
     <Compile Include="DataFileReaderFactory.cs" />
     <Compile Include="FileReadingManager.cs" />
     <Compile Include="IDataFileReader.cs" />
+    <Compile Include="PDATFileReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\PDAT\DataReaderBase\DataReaderBase\DataReaderBase.vbproj">
+      <Project>{EF399FF1-82CA-4BF9-8162-217B162466C6}</Project>
+      <Name>DataReaderBase</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\PDAT\PDAT_Reader\PDAT_Reader.vbproj">
+      <Project>{e47435ac-0919-4d8b-aa34-930cb58a8d97}</Project>
+      <Name>PDAT_Reader</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AS.Config\AS.Config.csproj">
       <Project>{39a7d9d2-0ce2-4240-bb01-43924eeccf1e}</Project>
       <Name>AS.Config</Name>
