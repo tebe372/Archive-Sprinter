@@ -1,5 +1,6 @@
 ﻿using AS.Core.Models;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace AS.DataManager
             StartTimeStamps = new List<DateTime>();
             EndTimeStamps = new List<DateTime>();
             TimePairs = new Dictionary<DateTime, DateTime>();
+            //FirstFileRead = false;
         }
         // when all data in the data source directory are read and preprocessed and put in the store
         public bool DataCompleted { get; set; }
@@ -60,7 +62,6 @@ namespace AS.DataManager
                 }
             }
         }
-
         public int NumberOfColumns { get; set; }
         public DateTime NextTimeStamp { get; set; }
         public DateTime CurrentTimeStamp { get; set; }
@@ -70,19 +71,31 @@ namespace AS.DataManager
         public List<string> FinishedSignatures { get; set; } = new List<string>();
         public string SignatureOutputDir { get; set; }
         public DateTime FinalTimeStamp { get; set; }
-
+        //public bool FirstFileRead { get; set; }
+        private object _theEndTimeStampsLock = new object();
+        private object _theResultsLock = new object();
         private DateTime _getNextWriteOutTime(DateTime current, int interval, string unit)
         {
+            DateTime result;
+            DateTime t;
             switch (unit)
             {
                 case "Hours":
-                    return current.AddHours(interval);
+                    t = current.AddHours(interval);
+                    result = new DateTime(t.Year, t.Month, t.Day, t.Hour, 0, 0, 0);
+                    return result;
                 case "Days":
-                    return current.AddDays(interval);
+                    t = current.AddDays(interval);
+                    result = new DateTime(t.Year, t.Month, t.Day);
+                    return result;
                 case "Weeks":
-                    return current.AddDays(interval * 7);
+                    t = current.AddDays(interval * 7);
+                    result = new DateTime(t.Year, t.Month, t.Day);
+                    return result;
                 case "Months":
-                    return current.AddMonths(interval);
+                    t = current.AddMonths(interval);
+                    result = new DateTime(t.Year, t.Month, 0);
+                    return result;
                 default:
                     return current;
             }
@@ -95,6 +108,7 @@ namespace AS.DataManager
                 if (FirstFile)
                 {
                     TimeZero = startT;
+                    //FirstFileRead = true;
                     FirstFile = false;
                 }
                 else if (TimeZero >= startT)
@@ -103,7 +117,11 @@ namespace AS.DataManager
                 }
                 StartTimeStamps.Add(startT);
                 var endT = e.FirstOrDefault().TimeStamps.LastOrDefault();
-                EndTimeStamps.Add(endT);
+                lock (_theEndTimeStampsLock)
+                {
+                    EndTimeStamps.Add(endT);
+                }
+                Console.WriteLine("Added end timestamp: " + endT.ToString("yyyyMMdd_HHmmss.ffffff") + " in " + e.FirstOrDefault().TimeStamps.Count() + " timestamps.");
                 TimePairs[endT] = startT;
                 foreach (var sig in e)
                 {
@@ -117,49 +135,64 @@ namespace AS.DataManager
             }
         }
 
+        public bool HasDataAfter(DateTime startT, DateTime endT)
+        {
+            bool result;
+            lock (_theEndTimeStampsLock)
+            {
+                EndTimeStamps.Sort();
+                result = endT <= EndTimeStamps.LastOrDefault();
+            }
+            return result;
+        }
+
         public bool GetData(List<Signal> signals, DateTime startT, DateTime endT, int windowSize, List<string> signalNames)
         {
             bool foundStart = false;
-            EndTimeStamps.Sort();
+            List<DateTime> possibleTimeStamps = new List<DateTime>();
+            lock (_theEndTimeStampsLock)
+            {
+                EndTimeStamps.Sort();
 
-            int i1;
-            int i2 = 0;
-            for (i1 = 0; i1 < EndTimeStamps.Count; i1++)
-            {
-                var firstEnd = EndTimeStamps[i1];
-                //find the first fragment that the start time stamp lies in.
-                if (startT <= firstEnd)
+                int i1;
+                int i2 = 0;
+                for (i1 = 0; i1 < EndTimeStamps.Count; i1++)
                 {
-                    foundStart = true;
-                    //find the last fragment that the end time stamp lines in
-                    var endIdx = _findEndTimeFrame(endT, i1, EndTimeStamps);
-                    if (endIdx == null)
+                    var firstEnd = EndTimeStamps[i1];
+                    //find the first fragment that the start time stamp lies in.
+                    if (startT <= firstEnd)
                     {
-                        // can not find end, the end might have not been read yet.
-                        return false;
+                        foundStart = true;
+                        //find the last fragment that the end time stamp lines in
+                        var endIdx = _findEndTimeFrame(endT, i1, EndTimeStamps);
+                        if (endIdx == null)
+                        {
+                            // can not find end, the end might have not been read yet.
+                            return false;
+                        }
+                        else
+                        {
+                            i2 = (int)endIdx;
+                        }
+                        break;
                     }
-                    else
-                    {
-                        i2 = (int)endIdx;
-                    }
-                    break;
                 }
+                if (!foundStart)
+                {
+                    return false;
+                }
+                //else
+                //{
+                //    //delete all time stamp before i1
+                //    EndTimeStamps.RemoveRange(0, i1);
+                //    //for (int i = i1 - 1; i >= 0; i--)
+                //    //{
+                //    //    EndTimeStamps.RemoveAt(i);
+                //    //}
+                //}
+                //find the continuous time stamps that will be concatenated
+                possibleTimeStamps = EndTimeStamps.GetRange(i1, i2 - i1 + 1);
             }
-            if (!foundStart)
-            {
-                return false;
-            }
-            //else
-            //{
-            //    //delete all time stamp before i1
-            //    EndTimeStamps.RemoveRange(0, i1);
-            //    //for (int i = i1 - 1; i >= 0; i--)
-            //    //{
-            //    //    EndTimeStamps.RemoveAt(i);
-            //    //}
-            //}
-            //find the continuous time stamps that will be concatenated
-            var possibleTimeStamps = EndTimeStamps.GetRange(i1, i2 - i1 + 1);
             foreach (var name in signalNames)
             {
 
@@ -167,20 +200,28 @@ namespace AS.DataManager
                 var firstSig = sig[possibleTimeStamps[0]];
                 var thisSig = new Signal(firstSig.PMUName, firstSig.SignalName);
                 var firstDataPoint = firstSig.TimeStamps.IndexOf(startT);
-                if (firstDataPoint == -1)
+                var lastSig = sig[possibleTimeStamps.LastOrDefault()];
+                var lastDataPoint = lastSig.TimeStamps.IndexOf(endT);
+                if (firstDataPoint == -1 && lastDataPoint == -1)
                 {
                     return false;
                 }
                 if (possibleTimeStamps.Count == 1)
                 {
                     // if here's only 1 fragment, find the start and end point and get data between that range
-                    var lastDataPoint = firstSig.TimeStamps.IndexOf(endT);
+                    //var lastDataPoint = firstSig.TimeStamps.IndexOf(endT);
                     if (lastDataPoint == -1)
                     {
                         //thisSig.Data = firstSig.Data;
                         thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
                         thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
                         thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
+                    }
+                    else if (firstDataPoint == -1)
+                    {
+                        thisSig.Data = firstSig.Data.GetRange(0, lastDataPoint + 1);
+                        thisSig.Flags = firstSig.Flags.GetRange(0, lastDataPoint + 1);
+                        thisSig.TimeStamps = firstSig.TimeStamps.GetRange(0, lastDataPoint + 1);
                     }
                     else
                     {
@@ -191,16 +232,53 @@ namespace AS.DataManager
                 }
                 else
                 {
-                    // if need to put several fragment together, find the first partial piece first
-                    thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
-                    thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
-                    thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
-                    // if there are middle pieces, add the middle pieces which should be whole pieces
-                    for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
+
+                    if (lastDataPoint == -1)
                     {
-                        thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
-                        thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
-                        thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                        thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
+                        thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
+                        thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
+                        for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
+                        {
+                            if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
+                            {
+                                thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
+                                thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                                thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                            }
+                        }
+                    }
+                    else if (firstDataPoint == -1)
+                    {
+                        for (int ii = 0; ii < possibleTimeStamps.Count; ii++)
+                        {
+                            if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
+                            {
+                                thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
+                                thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                                thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                            }
+                            else
+                            {
+                                thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data.GetRange(0, lastDataPoint + 1));
+                                thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags.GetRange(0, lastDataPoint + 1));
+                                thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps.GetRange(0, lastDataPoint + 1));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        // if need to put several fragment together, find the first partial piece first
+                        thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
+                        thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
+                        thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
+                        // if there are middle pieces, add the middle pieces which should be whole pieces
+                        for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
+                        {
+                            thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
+                            thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                            thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                        }
                     }
                     // then add the last piece, which could be a partial piece too
                     //var lastSig = sig[possibleTimeStamps[possibleTimeStamps.Count - 1]];
@@ -214,17 +292,18 @@ namespace AS.DataManager
                     //    thisSig.Data.AddRange(lastSig.Data.GetRange(0, lastDatPoint + 1));
                     //}
                 }
-                if (thisSig.Data.Count < windowSize)
-                {
-                    return false;
-                }
-                else
+                //if (thisSig.Data.Count < windowSize)
+                //{
+                //    return false;
+                //}
+                //else
+                if (thisSig.Data.Count > windowSize)
                 {
                     thisSig.Data.RemoveRange(windowSize, thisSig.Data.Count - windowSize);
                     thisSig.Flags.RemoveRange(windowSize, thisSig.Flags.Count - windowSize);
                     thisSig.TimeStamps.RemoveRange(windowSize, thisSig.TimeStamps.Count - windowSize);
-                    signals.Add(thisSig);
                 }
+                signals.Add(thisSig);
             }
             //EndTimeStamps.RemoveRange(0, i1);
             return true;
@@ -252,18 +331,31 @@ namespace AS.DataManager
             DataCompleted = false;
             FinishedSignatures.Clear();
             _results.Clear();
+            //FirstFileRead = false;
         }
         public void WriteResults()
         {
-            CurrentTimeStamp = TimeZero;
+            if (!FirstFile)
+            {
+                CurrentTimeStamp = TimeZero;
+            }
+            else
+            {
+                Thread.Sleep(1000);
+                return;
+            }
             NextTimeStamp = _getNextWriteOutTime(CurrentTimeStamp, DatawriteOutFrequency, DatawriteOutFrequencyUnit);
             while (true)
             {
                 var timeSpan = NextTimeStamp - CurrentTimeStamp;
                 var expectedRows = (timeSpan.TotalSeconds - WindowSize) / (WindowSize - WindowOverlap) + 1;
-                var timeStampsInRange = _results.Keys.Where(x => x >= CurrentTimeStamp && x < NextTimeStamp);
+                List<DateTime> timeStampsInRange, timeStampsAfter;
+                lock (_theResultsLock)
+                {
+                    timeStampsInRange = _results.Keys.Where(x => x >= CurrentTimeStamp && x < NextTimeStamp).ToList();
+                    timeStampsAfter = _results.Keys.Where(x => x >= NextTimeStamp).ToList();
+                }
                 var rows = timeStampsInRange.Count();
-                var timeStampsAfter = _results.Keys.Where(x => x >= NextTimeStamp);
 
                 if (rows == expectedRows)
                 {
@@ -310,7 +402,7 @@ namespace AS.DataManager
             }
         }
 
-        private void _writeASignatureOutput(IEnumerable<DateTime> timeStampsInRange)
+        private void _writeASignatureOutput(List<DateTime> timeStampsInRange)
         {
             var filename = SignatureOutputDir + "//Signature_" + CurrentTimeStamp.ToString("yyyyMMdd_HHmmss") + ".csv";
             List<string> titleRow = new List<string> { "Time", "Time" };
@@ -319,32 +411,52 @@ namespace AS.DataManager
             bool firstTimeStamp = true;
             using (StreamWriter outputFile = new StreamWriter(filename))
             {
+                timeStampsInRange.Sort();
                 foreach (var time in timeStampsInRange)
                 {
-                    var signatures = _results[time];
+                    ConcurrentBag<SignatureResult> signatures;
+                    lock (_theResultsLock)
+                    {
+                        signatures = _results[time];
+                    }
+                    while (signatures.Count < NumberOfColumns)
+                    {
+                        Thread.Sleep(500);
+                        lock (_theResultsLock)
+                        {
+                            signatures = _results[time];
+                        }
+                    }
                     var endTime = signatures.FirstOrDefault().EndTimestamp;
                     List<string> thisRow = new List<string> { time.ToString("yyyyMMdd_HHmmss.ffffff"), endTime.ToString("yyyyMMdd_HHmmss.ffffff") };
-                    if (signatures.Count == NumberOfColumns)
+
+                    //if (signatures.Count > NumberOfColumns)
+                    //{
+                    //    var keep = signatures.GroupBy(x => x.EndTimestamp - x.TimeStamp).OrderByDescending(g => g.Key).First();
+                    //    signatures;
+                    //    foreach (var item in keep)
+                    //    {
+                    //        signatures.Add(item);
+                    //    }
+                    //}
+                    var groupedTitle = signatures.GroupBy(x => x.Title).OrderBy(x => x.Key);
+                    foreach (var group in groupedTitle)
                     {
-                        var groupedTitle = signatures.GroupBy(x => x.Title).OrderBy(x => x.Key);
-                        foreach (var group in groupedTitle)
+                        var title = group.Key;
+                        var groupedByPMU = group.GroupBy(x => x.PMUName).OrderBy(x => x.Key);
+                        foreach (var group2 in groupedByPMU)
                         {
-                            var title = group.Key;
-                            var groupedByPMU = group.GroupBy(x => x.PMUName).OrderBy(x => x.Key);
-                            foreach (var group2 in groupedByPMU)
+                            var pmu = group2.Key;
+                            var orderedByName = group2.OrderBy(x => x.SignalName);
+                            foreach (var sig in orderedByName)
                             {
-                                var pmu = group2.Key;
-                                var orderedByName = group2.OrderBy(x => x.SignalName);
-                                foreach (var sig in orderedByName)
+                                if (firstTimeStamp)
                                 {
-                                    if (firstTimeStamp)
-                                    {
-                                        titleRow.Add(title);
-                                        PMURow.Add(pmu);
-                                        SignalRow.Add(sig.SignalName);
-                                    }
-                                    thisRow.Add(sig.Value.ToString());
+                                    titleRow.Add(title);
+                                    PMURow.Add(pmu);
+                                    SignalRow.Add(sig.SignalName);
                                 }
+                                thisRow.Add(sig.Value.ToString());
                             }
                         }
                     }
@@ -360,14 +472,31 @@ namespace AS.DataManager
             }
         }
 
-        private Dictionary<DateTime, List<SignatureResult>> _results = new Dictionary<DateTime, List<SignatureResult>>();
+        private ConcurrentDictionary<DateTime, ConcurrentBag<SignatureResult>> _results = new ConcurrentDictionary<DateTime, ConcurrentBag<SignatureResult>>();
         public void AddResults(DateTime timeStamp, string title, string pMUName, string signalName, double value, DateTime lastTimeStamp)
         {
-            if (!_results.ContainsKey(timeStamp))
+            lock (_theResultsLock)
             {
-                _results[timeStamp] = new List<SignatureResult>();
+                if (!_results.ContainsKey(timeStamp))
+                {
+                    _results[timeStamp] = new ConcurrentBag<SignatureResult>();
+                }
+                var item = _results[timeStamp].Where(x => x.Title == title && x.PMUName == pMUName && x.SignalName == signalName);
+                if (item.Any())
+                {
+                    var tsp = item.First().EndTimestamp - item.First().TimeStamp;
+                    if (tsp < lastTimeStamp - timeStamp)
+                    {
+                        item.First().TimeStamp = timeStamp;
+                        item.First().EndTimestamp = lastTimeStamp;
+                        item.First().Value = value;
+                    }
+                }
+                else
+                {
+                    _results[timeStamp].Add(new SignatureResult(timeStamp, lastTimeStamp, title, pMUName, signalName, value));
+                }
             }
-            _results[timeStamp].Add(new SignatureResult(timeStamp, lastTimeStamp, title, pMUName, signalName, value));
         }
 
     }

@@ -95,6 +95,7 @@ namespace AS.Config
             //if there are still data to be processed
             // two situation: 1, un-processed data available; 2, has to wait for data being read.
             // while waiting, keep checking back
+
             var startT = dataMngr.TimeZero;
             var endT = startT.AddSeconds(WindowSize);
 
@@ -102,19 +103,20 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
-                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        if (endT <= dataMngr.FinalTimeStamp)
-                        {
-                            startT = endT.AddSeconds(-WindowOverlap);
-                            endT = startT.AddSeconds(WindowSize);
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        break;
                     }
                     else
                     {
@@ -122,6 +124,34 @@ namespace AS.Config
                         continue;
                     }
                 }
+                //if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                //{
+                //    if (dataMngr.DataCompleted)
+                //    {
+                //        if (endT <= dataMngr.FinalTimeStamp)
+                //        {
+                //            startT = endT.AddSeconds(-WindowOverlap);
+                //            endT = startT.AddSeconds(WindowSize);
+                //        }
+                //        else
+                //        {
+                //            break;
+                //        }
+                //    }
+                //    else
+                //    {
+                //        if (dataMngr.HasDataAfter(startT, endT))
+                //        {
+                //            startT = endT.AddSeconds(-WindowOverlap);
+                //            endT = startT.AddSeconds(WindowSize);
+                //        }
+                //        else
+                //        {
+                //            Thread.Sleep(500);
+                //        }
+                //        continue;
+                //    }
+                //}
                 foreach (var item in signals)
                 {
                     double mean = Double.NaN;
@@ -137,7 +167,7 @@ namespace AS.Config
                     {
                         mean = SignatureCalculations.Mean(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Mean", item.PMUName, item.SignalName, mean, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Mean", item.PMUName, item.SignalName, mean, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Mean:");
                     Console.WriteLine(mean);
                 }
@@ -486,19 +516,20 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
-                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        if (endT <= dataMngr.FinalTimeStamp)
-                        {
-                            startT = endT.AddSeconds(-WindowOverlap);
-                            endT = startT.AddSeconds(WindowSize);
-                        }
-                        else
-                        {
-                            break;
-                        }
+                        break;
                     }
                     else
                     {
@@ -506,6 +537,26 @@ namespace AS.Config
                         continue;
                     }
                 }
+                //if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                //{
+                //    if (dataMngr.DataCompleted)
+                //    {
+                //        if (endT <= dataMngr.FinalTimeStamp)
+                //        {
+                //            startT = endT.AddSeconds(-WindowOverlap);
+                //            endT = startT.AddSeconds(WindowSize);
+                //        }
+                //        else
+                //        {
+                //            break;
+                //        }
+                //    }
+                //    else
+                //    {
+                //        Thread.Sleep(500);
+                //        continue;
+                //    }
+                //}
                 foreach (var item in signals)
                 {
                     double med = Double.NaN;
@@ -521,7 +572,7 @@ namespace AS.Config
                     {
                         med = SignatureCalculations.Median(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Median", item.PMUName, item.SignalName, med, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Median", item.PMUName, item.SignalName, med, item.TimeStamps.LastOrDefault());
                     Console.WriteLine("Median:");
                     Console.WriteLine(med);
                 }

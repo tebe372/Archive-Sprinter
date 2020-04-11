@@ -48,6 +48,7 @@ namespace AS.IO
                 {
                     if (Utilities.CheckDataFileMatch(file, FileType))
                     {
+                        Console.WriteLine("Reading " + file);
                         var signals = reader.Read(file);
                         var keepSig = new List<Signal>();
                         foreach (var item in signals)

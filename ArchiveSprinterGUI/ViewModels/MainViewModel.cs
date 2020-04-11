@@ -30,6 +30,7 @@ namespace ArchiveSprinterGUI.ViewModels
             DataMngr = new DataStore();
             SaveConfigFile = new RelayCommand(_saveConfigFile);
             OpenConfigFile = new RelayCommand(_openConfigFile);
+            _numberOfFilesRead = 0;
         }
         private SampleDataMngr _sampleDataMgr;
         private ViewModelBase _currentView;
@@ -97,7 +98,7 @@ namespace ArchiveSprinterGUI.ViewModels
             // this need to be put on a thread
             try
             {
-                await Task.Run(async () => { await data.Start(); }) ;
+                Task.Run(async () => { await data.Start(); }) ;
             }
             catch (Exception ex)
             {
@@ -105,10 +106,13 @@ namespace ArchiveSprinterGUI.ViewModels
             }
             //data.Start();
             // call another function that start the signature calculation, might be the computation/data manager, on a thread too.
-            Thread.Sleep(500);
+            while (_numberOfFilesRead <= 10)
+            {
+                Thread.Sleep(500);
+            }
             try
             {
-                await Task.Run(async () => { await _signatureCalculation(); });                
+                Task.Run(async () => { await _signatureCalculation(); });                
             }
             catch (Exception ex)
             {
@@ -117,7 +121,7 @@ namespace ArchiveSprinterGUI.ViewModels
             Thread.Sleep(500);
             try
             {
-                await Task.Run(async () => { await _writeSignatureResults(); });
+                Task.Run(async () => { await _writeSignatureResults(); });
             }
             catch (Exception ex)
             {
@@ -146,11 +150,12 @@ namespace ArchiveSprinterGUI.ViewModels
         }
 
         public DataStore DataMngr { get; set; }
-
+        private int _numberOfFilesRead;
         private void FileReadingDone(object sender, List<Signal> e)
         {
             // this function call have been put on thread, and put the data that have gone through pre process steps into a container in time order
             _preprocessData(e);
+            _numberOfFilesRead++;
         }
 
         private void _preprocessData(List<Signal> e)
@@ -188,7 +193,7 @@ namespace ArchiveSprinterGUI.ViewModels
             {
                 item.GetSignalNameList();
                 item.GetSamplingRAte();
-                await Task.Factory.StartNew(() => item.Model.Process(DataMngr));
+                Task.Factory.StartNew(() => item.Model.Process(DataMngr));
             }
         }
         private async Task _writeSignatureResults()

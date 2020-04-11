@@ -16,9 +16,24 @@ namespace AS.IO
             var reader = new PDATReader(filename);
             var signals = reader.GetAllSignalsFromPDATFile();
             var signalList = new List<Core.Models.Signal>();
-            var time1 = signals.FirstOrDefault().PointsList[0].T;
-            var time2 = signals.FirstOrDefault().PointsList[1].T;
-            int samplingRate = (int)Math.Round((1 / (time2 - time1)) / 10) * 10;
+            int samplingRate = -1;
+            decimal diff;
+            var firstSig = signals.FirstOrDefault();
+            for (int i = 0; i < firstSig.PointsList.Count - 1; i++)
+            {
+                var time1 = firstSig.PointsList[i].T;
+                var time2 = firstSig.PointsList[i + 1].T;
+                diff = time2 - time1;
+                if (diff != 0)
+                {
+                    samplingRate = (int)Math.Round((1 / diff) / 10) * 10;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("sampling rate is 0 at: " + filename + "\nThe numbers are: " + time1.ToString() + " and " + time2.ToString());
+                }
+            }
             foreach (var sig in signals)
             {
                 var newSignal = new Core.Models.Signal(sig.ShortName, sig.Header);
