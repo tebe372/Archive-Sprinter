@@ -65,6 +65,8 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     }
                     var reader = DataFileReaderFactory.Create(FileType);
                     List<Signal> signals = reader.Read(value);
+                    NumberOfDataPointInFile = reader.GetNumberOfDataPointInFile();
+                    SamplingRate = reader.GetSamplingRate();
                     if (signals != null && signals.Count() > 0)
                     {
                         SampleDataMngr sdm = SampleDataMngr.Instance;
@@ -195,6 +197,17 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
-
+        [JsonIgnore]
+        public int SamplingRate 
+        {
+            get { return _model.SamplingRate; }
+            set { _model.SamplingRate = value; }
+        }
+        [JsonIgnore]
+        public int NumberOfDataPointInFile
+        {
+            get { return _model.NumberOfDataPointInFile; }
+            set { _model.NumberOfDataPointInFile = value; }
+        }
     }
 }

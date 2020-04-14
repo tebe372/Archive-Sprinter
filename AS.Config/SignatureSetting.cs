@@ -103,6 +103,27 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
+                //if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                //{
+                //    if (dataMngr.HasDataAfter(startT, endT))
+                //    {
+                //        startT = endT.AddSeconds(-WindowOverlap);
+                //        endT = startT.AddSeconds(WindowSize);
+                //        continue;
+                //    }
+                //    else
+                //    {
+                //        if (dataMngr.DataCompleted)
+                //        {
+                //            break;
+                //        }
+                //        else
+                //        {
+                //            Thread.Sleep(500);
+                //            continue;
+                //        }
+                //    }
+                //}
                 if (dataMngr.HasDataAfter(startT, endT))
                 {
                     if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
@@ -116,7 +137,10 @@ namespace AS.Config
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        break;
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
                     }
                     else
                     {
@@ -197,11 +221,23 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
-                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        break;
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
                     }
                     else
                     {
@@ -255,11 +291,23 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
-                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        break;
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
                     }
                     else
                     {
@@ -313,11 +361,23 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
-                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        break;
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
                     }
                     else
                     {
@@ -371,11 +431,23 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
-                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        break;
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
                     }
                     else
                     {
@@ -516,6 +588,27 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
+                //if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                //{
+                //    if (dataMngr.HasDataAfter(startT, endT))
+                //    {
+                //        startT = endT.AddSeconds(-WindowOverlap);
+                //        endT = startT.AddSeconds(WindowSize);
+                //        continue;
+                //    }
+                //    else
+                //    {
+                //        if (dataMngr.DataCompleted)
+                //        {
+                //            break;
+                //        }
+                //        else
+                //        {
+                //            Thread.Sleep(500);
+                //            continue;
+                //        }
+                //    }
+                //}
                 if (dataMngr.HasDataAfter(startT, endT))
                 {
                     if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
@@ -529,7 +622,10 @@ namespace AS.Config
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        break;
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
                     }
                     else
                     {
@@ -603,7 +699,30 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
-                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
                 {
                     if (dataMngr.DataCompleted)
                     {
@@ -661,11 +780,23 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
-                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        break;
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
                     }
                     else
                     {
@@ -719,11 +850,23 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
-                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        break;
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
                     }
                     else
                     {
@@ -777,11 +920,23 @@ namespace AS.Config
             {
                 List<Signal> signals = new List<Signal>();
                 //according to the input channels in variance, take part of the e as input to the following function call.
-                if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
                 {
                     if (dataMngr.DataCompleted)
                     {
-                        break;
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
                     }
                     else
                     {

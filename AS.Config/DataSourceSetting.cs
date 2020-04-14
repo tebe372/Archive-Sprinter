@@ -134,5 +134,7 @@ namespace AS.Config
             }
         }
         public string Mnemonic { get; set; }
+        public int SamplingRate { get; set; }
+        public int NumberOfDataPointInFile { get; set; }
     }
 }

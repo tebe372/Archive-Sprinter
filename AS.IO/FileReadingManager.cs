@@ -26,6 +26,8 @@ namespace AS.IO
         {
             SourceDirectory = source.FileDirectory;
             FileType = source.FileType;
+            SamplingRate = source.SamplingRate;
+            NumberOfDataPointInFile = source.NumberOfDataPointInFile;
         }
 
         public async Task Start()
@@ -56,11 +58,24 @@ namespace AS.IO
                             var sig = item.PMUName + "_" + item.SignalName;
                             if (NeededSignalList.Contains(sig))
                             {
-                                keepSig.Add(item);
+                                if (item.SamplingRate != SamplingRate || item.TimeStamps.Count() != NumberOfDataPointInFile)
+                                {
+                                    Console.WriteLine(file + " has bad sampling rate.");
+                                }
+                                else
+                                {
+                                    keepSig.Add(item);
+                                }
                             }
                         }
-                        lastTimeStamp = keepSig.FirstOrDefault().TimeStamps.LastOrDefault();
-                        OnFileReadingDone(keepSig);
+                        if (keepSig.Count() == NeededSignalList.Count())
+                        {
+                            lastTimeStamp = keepSig.FirstOrDefault().TimeStamps.LastOrDefault();
+                            OnFileReadingDone(keepSig);
+                        }
+                        else
+                        {
+                        }
                     }
                 }
                 OnDataReadingDone(lastTimeStamp);
@@ -85,7 +100,7 @@ namespace AS.IO
         {
             DataReadingDone?.Invoke(this, e);
         }
-
-
+        public int SamplingRate { get; set; }
+        public int NumberOfDataPointInFile { get; set; }
     }
 }

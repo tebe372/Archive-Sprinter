@@ -30,5 +30,20 @@ namespace AS.ComputationManager.Calculations
                 }
             }
         }
+
+        public static void PMUflagFilt(Signal signal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void VoltPhasorFilt(Signal signal)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void FreqFilt(Signal signal)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -13,6 +13,8 @@ namespace AS.IO
 {
     public class CSVFileReader : IDataFileReader
     {
+        private int _samplingRate = -1;
+        private int _numberOfDataPointInFile = 0;
         public List<Signal> Read(string filename)
         {
             var signalList = new List<Signal>();
@@ -58,6 +60,7 @@ namespace AS.IO
                 {
                     //can read line by line
                     var row = reader.ReadFields();
+                    _numberOfDataPointInFile++;
                     //DataRow dr = dt.NewRow();
                     for (int i = 0; i < row.Length; i++)
                     {
@@ -84,7 +87,7 @@ namespace AS.IO
                 //var a = dt.Columns[0];
                 var time1 = timeSpanRelativeToBaseTime[0];
                 var time2 = timeSpanRelativeToBaseTime[1];
-                int samplingRate = (int)Math.Round((1 / (time2 - time1)) / 10) * 10;
+                _samplingRate = (int)Math.Round((1 / (time2 - time1)) / 10) * 10;
 
                 //try
                 //{
@@ -109,7 +112,7 @@ namespace AS.IO
                 //}
                 foreach (var sig in signalList)
                 {
-                    sig.SamplingRate = samplingRate;
+                    sig.SamplingRate = _samplingRate;
                 }
             }
 
@@ -414,6 +417,16 @@ namespace AS.IO
             }
             //DateTime rslt = DateTime.ParseExact(dateStr + "_" + timeStr, "yyyyMMdd_HHmmss", CultureInfo.InvariantCulture);
             return date.Add(time);
+        }
+
+        public int GetSamplingRate()
+        {
+            return _samplingRate;
+        }
+
+        public int GetNumberOfDataPointInFile()
+        {
+            return _numberOfDataPointInFile;
         }
     }
 }

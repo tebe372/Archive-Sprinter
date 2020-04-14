@@ -83,6 +83,7 @@ namespace ArchiveSprinterGUI.ViewModels
         public ICommand StartArchiveSprinter { get; set; }
         private async void _startArchiveSprinter(object obj)
         {
+            _numberOfFilesRead = 0;
             //scan through all the steps of configuration and figure out needed signals.
             var neededSignalList = _getAllNeededSignals();
 
@@ -106,7 +107,7 @@ namespace ArchiveSprinterGUI.ViewModels
             }
             //data.Start();
             // call another function that start the signature calculation, might be the computation/data manager, on a thread too.
-            while (_numberOfFilesRead <= 10)
+            while (_numberOfFilesRead <= 4)
             {
                 Thread.Sleep(500);
             }

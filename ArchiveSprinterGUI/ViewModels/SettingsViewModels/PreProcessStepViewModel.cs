@@ -89,11 +89,20 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             Name = name;
             switch (name)
             {
+                case "Status Flags":
+                    _model = new PMUflagFilt();
+                    break;
                 case "Zeros":
                     _model = new DropOutZeroFilt();
                     break;
                 case "Missing":
                     _model = new DropOutMissingFilt();
+                    break;
+                case "Nominal Voltage":
+                    _model = new VoltPhasorFilt();
+                    break;
+                case "Nominal Frequency":
+                    _model = new FreqFilt();
                     break;
                 case "Subtraction":
                     _model = new SubtractionCustomization();

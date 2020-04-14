@@ -84,6 +84,23 @@ namespace AS.Config
         }
     }
 
+    public class PMUflagFilt : Filter
+    {
+        public int FlagBit { get; set; }
+        public override void Process(List<Signal> e)
+        {
+            //do some parameter process
+            //according to the input channels that is selected, call the actual function and process each signal.
+            foreach (var signal in e)
+            {
+                var name = signal.PMUName + "_" + signal.SignalName;
+                if (InputSignals.Contains(name))
+                {
+                    Filters.PMUflagFilt(signal);
+                }
+            }
+        }
+    }
     public class DropOutZeroFilt : Filter
     {
         public int FlagBit { get; set; }
@@ -117,6 +134,48 @@ namespace AS.Config
                 }
             }
         }
+    }
+    public class VoltPhasorFilt : Filter
+    {
+        public int FlagBit { get; set; }
+        public override void Process(List<Signal> e)
+        {
+            //do some parameter process
+            //according to the input channels that is selected, call the actual function and process each signal.
+            foreach (var signal in e)
+            {
+                var name = signal.PMUName + "_" + signal.SignalName;
+                if (InputSignals.Contains(name))
+                {
+                    Filters.VoltPhasorFilt(signal);
+                }
+            }
+        }
+        public string VoltMin { get; set; }
+        public string VoltMax { get; set; }
+        public string NomVoltage { get; set; }
+    }
+    public class FreqFilt : Filter
+    {
+        public int FlagBit { get; set; }
+        public override void Process(List<Signal> e)
+        {
+            //do some parameter process
+            //according to the input channels that is selected, call the actual function and process each signal.
+            foreach (var signal in e)
+            {
+                var name = signal.PMUName + "_" + signal.SignalName;
+                if (InputSignals.Contains(name))
+                {
+                    Filters.FreqFilt(signal);
+                }
+            }
+        }
+        public string FreqMaxChan { get; set; }
+        public string FreqMinChan { get; set; }
+        public string FreqPctChan { get; set; }
+        public string FreqMinSamp { get; set; }
+        public string FreqMaxSamp { get; set; }
     }
     public class SubtractionCustomization : Customization
     {

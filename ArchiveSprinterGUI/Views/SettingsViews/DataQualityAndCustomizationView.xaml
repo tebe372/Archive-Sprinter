@@ -23,6 +23,9 @@
             
             <Style x:Key="ProcessStepStyle" TargetType="ContentPresenter">
                 <Style.Triggers>
+                    <DataTrigger Binding="{Binding Name}" Value="Status Flags">
+                        <Setter Property="ContentTemplate" Value="{StaticResource ZerosMissingDQFilterView}"/>
+                    </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Zeros">
                         <Setter Property="ContentTemplate" Value="{StaticResource ZerosMissingDQFilterView}"/>
                     </DataTrigger>

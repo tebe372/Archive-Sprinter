@@ -18,11 +18,11 @@ namespace AS.Config
         public List<SignatureSetting> SignatureSettings { get; set; } = new List<SignatureSetting>();  // Signature calculation settings
         [JsonIgnore]
         public readonly List<string> DQFilterList = new List<string> {
-            //"Status Flags",
+            "Status Flags",
                                                                                 "Zeros",
                                                                                 "Missing",
-            //     "Nominal Voltage",
-            //    "Nominal Frequency",
+                 "Nominal Voltage",
+                "Nominal Frequency",
             //   "Outliers",
             //     "Stale Data",
             //     "Data Frame",

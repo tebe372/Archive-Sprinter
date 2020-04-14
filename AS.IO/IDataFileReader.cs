@@ -10,5 +10,7 @@ namespace AS.IO
     public interface IDataFileReader
     {
         List<Signal> Read(string filename);
+        int GetSamplingRate();
+        int GetNumberOfDataPointInFile();
     }
 }

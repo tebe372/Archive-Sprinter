@@ -11,22 +11,24 @@ namespace AS.IO
 {
     public class PDATFileReader : IDataFileReader
     {
+        private int _samplingRate = -1;
+        private int _numberOfDataPointInFile = 0;
         public List<Core.Models.Signal> Read(string filename)
         {
             var reader = new PDATReader(filename);
             var signals = reader.GetAllSignalsFromPDATFile();
             var signalList = new List<Core.Models.Signal>();
-            int samplingRate = -1;
             decimal diff;
             var firstSig = signals.FirstOrDefault();
-            for (int i = 0; i < firstSig.PointsList.Count - 1; i++)
+            _numberOfDataPointInFile = firstSig.PointsList.Count();
+            for (int i = 0; i < _numberOfDataPointInFile - 1; i++)
             {
                 var time1 = firstSig.PointsList[i].T;
                 var time2 = firstSig.PointsList[i + 1].T;
                 diff = time2 - time1;
                 if (diff != 0)
                 {
-                    samplingRate = (int)Math.Round((1 / diff) / 10) * 10;
+                    _samplingRate = (int)Math.Round((1 / diff) / 10) * 10;
                     break;
                 }
                 else
@@ -43,10 +45,20 @@ namespace AS.IO
                 var data = sig.PointsList;
                 newSignal.TypeAbbreviation = _getSignalType(sig.Type);
                 newSignal.Unit = sig.Unit;
-                newSignal.SamplingRate = samplingRate;
+                newSignal.SamplingRate = _samplingRate;
                 signalList.Add(newSignal);
             }
             return signalList;
+        }
+
+        public int GetSamplingRate()
+        {
+            return _samplingRate;
+        }
+
+        public int GetNumberOfDataPointInFile()
+        {
+            return _numberOfDataPointInFile;
         }
 
         private void _getDataTimeStamp(Core.Models.Signal newSignal, DateTimeOffset eventDate, List<Point> pointsList)
