@@ -18,6 +18,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             _isSelected = false;
             _isExpanded = false;
             _inputChannels = new ObservableCollection<SignalViewModel>();
+            //ThisStepOutputsGroupedByPMU = new SignalTree();
         }
         private int _stepCounter;
         [JsonIgnore]
@@ -88,10 +89,15 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-
         public virtual void AddSignal(SignalViewModel signal)
         {
             InputChannels.Add(signal);
+        }
+        public SignalTree ThisStepInputsGroupedByType { get; set; }
+        public SignalTree ThisStepOutputsGroupedByPMU { get; set; }
+
+        internal void UpdateInputOutputTree()
+        {
         }
     }
 }

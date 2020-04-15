@@ -62,6 +62,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message, "Error!", MessageBoxButton.OK);
+                        return;
                     }
                     var reader = DataFileReaderFactory.Create(FileType);
                     List<Signal> signals = reader.Read(value);

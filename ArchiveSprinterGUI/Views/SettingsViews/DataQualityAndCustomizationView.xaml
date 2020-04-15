@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:ArchiveSprinterGUI.Views.SettingsViews"
              xmlns:converters="clr-namespace:ArchiveSprinterGUI.Converters"
              xmlns:vm="clr-namespace:ArchiveSprinterGUI.ViewModels.SettingsViewModels"
-             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity" 
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
@@ -20,17 +20,31 @@
             <DataTemplate x:Key="ZerosMissingDQFilterView">
                 <local:ZerosMissingDQFilterView/>
             </DataTemplate>
-            
+            <DataTemplate x:Key="StatusFlagDQFilterView">
+                <local:StatusFlagDQFilterView/>
+            </DataTemplate>
+            <DataTemplate x:Key="VoltPhasorDQFilterView">
+                <local:VoltPhasorDQFilterView/>
+            </DataTemplate>
+            <DataTemplate x:Key="FreqDQFilterView">
+                <local:FreqDQFilterView/>
+            </DataTemplate>
             <Style x:Key="ProcessStepStyle" TargetType="ContentPresenter">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Name}" Value="Status Flags">
-                        <Setter Property="ContentTemplate" Value="{StaticResource ZerosMissingDQFilterView}"/>
+                        <Setter Property="ContentTemplate" Value="{StaticResource StatusFlagDQFilterView}"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Zeros">
                         <Setter Property="ContentTemplate" Value="{StaticResource ZerosMissingDQFilterView}"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Missing">
                         <Setter Property="ContentTemplate" Value="{StaticResource ZerosMissingDQFilterView}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Nominal Voltage">
+                        <Setter Property="ContentTemplate" Value="{StaticResource VoltPhasorDQFilterView}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Nominal Frequency">
+                        <Setter Property="ContentTemplate" Value="{StaticResource FreqDQFilterView}"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Subtraction">
                         <Setter Property="ContentTemplate" Value="{StaticResource SubtractionCustomization}"/>

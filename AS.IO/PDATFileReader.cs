@@ -15,7 +15,15 @@ namespace AS.IO
         private int _numberOfDataPointInFile = 0;
         public List<Core.Models.Signal> Read(string filename)
         {
-            var reader = new PDATReader(filename);
+            PDATReader reader = null;
+            try
+            {
+                reader = new PDATReader(filename);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
             var signals = reader.GetAllSignalsFromPDATFile();
             var signalList = new List<Core.Models.Signal>();
             decimal diff;

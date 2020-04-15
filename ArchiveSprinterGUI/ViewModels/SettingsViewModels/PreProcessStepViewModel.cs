@@ -115,8 +115,11 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             switch (Name)
             {
+                case "Status Flags":
                 case "Zeros":
                 case "Missing":
+                case "Nominal Voltage":
+                case "Nominal Frequency":
                     InputChannels.Add(signal); // redundant with baseclass function
                     break;
                 case "Subtraction":

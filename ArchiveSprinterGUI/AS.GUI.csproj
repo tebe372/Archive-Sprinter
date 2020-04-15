@@ -137,6 +137,18 @@
     <Compile Include="Views\SettingsViews\FilterListBox.xaml.cs">
       <DependentUpon>FilterListBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\FreqDQFilterView.xaml.cs">
+      <DependentUpon>FreqDQFilterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\PMUOnlyFilterListBox.xaml.cs">
+      <DependentUpon>PMUOnlyFilterListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\StatusFlagDQFilterView.xaml.cs">
+      <DependentUpon>StatusFlagDQFilterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\VoltPhasorDQFilterView.xaml.cs">
+      <DependentUpon>VoltPhasorDQFilterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsViews\filterViews\ZerosMissingDQFilterView.xaml.cs">
       <DependentUpon>ZerosMissingDQFilterView.xaml</DependentUpon>
     </Compile>
@@ -218,6 +230,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsViews\FilterListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\filterViews\FreqDQFilterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\filterViews\PMUOnlyFilterListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\filterViews\StatusFlagDQFilterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\filterViews\VoltPhasorDQFilterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -33,63 +33,70 @@ namespace AS.Config
             {
                 if (_exampleFile != value)
                 {
-                    _exampleFile = value;
                     if (!string.IsNullOrEmpty(value))
                     {
-                        if (File.Exists(value) && Utilities.CheckDataFileMatch(value, FileType))
+                        if (File.Exists(value))
                         {
-                            var filename = "";
-                            try
+                            if (Utilities.CheckDataFileMatch(value, FileType))
                             {
-                                filename = Path.GetFileNameWithoutExtension(value);
-                            }
-                            catch (ArgumentException ex)
-                            {
-                                throw new Exception("Data file path contains one or more of the invalid characters. Original message: " + ex.Message);
-                            }
-                            if (FileType == DataFileType.PI || FileType == DataFileType.OpenHistorian || FileType == DataFileType.OpenPDC)
-                            {
-                                Mnemonic = "";
+                                _exampleFile = value;
+                                var filename = "";
                                 try
                                 {
-                                    FileDirectory = Path.GetDirectoryName(value);
-                                    var type = Path.GetExtension(value);
-                                    if (type == ".xml")
+                                    filename = Path.GetFileNameWithoutExtension(value);
+                                }
+                                catch (ArgumentException ex)
+                                {
+                                    throw new Exception("Data file path contains one or more of the invalid characters. Original message: " + ex.Message);
+                                }
+                                if (FileType == DataFileType.PI || FileType == DataFileType.OpenHistorian || FileType == DataFileType.OpenPDC)
+                                {
+                                    Mnemonic = "";
+                                    try
                                     {
-                                        //PresetList = _model.GetPresets(value);
+                                        FileDirectory = Path.GetDirectoryName(value);
+                                        var type = Path.GetExtension(value);
+                                        if (type == ".xml")
+                                        {
+                                            //PresetList = _model.GetPresets(value);
+                                        }
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Exception("Error extracting file directory from selected file. Original message: " + ex.Message);
                                     }
                                 }
-                                catch (Exception ex)
+                                else
                                 {
-                                    throw new Exception("Error extracting file directory from selected file. Original message: " + ex.Message);
-                                }
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    Mnemonic = filename.Substring(0, filename.Length - 16);
-                                }
-                                catch (Exception ex)
-                                {
-                                    throw new Exception("Error extracting Mnemonic from selected data file. Original message: " + ex.Message);
-                                }
-                                try
-                                {
-                                    var fullPath = Path.GetDirectoryName(value);
-                                    var slashIndex = fullPath.LastIndexOf(@"\");
-                                    if (slashIndex > 0)
+                                    try
                                     {
-                                        var oneLevelUp = fullPath.Substring(0, slashIndex);
-                                        if (Directory.Exists(oneLevelUp))
+                                        Mnemonic = filename.Substring(0, filename.Length - 16);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        throw new Exception("Error extracting Mnemonic from selected data file. Original message: " + ex.Message);
+                                    }
+                                    try
+                                    {
+                                        var fullPath = Path.GetDirectoryName(value);
+                                        var slashIndex = fullPath.LastIndexOf(@"\");
+                                        if (slashIndex > 0)
                                         {
-                                            slashIndex = oneLevelUp.LastIndexOf(@"\");
-                                            if (slashIndex > 0)
+                                            var oneLevelUp = fullPath.Substring(0, slashIndex);
+                                            if (Directory.Exists(oneLevelUp))
                                             {
-                                                var twoLevelUp = oneLevelUp.Substring(0, slashIndex);
-                                                if (Directory.Exists(twoLevelUp))
+                                                slashIndex = oneLevelUp.LastIndexOf(@"\");
+                                                if (slashIndex > 0)
                                                 {
-                                                    FileDirectory = twoLevelUp;
+                                                    var twoLevelUp = oneLevelUp.Substring(0, slashIndex);
+                                                    if (Directory.Exists(twoLevelUp))
+                                                    {
+                                                        FileDirectory = twoLevelUp;
+                                                    }
+                                                    else
+                                                    {
+                                                        FileDirectory = oneLevelUp;
+                                                    }
                                                 }
                                                 else
                                                 {
@@ -98,7 +105,7 @@ namespace AS.Config
                                             }
                                             else
                                             {
-                                                FileDirectory = oneLevelUp;
+                                                FileDirectory = fullPath;
                                             }
                                         }
                                         else
@@ -106,15 +113,15 @@ namespace AS.Config
                                             FileDirectory = fullPath;
                                         }
                                     }
-                                    else
+                                    catch (Exception ex)
                                     {
-                                        FileDirectory = fullPath;
+                                        throw new Exception("Error extracting file directory from selected file. Original message: " + ex.Message);
                                     }
                                 }
-                                catch (Exception ex)
-                                {
-                                    throw new Exception("Error extracting file directory from selected file. Original message: " + ex.Message);
-                                }
+                            }
+                            else
+                            {
+                                throw new Exception("The example file  " + Path.GetFileName(value) + " has a type that does not match the selected file type.");
                             }
                         }
                         else

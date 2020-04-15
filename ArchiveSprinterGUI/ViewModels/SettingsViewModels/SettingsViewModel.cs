@@ -107,6 +107,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             PreProcessStepViewModel newStep = new PreProcessStepViewModel(stepName);
      
             newStep.StepCounter = PreProcessSteps.Count + 1;
+            newStep.ThisStepOutputsGroupedByPMU = new SignalTree("Step " + newStep.StepCounter.ToString());
             PreProcessSteps.Add(newStep);
             // Set step to edit
             _stepSelectedToEdit(newStep);
@@ -172,6 +173,8 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         private void _signalCheckStatusChanged(SignalTree e)
         {
             _updateSignals(e);
+            SelectedStep.UpdateInputOutputTree();
+            SelectedStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(SelectedStep.InputChannels);
         }
 
         private void _updateSignals(SignalTree e)

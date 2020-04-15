@@ -51,16 +51,30 @@ namespace AS.IO
                     if (Utilities.CheckDataFileMatch(file, FileType))
                     {
                         Console.WriteLine("Reading " + file);
-                        var signals = reader.Read(file);
+                        List<Signal> signals = null;
+                        try
+                        {
+                            signals = reader.Read(file);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception(ex.Message);
+                        }
                         var keepSig = new List<Signal>();
+                        var a = _getFileDateTime(file);
+                        var aa = 1.0 / SamplingRate * (NumberOfDataPointInFile - 1);
+                        var lastTimePoint = a.AddSeconds(aa);
                         foreach (var item in signals)
                         {
                             var sig = item.PMUName + "_" + item.SignalName;
                             if (NeededSignalList.Contains(sig))
                             {
-                                if (item.SamplingRate != SamplingRate || item.TimeStamps.Count() != NumberOfDataPointInFile)
+                                var b = item.TimeStamps.LastOrDefault() - lastTimePoint;
+                                var c = b.TotalSeconds;
+                                var lastTimeStampValidity = Math.Abs(c);
+                                if (item.SamplingRate != SamplingRate || item.TimeStamps.Count() != NumberOfDataPointInFile || lastTimeStampValidity > 1 / 600)
                                 {
-                                    Console.WriteLine(file + " has bad sampling rate.");
+                                    Console.WriteLine(file + " has bad sampling rate or time stamps.");
                                 }
                                 else
                                 {
@@ -102,5 +116,31 @@ namespace AS.IO
         }
         public int SamplingRate { get; set; }
         public int NumberOfDataPointInFile { get; set; }
+        private DateTime _getFileDateTime(string filename)
+        {
+            string[] namestrings = Path.GetFileNameWithoutExtension(filename).Split('_');
+            int digit;
+            var dateS = "";
+            var timeS = "";
+            foreach (var strs in namestrings)
+            {
+                try
+                {
+                    digit = int.Parse(strs);
+                    if (strs.Length == 8)
+                        dateS = strs;
+                    else if (strs.Length == 6)
+                        timeS = strs;
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            string s = dateS.Substring(0, 4) + "/" + dateS.Substring(4, 2) + "/" + dateS.Substring(6, 2) + " "
+                            + timeS.Substring(0, 2) + ":" + timeS.Substring(2, 2) + ":" + timeS.Substring(4, 2);
+            DateTime b = DateTime.Parse(s);
+            return b;
+        }
+
     }
 }
