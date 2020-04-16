@@ -74,6 +74,7 @@ namespace AS.DataManager
         //public bool FirstFileRead { get; set; }
         private object _theEndTimeStampsLock = new object();
         private object _theResultsLock = new object();
+        private object _theInputSignalsLock = new object();
         private DateTime _getNextWriteOutTime(DateTime current, int interval, string unit)
         {
             DateTime result;
@@ -126,11 +127,15 @@ namespace AS.DataManager
                 foreach (var sig in e)
                 {
                     var name = sig.PMUName + "_" + sig.SignalName;
-                    if (!Signals.ContainsKey(name))
+
+                    lock (_theInputSignalsLock)
                     {
-                        Signals[name] = new Dictionary<DateTime, Signal>();
+                        if (!Signals.ContainsKey(name))
+                        {
+                            Signals[name] = new Dictionary<DateTime, Signal>();
+                        }
+                        Signals[name][endT] = sig;
                     }
-                    Signals[name][endT] = sig;
                 }
             }
         }
@@ -195,12 +200,16 @@ namespace AS.DataManager
             }
             foreach (var name in signalNames)
             {
-
-                var sig = Signals[name];
-                var firstSig = sig[possibleTimeStamps[0]];
+                Dictionary<DateTime, Signal> sig = null;
+                Signal firstSig, lastSig;
+                lock (_theInputSignalsLock)
+                {
+                    sig = Signals[name];
+                    firstSig = sig[possibleTimeStamps[0]];
+                    lastSig = sig[possibleTimeStamps.LastOrDefault()];
+                }
                 var thisSig = new Signal(firstSig.PMUName, firstSig.SignalName);
                 var firstDataPoint = firstSig.TimeStamps.IndexOf(startT);
-                var lastSig = sig[possibleTimeStamps.LastOrDefault()];
                 var lastDataPoint = lastSig.TimeStamps.IndexOf(endT);
                 if (firstDataPoint == -1 && lastDataPoint == -1)
                 {
@@ -238,31 +247,37 @@ namespace AS.DataManager
                         thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
                         thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
                         thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
-                        for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
+                        lock (_theInputSignalsLock)
                         {
-                            if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
-                            {
-                                thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
-                                thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
-                                thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                            for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
+                        {
+                                if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
+                                {
+                                    thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
+                                    thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                                    thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                                }
                             }
                         }
                     }
                     else if (firstDataPoint == -1)
                     {
-                        for (int ii = 0; ii < possibleTimeStamps.Count; ii++)
+                        lock (_theInputSignalsLock)
                         {
-                            if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
-                            {
-                                thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
-                                thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
-                                thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
-                            }
-                            else
-                            {
-                                thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data.GetRange(0, lastDataPoint + 1));
-                                thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags.GetRange(0, lastDataPoint + 1));
-                                thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps.GetRange(0, lastDataPoint + 1));
+                            for (int ii = 0; ii < possibleTimeStamps.Count; ii++)
+                        {
+                                if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
+                                {
+                                    thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
+                                    thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                                    thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                                }
+                                else
+                                {
+                                    thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data.GetRange(0, lastDataPoint + 1));
+                                    thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags.GetRange(0, lastDataPoint + 1));
+                                    thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps.GetRange(0, lastDataPoint + 1));
+                                }
                             }
                         }
                     }
@@ -360,6 +375,7 @@ namespace AS.DataManager
                 if (rows == expectedRows)
                 {
                     _writeASignatureOutput(timeStampsInRange);
+                    _removeDataWrittenOut(timeStampsInRange);
                     CurrentTimeStamp = NextTimeStamp;
                     NextTimeStamp = _getNextWriteOutTime(CurrentTimeStamp, DatawriteOutFrequency, DatawriteOutFrequencyUnit);
                 }
@@ -370,6 +386,7 @@ namespace AS.DataManager
                         if (timeStampsInRange.Count() > 0)
                         {
                             _writeASignatureOutput(timeStampsInRange);
+                            _removeDataWrittenOut(timeStampsInRange);
                         }
                         CurrentTimeStamp = NextTimeStamp;
                         NextTimeStamp = _getNextWriteOutTime(CurrentTimeStamp, DatawriteOutFrequency, DatawriteOutFrequencyUnit);
@@ -379,6 +396,7 @@ namespace AS.DataManager
                         if (timeStampsInRange.Count() > 0)
                         {
                             _writeASignatureOutput(timeStampsInRange);
+                            _removeDataWrittenOut(timeStampsInRange);
                         }
                         break;
                     }
@@ -390,6 +408,7 @@ namespace AS.DataManager
                         if (timeStampsInRange.Count() > 0)
                         {
                             _writeASignatureOutput(timeStampsInRange);
+                            _removeDataWrittenOut(timeStampsInRange);
                         }
                         CurrentTimeStamp = NextTimeStamp;
                         NextTimeStamp = _getNextWriteOutTime(CurrentTimeStamp, DatawriteOutFrequency, DatawriteOutFrequencyUnit);
@@ -409,9 +428,9 @@ namespace AS.DataManager
             List<string> PMURow = new List<string> { "Time", "Time" };
             List<string> SignalRow = new List<string> { "Start Time", "End Time" };
             bool firstTimeStamp = true;
+            timeStampsInRange.Sort();
             using (StreamWriter outputFile = new StreamWriter(filename))
             {
-                timeStampsInRange.Sort();
                 foreach (var time in timeStampsInRange)
                 {
                     ConcurrentBag<SignatureResult> signatures;
@@ -468,6 +487,42 @@ namespace AS.DataManager
                     }
                     outputFile.WriteLine(String.Join(",", thisRow));
                     firstTimeStamp = false;
+                }
+            }
+        }
+
+        private void _removeDataWrittenOut(List<DateTime> timeStampsInRange)
+        {
+            foreach (var st in timeStampsInRange)
+            {
+                if (_results.ContainsKey(st))
+                {
+                    ConcurrentBag<SignatureResult> value = null;
+                    lock (_theResultsLock)
+                    {
+                        _results.TryRemove(st, out value);
+                    }
+                }
+            }
+            var lastTimePoint = timeStampsInRange.LastOrDefault();
+            foreach (var sig in Signals)
+            {
+                var timeDict = sig.Value;
+                var tss = timeDict.Keys.Where(x => x < lastTimePoint).ToList();
+                for (int i = tss.Count() - 1; i >= 0; i--)
+                {
+                    var ts = tss[i];
+                    if (timeDict.ContainsKey(ts))
+                    {
+                        lock (_theInputSignalsLock)
+                        {
+                            timeDict.Remove(ts);
+                        }
+                        lock (_theEndTimeStampsLock)
+                        {
+                            EndTimeStamps.Remove(ts);
+                        }
+                    }
                 }
             }
         }
