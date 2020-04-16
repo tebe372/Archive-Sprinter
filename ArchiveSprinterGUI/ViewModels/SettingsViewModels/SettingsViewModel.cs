@@ -174,7 +174,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             _updateSignals(e);
             SelectedStep.UpdateInputOutputTree();
-            SelectedStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(SelectedStep.InputChannels);
+            if (SelectedStep is PreProcessStepViewModel)
+            {
+                SelectedStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(SelectedStep.InputChannels);
+            }
         }
 
         private void _updateSignals(SignalTree e)
