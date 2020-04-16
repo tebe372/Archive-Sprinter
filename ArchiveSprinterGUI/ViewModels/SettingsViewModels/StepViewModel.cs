@@ -93,7 +93,9 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             InputChannels.Add(signal);
         }
+        [JsonIgnore]
         public SignalTree ThisStepInputsGroupedByType { get; set; }
+        [JsonIgnore]
         public SignalTree ThisStepOutputsGroupedByPMU { get; set; }
 
         internal void UpdateInputOutputTree()
