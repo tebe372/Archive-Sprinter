@@ -24,37 +24,40 @@ namespace AS.IO
             {
                 throw new Exception(ex.Message);
             }
-            var signals = reader.GetAllSignalsFromPDATFile();
             var signalList = new List<Core.Models.Signal>();
-            decimal diff;
-            var firstSig = signals.FirstOrDefault();
-            _numberOfDataPointInFile = firstSig.PointsList.Count();
-            for (int i = 0; i < _numberOfDataPointInFile - 1; i++)
+            var signals = reader.GetAllSignalsFromPDATFile();
+            if (signals.Count() > 0)
             {
-                var time1 = firstSig.PointsList[i].T;
-                var time2 = firstSig.PointsList[i + 1].T;
-                diff = time2 - time1;
-                if (diff != 0)
+                decimal diff;
+                var firstSig = signals.FirstOrDefault();
+                _numberOfDataPointInFile = firstSig.PointsList.Count();
+                for (int i = 0; i < _numberOfDataPointInFile - 1; i++)
                 {
-                    _samplingRate = (int)Math.Round((1 / diff) / 10) * 10;
-                    break;
+                    var time1 = firstSig.PointsList[i].T;
+                    var time2 = firstSig.PointsList[i + 1].T;
+                    diff = time2 - time1;
+                    if (diff != 0)
+                    {
+                        _samplingRate = (int)Math.Round((1 / diff) / 10) * 10;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("sampling rate is 0 at: " + filename + "\nThe numbers are: " + time1.ToString() + " and " + time2.ToString());
+                    }
                 }
-                else
+                foreach (var sig in signals)
                 {
-                    Console.WriteLine("sampling rate is 0 at: " + filename + "\nThe numbers are: " + time1.ToString() + " and " + time2.ToString());
+                    var newSignal = new Core.Models.Signal(sig.ShortName, sig.Header);
+                    //var name = sig.Name;
+                    _getDataTimeStamp(newSignal, sig.EventDate, sig.PointsList);
+                    var time = sig.EventDate;
+                    var data = sig.PointsList;
+                    newSignal.TypeAbbreviation = _getSignalType(sig.Type);
+                    newSignal.Unit = sig.Unit;
+                    newSignal.SamplingRate = _samplingRate;
+                    signalList.Add(newSignal);
                 }
-            }
-            foreach (var sig in signals)
-            {
-                var newSignal = new Core.Models.Signal(sig.ShortName, sig.Header);
-                //var name = sig.Name;
-                _getDataTimeStamp(newSignal, sig.EventDate, sig.PointsList);
-                var time = sig.EventDate;
-                var data = sig.PointsList;
-                newSignal.TypeAbbreviation = _getSignalType(sig.Type);
-                newSignal.Unit = sig.Unit;
-                newSignal.SamplingRate = _samplingRate;
-                signalList.Add(newSignal);
             }
             return signalList;
         }

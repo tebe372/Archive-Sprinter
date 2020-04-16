@@ -58,7 +58,7 @@ namespace AS.IO
                         }
                         catch (Exception ex)
                         {
-                            throw new Exception(ex.Message);
+                            continue;
                         }
                         var keepSig = new List<Signal>();
                         var a = _getFileDateTime(file);
