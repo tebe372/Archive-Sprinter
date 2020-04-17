@@ -162,23 +162,49 @@ namespace ArchiveSprinterGUI.ViewModels
         private void _preprocessData(List<Signal> e)
         {
             bool newStage = true;
+            List<Signal> filteredSignal = new List<Signal>();
             foreach (var item in SettingsVM.PreProcessSteps)
             {
                 item.GetSignalNameList();
-                if (item.Model is Customization && newStage)
+                if (item.Model is Customization)
                 {
-                    newStage = false;
-                    // check flags and change values to NAN.
-                    foreach (var sig in e)
+                    if (newStage)
                     {
-                        sig.ChangeFlaggedValueToNAN();
+                        newStage = false;
+                        // check flags and change values to NAN.
+                        foreach (var sig in filteredSignal)
+                        {
+                            // don't need all of them, only the ones was in previous filters
+                            sig.ChangeFlaggedValueToNAN();
+                        }
+                        filteredSignal = new List<Signal>();
+                    }
+                    item.Model.Process(e);
+                }
+                if (item.Model is Filter)
+                {
+                    if (!newStage)
+                    {
+                        newStage = true;
+                    }
+                    var sigs = item.Model.Process(e);
+                    foreach (var sig in sigs)
+                    {
+                        if (!filteredSignal.Contains(sig))
+                        {
+                            filteredSignal.Add(sig);
+                        }
                     }
                 }
-                else if (!newStage && item.Model is Filter)
+            }
+            // need change the last batch of filter to Nan if the last one is not customization
+            if (newStage)
+            {
+                foreach (var sig in filteredSignal)
                 {
-                    newStage = true;
+                    // don't need all of them, only the ones was in previous filters
+                    sig.ChangeFlaggedValueToNAN();
                 }
-                item.Model.Process(e);
             }
             DataMngr.AddData(e);
             // concat data, different signature concat data differently

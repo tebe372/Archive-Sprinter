@@ -118,10 +118,6 @@ namespace AS.DataManager
                 }
                 StartTimeStamps.Add(startT);
                 var endT = e.FirstOrDefault().TimeStamps.LastOrDefault();
-                lock (_theEndTimeStampsLock)
-                {
-                    EndTimeStamps.Add(endT);
-                }
                 Console.WriteLine("Added end timestamp: " + endT.ToString("yyyyMMdd_HHmmss.ffffff") + " in " + e.FirstOrDefault().TimeStamps.Count() + " timestamps.");
                 TimePairs[endT] = startT;
                 foreach (var sig in e)
@@ -136,6 +132,10 @@ namespace AS.DataManager
                         }
                         Signals[name][endT] = sig;
                     }
+                }
+                lock (_theEndTimeStampsLock)
+                {
+                    EndTimeStamps.Add(endT);
                 }
             }
         }

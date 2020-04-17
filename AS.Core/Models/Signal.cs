@@ -74,9 +74,17 @@ namespace AS.Core.Models
                 return _flags; 
                 
             }
-            set{ _flags = value; } 
+            set{ _flags = value; }
         }
-
+        private List<UInt16> _stat;
+        public List<UInt16> Stat
+        {
+            get { return _stat; }
+            set
+            {
+                _stat = value;
+            }
+        }
         public void ChangeFlaggedValueToNAN()
         {
             for (int idx = 0; idx < Flags.Count; idx++)

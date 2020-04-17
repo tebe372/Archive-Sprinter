@@ -29,7 +29,7 @@ namespace AS.Config
             Parameters[paramName] = paramValue;
         }
 
-        public abstract void Process(List<Signal> e);
+        public abstract List<Signal> Process(List<Signal> e);
 
         public abstract bool CheckStepIsComplete();
         public List<string> InputSignals { get; set; }
@@ -50,8 +50,9 @@ namespace AS.Config
        
         public IList<SignalSignature> PMUs { get; set; }
 
-        public override void Process(List<Signal> e)
+        public override List<Signal> Process(List<Signal> e)
         {
+            return new List<Signal>();
         }
 
         public override bool CheckStepIsComplete()
@@ -78,17 +79,19 @@ namespace AS.Config
             throw new NotImplementedException();
         }
 
-        public override void Process(List<Signal> e)
+        public override List<Signal> Process(List<Signal> e)
         {
-
+            return new List<Signal>();
         }
     }
 
     public class PMUflagFilt : Filter
     {
         public int FlagBit { get; set; }
-        public override void Process(List<Signal> e)
+        public new string Name { get { return "Status Flags"; } }
+        public override List<Signal> Process(List<Signal> e)
         {
+            List<Signal> filteredSignal = new List<Signal>();
             //do some parameter process
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
@@ -97,15 +100,19 @@ namespace AS.Config
                 if (InputSignals.Contains(name))
                 {
                     Filters.PMUflagFilt(signal);
+                    filteredSignal.Add(signal);
                 }
             }
+            return filteredSignal;
         }
     }
     public class DropOutZeroFilt : Filter
     {
         public int FlagBit { get; set; }
-        public override void Process(List<Signal> e)
+        public new string Name { get { return "Zeros"; } }
+        public override List<Signal> Process(List<Signal> e)
         {
+            List<Signal> filteredSignal = new List<Signal>();
             //do some parameter process
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
@@ -114,15 +121,19 @@ namespace AS.Config
                 if (InputSignals.Contains(name))
                 {
                     Filters.DropOutZeroFilt(signal);
+                    filteredSignal.Add(signal);
                 }
             }
+            return filteredSignal;
         }
     }
     public class DropOutMissingFilt : Filter
     {
         public int FlagBit { get; set; }
-        public override void Process(List<Signal> e)
+        public new string Name { get { return "Missing"; } }
+        public override List<Signal> Process(List<Signal> e)
         {
+            List<Signal> filteredSignal = new List<Signal>();
             //do some parameter process
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
@@ -131,35 +142,48 @@ namespace AS.Config
                 if (InputSignals.Contains(name))
                 {
                     Filters.DropOutMissingFilt(signal);
+                    filteredSignal.Add(signal);
                 }
             }
+            return filteredSignal;
         }
     }
     public class VoltPhasorFilt : Filter
     {
         public int FlagBit { get; set; }
-        public override void Process(List<Signal> e)
+        public new string Name { get { return "Nominal Voltage"; } }
+        public override List<Signal> Process(List<Signal> e)
         {
+            List<Signal> filteredSignal = new List<Signal>();
             //do some parameter process
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
             {
-                var name = signal.PMUName + "_" + signal.SignalName;
-                if (InputSignals.Contains(name))
+                var type = signal.TypeAbbreviation;
+                if (type.Length > 1)
                 {
-                    Filters.VoltPhasorFilt(signal);
+                    var tp = type.Substring(0, 2);
+                    var name = signal.PMUName + "_" + signal.SignalName;
+                    if (InputSignals.Contains(name) && (tp == "VM" || tp == "VP"))
+                    {
+                        Filters.VoltPhasorFilt(signal, VoltMax, VoltMin, NomVoltage);
+                        filteredSignal.Add(signal);
+                    }
                 }
             }
+            return filteredSignal;
         }
-        public string VoltMin { get; set; }
-        public string VoltMax { get; set; }
-        public string NomVoltage { get; set; }
+        public double VoltMin { get; set; }
+        public double VoltMax { get; set; }
+        public double NomVoltage { get; set; }
     }
     public class FreqFilt : Filter
     {
         public int FlagBit { get; set; }
-        public override void Process(List<Signal> e)
+        public new string Name { get { return "Nominal Frequency"; } }
+        public override List<Signal> Process(List<Signal> e)
         {
+            List<Signal> filteredSignal = new List<Signal>();
             //do some parameter process
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
@@ -168,8 +192,10 @@ namespace AS.Config
                 if (InputSignals.Contains(name))
                 {
                     Filters.FreqFilt(signal);
+                    filteredSignal.Add(signal);
                 }
             }
+            return filteredSignal;
         }
         public string FreqMaxChan { get; set; }
         public string FreqMinChan { get; set; }
@@ -183,8 +209,9 @@ namespace AS.Config
         public Signal Minuend { get; set; }
         public string SignalName { get; set; } //validation of signal name and pmu name should have been done in the view model?
         public string PMUName { get; set; }
-        public override void Process(List<Signal> e)
+        public override List<Signal> Process(List<Signal> e)
         {
+            List<Signal> customizedSignal = new List<Signal>();
             //find the 2 input channels according to the customer selection for the
 
             //validate the subtrahend and minuend in the ViewModel when user first select the signal
@@ -215,6 +242,8 @@ namespace AS.Config
                 //flag?
             }
             e.Add(newSignal);
+            customizedSignal.Add(newSignal);
+            return customizedSignal;
         }
     }
 }

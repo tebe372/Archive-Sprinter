@@ -31,19 +31,23 @@ namespace AS.ComputationManager.Calculations
             }
         }
 
-        public static void PMUflagFilt(Signal signal)
+        public static void PMUflagFilt(Signal s)
         {
-            throw new NotImplementedException();
+            for (int idx = 0; idx < s.Data.Count; idx++)
+            {
+                if (s.Stat[idx] >= 4096)
+                {
+                    s.Flags[idx] = false;
+                }
+            }
         }
 
-        public static void VoltPhasorFilt(Signal signal)
+        public static void VoltPhasorFilt(Signal s, double voltMax, double voltMin, double nomVoltage)
         {
-            throw new NotImplementedException();
         }
 
-        public static void FreqFilt(Signal signal)
+        public static void FreqFilt(Signal s)
         {
-            throw new NotImplementedException();
         }
     }
 }

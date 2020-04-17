@@ -31,20 +31,23 @@ namespace AS.IO
                 decimal diff;
                 var firstSig = signals.FirstOrDefault();
                 _numberOfDataPointInFile = firstSig.PointsList.Count();
-                for (int i = 0; i < _numberOfDataPointInFile - 1; i++)
+                if (_numberOfDataPointInFile >= 2)
                 {
-                    var time1 = firstSig.PointsList[i].T;
-                    var time2 = firstSig.PointsList[i + 1].T;
+                    //for (int i = 0; i < _numberOfDataPointInFile - 1; i++)
+                    //{
+                    var time1 = firstSig.PointsList[0].T;
+                    var time2 = firstSig.PointsList[1].T;
                     diff = time2 - time1;
                     if (diff != 0)
                     {
                         _samplingRate = (int)Math.Round((1 / diff) / 10) * 10;
-                        break;
+                        //break;
                     }
                     else
                     {
                         Console.WriteLine("sampling rate is 0 at: " + filename + "\nThe numbers are: " + time1.ToString() + " and " + time2.ToString());
                     }
+                    //}
                 }
                 foreach (var sig in signals)
                 {
@@ -56,6 +59,7 @@ namespace AS.IO
                     newSignal.TypeAbbreviation = _getSignalType(sig.Type);
                     newSignal.Unit = sig.Unit;
                     newSignal.SamplingRate = _samplingRate;
+                    newSignal.Stat = sig.stat.ToList();
                     signalList.Add(newSignal);
                 }
             }

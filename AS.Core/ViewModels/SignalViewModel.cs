@@ -30,6 +30,11 @@ namespace AS.Core.ViewModels
         }
 
         private Signal _model;
+        //[JsonIgnore]
+        //public Signal Model
+        //{
+        //    get { return _model; }
+        //}
 
         [JsonIgnore]
         public bool IsChecked

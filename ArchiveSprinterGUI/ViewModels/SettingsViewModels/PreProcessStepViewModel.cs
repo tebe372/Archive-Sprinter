@@ -28,7 +28,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             }
         }      
         public string Name { get; set; }
-
         public SignalViewModel Minuend
         {
             get
@@ -45,7 +44,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-
         public SignalViewModel Subtrahend
         {
             get
@@ -62,7 +60,87 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-
+        public string NomVoltage 
+        {
+            get 
+            {
+                if (_model is VoltPhasorFilt)
+                {
+                    var m = _model as VoltPhasorFilt;
+                    return m.NomVoltage.ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
+                {
+                    var m = _model as VoltPhasorFilt;
+                    if (m.NomVoltage != v)
+                    {
+                        m.NomVoltage = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string VoltMin
+        {
+            get
+            {
+                if (_model is VoltPhasorFilt)
+                {
+                    var m = _model as VoltPhasorFilt;
+                return m.VoltMin.ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
+                {
+                    var m = _model as VoltPhasorFilt;
+                    if (m.VoltMin != v)
+                    {
+                        m.VoltMin = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string VoltMax
+        {
+            get
+            {
+                if (_model is VoltPhasorFilt)
+                {
+                    var m = _model as VoltPhasorFilt;
+                return m.VoltMax.ToString();
+            }
+                else
+                {
+                return null;
+            }
+        }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
+                {
+                    var m = _model as VoltPhasorFilt;
+                    if (m.VoltMax != v)
+                    {
+                        m.VoltMax = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
 
         private Dictionary<string, SignalViewModel> parameters = new Dictionary<string,SignalViewModel>();
 
@@ -82,10 +160,9 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             _isComplete = false;
         }
-
+        [JsonConstructor]
         public PreProcessStepViewModel(string name) : this()
         {
-            _isComplete = false;
             Name = name;
             switch (name)
             {

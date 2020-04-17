@@ -173,10 +173,13 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         private void _signalCheckStatusChanged(SignalTree e)
         {
             _updateSignals(e);
-            SelectedStep.UpdateInputOutputTree();
-            if (SelectedStep is PreProcessStepViewModel)
+            if (SelectedStep != null)
             {
-                SelectedStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(SelectedStep.InputChannels);
+                SelectedStep.UpdateInputOutputTree();
+                if (SelectedStep is PreProcessStepViewModel)
+                {
+                    SelectedStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(SelectedStep.InputChannels);
+                }
             }
         }
 
@@ -417,7 +420,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         private string _previousSaveFileDirectory;
         internal void SaveConfigFile()
         {
-            _model.SaveConfigFile();
+            //_model.SaveConfigFile();
             var config = JsonConvert.SerializeObject(this, Formatting.Indented);
             Console.WriteLine(config);
 
@@ -518,6 +521,13 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                         {
                             newStep.InputChannels.Add(foundSig);
                         }
+                    }
+                    newStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(newStep.InputChannels);
+                    if (newStep.Model is VoltPhasorFilt)
+                    {
+                        newStep.NomVoltage = pre.NomVoltage;
+                        newStep.VoltMin = pre.VoltMin;
+                        newStep.VoltMax = pre.VoltMax;
                     }
                 }
                 foreach (var signature in config.SignatureSettings)
