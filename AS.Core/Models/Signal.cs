@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -19,6 +20,7 @@ namespace AS.Core.Models
             IsCustomSignal = false;
             IsNameTypeUnitChanged = false;
             Data = new List<double>();
+            ComplexData = new List<Complex>();
             //MATLABTimeStampNumber = new List<double>();
             TimeStampNumber = new List<double>();
             TimeStamps = new List<DateTime>();
@@ -49,12 +51,22 @@ namespace AS.Core.Models
         public int PassedThroughDQFilter { get; set; }
         public int PassedThroughProcessor { get; set; }
         private List<double> _data;
-        public List<double> Data 
+        public List<double> Data // is it possible for a list to hold either double or complex?
         {
             get { return _data; }
             set 
             {
                 _data = value;
+                _flags = null;
+            }
+        }
+        private List<Complex> _complexData;
+        public List<Complex> ComplexData
+        {
+            get { return _complexData; }
+            set
+            {
+                _complexData = value;
                 _flags = null;
             }
         }
@@ -101,7 +113,6 @@ namespace AS.Core.Models
         //  public ObservableCollection<SiteCoordinatesModel> Locations { get; set; }
         //public SignalMapPlotType MapPlotType { get; set; }
     }
-
     public class SignalSignature
     {
         public SignalSignature()

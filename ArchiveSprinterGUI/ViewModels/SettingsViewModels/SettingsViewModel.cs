@@ -529,6 +529,14 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                         newStep.VoltMin = pre.VoltMin;
                         newStep.VoltMax = pre.VoltMax;
                     }
+                    if (newStep.Model is FreqFilt)
+                    {
+                        newStep.FreqMaxChan = pre.FreqMaxChan;
+                        newStep.FreqMinChan = pre.FreqMinChan;
+                        newStep.FreqPctChan = pre.FreqPctChan;
+                        newStep.FreqMaxSamp = pre.FreqMaxSamp;
+                        newStep.FreqMinSamp = pre.FreqMinSamp;
+                    }
                 }
                 foreach (var signature in config.SignatureSettings)
                 {

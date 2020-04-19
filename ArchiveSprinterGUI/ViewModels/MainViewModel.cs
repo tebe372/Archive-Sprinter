@@ -133,9 +133,40 @@ namespace ArchiveSprinterGUI.ViewModels
         private List<string> _getAllNeededSignals()
         {
             var signalList = new List<string>();
+            var signals = SettingsVM.SampleDataMngr.Model.Signals;
             foreach (var item in SettingsVM.PreProcessSteps)
             {
-                signalList.AddRange(item.InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList());
+                if (item.Model is PMUflagFilt)
+                {
+                    signalList.AddRange(item.InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList());
+                    //foreach (var ch in item.InputChannels)
+                    //{
+                    //    var pmu = ch.PMUName;
+                    //    foreach (var g in SettingsVM.SampleDataMngr.GroupedRawSignalsByPMU)
+                    //    {
+                    //        if (g.Label == pmu)
+                    //        {
+                    //            signalList.AddRange(g.SignalList.Select(x => x.Signal.PMUName + "_" + x.Signal.SignalName).ToList());
+                    //        }
+                    //    }
+                    //}
+                }
+                else if (item.Model is VoltPhasorFilt)
+                {
+                    signalList.AddRange(item.InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList());
+                    //foreach (var ch in item.InputChannels)
+                    //{
+                    //    signalList.Add(ch.PMUName + "_" + ch.SignalName);
+                    //    if (ch.TypeAbbreviation.Substring(0, 2) == "VM")
+                    //    {
+                    //        // if there a way to find corresponding angle signal? for pdat, we can substitute .m by .a to find it. but how about other data source such as csv?
+                    //    }
+                    //}
+                }
+                else
+                {
+                    signalList.AddRange(item.InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList());
+                }
             }
             foreach (var item in SettingsVM.SignatureSettings)
             {
@@ -179,7 +210,14 @@ namespace ArchiveSprinterGUI.ViewModels
                         }
                         filteredSignal = new List<Signal>();
                     }
-                    item.Model.Process(e);
+                    try
+                    {
+                        item.Model.Process(e);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
                 }
                 if (item.Model is Filter)
                 {
@@ -187,12 +225,23 @@ namespace ArchiveSprinterGUI.ViewModels
                     {
                         newStage = true;
                     }
-                    var sigs = item.Model.Process(e);
-                    foreach (var sig in sigs)
+                    List<Signal> sigs = null;
+                    try
                     {
-                        if (!filteredSignal.Contains(sig))
+                        sigs = item.Model.Process(e);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                    if (sigs != null)
+                    {
+                        foreach (var sig in sigs)
                         {
-                            filteredSignal.Add(sig);
+                            if (!filteredSignal.Contains(sig))
+                            {
+                                filteredSignal.Add(sig);
+                            }
                         }
                     }
                 }

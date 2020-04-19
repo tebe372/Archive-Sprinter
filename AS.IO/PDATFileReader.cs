@@ -49,18 +49,23 @@ namespace AS.IO
                     }
                     //}
                 }
-                foreach (var sig in signals)
+                var groupbyPMU = signals.GroupBy(x => x.ShortName).ToDictionary(y => y.Key,  y=> y.ToList());
+                foreach (var gr in groupbyPMU)
                 {
-                    var newSignal = new Core.Models.Signal(sig.ShortName, sig.Header);
-                    //var name = sig.Name;
-                    _getDataTimeStamp(newSignal, sig.EventDate, sig.PointsList);
-                    var time = sig.EventDate;
-                    var data = sig.PointsList;
-                    newSignal.TypeAbbreviation = _getSignalType(sig.Type);
-                    newSignal.Unit = sig.Unit;
-                    newSignal.SamplingRate = _samplingRate;
-                    newSignal.Stat = sig.stat.ToList();
-                    signalList.Add(newSignal);
+                    var stat = gr.Value.FirstOrDefault().stat.ToList();
+                    foreach (var sig in gr.Value)
+                    {
+                        var newSignal = new Core.Models.Signal(sig.ShortName, sig.Header);
+                        //var name = sig.Name;
+                        _getDataTimeStamp(newSignal, sig.EventDate, sig.PointsList);
+                        var time = sig.EventDate;
+                        var data = sig.PointsList;
+                        newSignal.TypeAbbreviation = _getSignalType(sig.Type);
+                        newSignal.Unit = sig.Unit;
+                        newSignal.SamplingRate = _samplingRate;
+                        newSignal.Stat = stat;
+                        signalList.Add(newSignal);
+                    }
                 }
             }
             return signalList;

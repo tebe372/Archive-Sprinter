@@ -94,13 +94,23 @@ namespace AS.Config
             List<Signal> filteredSignal = new List<Signal>();
             //do some parameter process
             //according to the input channels that is selected, call the actual function and process each signal.
-            foreach (var signal in e)
+            var groupbyPMU = e.GroupBy(x => x.PMUName).ToDictionary(y => y.Key, y => y.ToList());
+            foreach (var gr in groupbyPMU)
             {
-                var name = signal.PMUName + "_" + signal.SignalName;
-                if (InputSignals.Contains(name))
+                if (InputSignals.Contains(gr.Key))
                 {
-                    Filters.PMUflagFilt(signal);
-                    filteredSignal.Add(signal);
+                    for (int i = 0; i < gr.Value.Count(); i++)
+                    {
+                        if (i == 0)
+                        {
+                            Filters.PMUflagFilt(gr.Value[i]);
+                        }
+                        else
+                        {
+                            gr.Value[i].Flags = new List<bool>(gr.Value[0].Flags);
+                        }
+                        filteredSignal.Add(gr.Value[i]);
+                    }
                 }
             }
             return filteredSignal;
@@ -157,20 +167,93 @@ namespace AS.Config
             List<Signal> filteredSignal = new List<Signal>();
             //do some parameter process
             //according to the input channels that is selected, call the actual function and process each signal.
-            foreach (var signal in e)
+            var groupbyPMU = e.GroupBy(x => x.TypeAbbreviation).ToDictionary(y => y.Key.Length < 3 ? y.Key : y.Key.Substring(0, 2), y => y.ToList());
+            List<Signal> vms = null;
+            if (groupbyPMU.ContainsKey("VM"))
             {
-                var type = signal.TypeAbbreviation;
-                if (type.Length > 1)
+                vms = groupbyPMU["VM"];
+                foreach (var signal in vms)
                 {
-                    var tp = type.Substring(0, 2);
                     var name = signal.PMUName + "_" + signal.SignalName;
-                    if (InputSignals.Contains(name) && (tp == "VM" || tp == "VP"))
+                    if (InputSignals.Contains(name))
                     {
-                        Filters.VoltPhasorFilt(signal, VoltMax, VoltMin, NomVoltage);
+                        Filters.VoltPhasorFilt(signal, "VM", VoltMax, VoltMin, NomVoltage);
                         filteredSignal.Add(signal);
                     }
                 }
             }
+            if (groupbyPMU.ContainsKey("VP"))
+            {
+                var vps = groupbyPMU["VP"];
+                foreach (var signal in vps)
+                {
+                    var name = signal.PMUName + "_" + signal.SignalName;
+                    if (InputSignals.Contains(name))
+                    {
+                        Filters.VoltPhasorFilt(signal, "VP", VoltMax, VoltMin, NomVoltage);
+                        filteredSignal.Add(signal);
+                    }
+                }
+            }
+            if (groupbyPMU.ContainsKey("VA"))
+            {
+                if (vms != null)
+                {
+                    var vas = groupbyPMU["VA"];
+                    //var vpsNames = vps.Select(x => x.SignalName.Substring(0, x.SignalName.LastIndexOf('.')));
+                    foreach (var signal in vas)
+                    {
+                        var name = signal.PMUName + "_" + signal.SignalName;
+                        if (InputSignals.Contains(name))
+                        {
+                            var vpFound = false;
+                            foreach (var vm in vms)
+                            {
+                                if (signal.SignalName.Substring(0, signal.SignalName.LastIndexOf('.')) == vm.SignalName.Substring(0, vm.SignalName.LastIndexOf('.')))
+                                {
+                                    signal.Flags = new List<bool>(vm.Flags);
+                                    vpFound = true;
+                                    break;
+                                }
+                            }
+                            //how to find the corresponding magnitude?
+                            if (vpFound)
+                            {
+                                filteredSignal.Add(signal);
+                            }
+                            else
+                            {
+                                throw new Exception("Cannot pass voltage angle signal: " + signal.SignalName + " through VoltPhasorFilt as corresponding voltage magnitude signal was not found.");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    throw new Exception("Cannot pass voltage angle signal through VoltPhasorFilt as corresponding voltage magnitude signal was not found.");
+                }
+            }
+            //foreach (var signal in e)
+            //{
+            //    var type = signal.TypeAbbreviation;
+            //    if (type.Length > 1)
+            //    {
+            //        var tp = type.Substring(0, 2);
+            //        var name = signal.PMUName + "_" + signal.SignalName;
+            //        if (InputSignals.Contains(name))
+            //        {
+            //            if (tp == "VM" || tp == "VP")
+            //            {
+            //                Filters.VoltPhasorFilt(signal, tp, VoltMax, VoltMin, NomVoltage);
+            //                filteredSignal.Add(signal);
+            //            }
+            //            else if (tp == "VA")
+            //            {
+
+            //            }
+            //        }
+            //    }
+            //}
             return filteredSignal;
         }
         public double VoltMin { get; set; }
@@ -188,20 +271,24 @@ namespace AS.Config
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
             {
-                var name = signal.PMUName + "_" + signal.SignalName;
-                if (InputSignals.Contains(name))
+                var type = signal.TypeAbbreviation;
+                if (type.Length == 1 && type == "F")
                 {
-                    Filters.FreqFilt(signal);
-                    filteredSignal.Add(signal);
+                    var name = signal.PMUName + "_" + signal.SignalName;
+                    if (InputSignals.Contains(name))
+                    {
+                        Filters.FreqFilt(signal, FreqMaxChan, FreqMinChan, FreqPctChan, FreqMinSamp, FreqMaxSamp);
+                        filteredSignal.Add(signal);
+                    }
                 }
             }
             return filteredSignal;
         }
-        public string FreqMaxChan { get; set; }
-        public string FreqMinChan { get; set; }
-        public string FreqPctChan { get; set; }
-        public string FreqMinSamp { get; set; }
-        public string FreqMaxSamp { get; set; }
+        public double FreqMaxChan { get; set; }
+        public double FreqMinChan { get; set; }
+        public double FreqPctChan { get; set; }
+        public double FreqMinSamp { get; set; }
+        public double FreqMaxSamp { get; set; }
     }
     public class SubtractionCustomization : Customization
     {

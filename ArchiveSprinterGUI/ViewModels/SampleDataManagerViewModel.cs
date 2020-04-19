@@ -13,7 +13,10 @@ namespace ArchiveSprinterGUI.ViewModels
     public class SampleDataManagerViewModel : ViewModelBase
     {
         private SampleDataMngr _model;
-
+        public SampleDataMngr Model
+        {
+            get { return _model; }
+        }
         public SampleDataManagerViewModel()
         {
             _model = SampleDataMngr.Instance;

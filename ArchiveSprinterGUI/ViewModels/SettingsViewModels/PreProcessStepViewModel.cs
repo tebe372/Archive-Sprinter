@@ -141,6 +141,141 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
+        public string FreqMaxChan
+        {
+            get
+            {
+                if (_model is FreqFilt)
+                {
+                    var m = _model as FreqFilt;
+                    return m.FreqMaxChan.ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
+                {
+                    var m = _model as FreqFilt;
+                    if (m.FreqMaxChan != v)
+                    {
+                        m.FreqMaxChan = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string FreqMinChan
+        {
+            get
+            {
+                if (_model is FreqFilt)
+                {
+                    var m = _model as FreqFilt;
+                    return m.FreqMinChan.ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
+                {
+                    var m = _model as FreqFilt;
+                    if (m.FreqMinChan != v)
+                    {
+                        m.FreqMinChan = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string FreqPctChan
+        {
+            get
+            {
+                if (_model is FreqFilt)
+                {
+                    var m = _model as FreqFilt;
+                    return m.FreqPctChan.ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
+                {
+                    var m = _model as FreqFilt;
+                    if (m.FreqPctChan != v)
+                    {
+                        m.FreqPctChan = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string FreqMinSamp
+        {
+            get
+            {
+                if (_model is FreqFilt)
+                {
+                    var m = _model as FreqFilt;
+                    return m.FreqMinSamp.ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
+                {
+                    var m = _model as FreqFilt;
+                    if (m.FreqMinSamp != v)
+                    {
+                        m.FreqMinSamp = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string FreqMaxSamp
+        {
+            get
+            {
+                if (_model is FreqFilt)
+                {
+                    var m = _model as FreqFilt;
+                    return m.FreqMaxSamp.ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
+                {
+                    var m = _model as FreqFilt;
+                    if (m.FreqMaxSamp != v)
+                    {
+                        m.FreqMaxSamp = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
 
         private Dictionary<string, SignalViewModel> parameters = new Dictionary<string,SignalViewModel>();
 
@@ -273,8 +408,14 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
 
         internal void GetSignalNameList()
         {
-            _model.InputSignals = InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList();
+            if (_model is PMUflagFilt)
+            {
+                _model.InputSignals = InputChannels.Select(x => x.PMUName).ToList();
+            }
+            else
+            {
+                _model.InputSignals = InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList();
+            }
         }
-    }
-    
+    }    
 }
