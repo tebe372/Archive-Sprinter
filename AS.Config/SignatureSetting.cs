@@ -192,8 +192,8 @@ namespace AS.Config
                         mean = SignatureCalculations.Mean(item.Data);
                     }
                     dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Mean", item.PMUName, item.SignalName, mean, item.TimeStamps.LastOrDefault());
-                    Console.WriteLine("Mean:");
-                    Console.WriteLine(mean);
+                    //Console.WriteLine("Mean:");
+                    //Console.WriteLine(mean);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -261,8 +261,8 @@ namespace AS.Config
                         variance = SignatureCalculations.Variance(item.Data);
                     }
                     dataMngr.AddResults(startT, "Variance", item.PMUName, item.SignalName, variance, item.TimeStamps.LastOrDefault());
-                    Console.WriteLine("Variance:");
-                    Console.WriteLine(variance);
+                    //Console.WriteLine("Variance:");
+                    //Console.WriteLine(variance);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -331,8 +331,8 @@ namespace AS.Config
                         std = SignatureCalculations.Stdev(item.Data);
                     }
                     dataMngr.AddResults(startT, "Standard Deviation", item.PMUName, item.SignalName, std, item.TimeStamps.LastOrDefault());
-                    Console.WriteLine("Standard Deviation:");
-                    Console.WriteLine(std);
+                    //Console.WriteLine("Standard Deviation:");
+                    //Console.WriteLine(std);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -401,8 +401,8 @@ namespace AS.Config
                         kurt = SignatureCalculations.Kurtosis(item.Data);
                     }
                     dataMngr.AddResults(startT, "Kurtosis", item.PMUName, item.SignalName, kurt, item.TimeStamps.LastOrDefault());
-                    Console.WriteLine("Kurtosis:");
-                    Console.WriteLine(kurt);
+                    //Console.WriteLine("Kurtosis:");
+                    //Console.WriteLine(kurt);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -471,8 +471,8 @@ namespace AS.Config
                         skew = SignatureCalculations.Skewness(item.Data);
                     }
                     dataMngr.AddResults(startT, "Skewness", item.PMUName, item.SignalName, skew, item.TimeStamps.LastOrDefault());
-                    Console.WriteLine("Skewness:");
-                    Console.WriteLine(skew);
+                    //Console.WriteLine("Skewness:");
+                    //Console.WriteLine(skew);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -669,8 +669,8 @@ namespace AS.Config
                         med = SignatureCalculations.Median(item.Data);
                     }
                     dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Median", item.PMUName, item.SignalName, med, item.TimeStamps.LastOrDefault());
-                    Console.WriteLine("Median:");
-                    Console.WriteLine(med);
+                    //Console.WriteLine("Median:");
+                    //Console.WriteLine(med);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -750,8 +750,8 @@ namespace AS.Config
                         max = SignatureCalculations.Maximum(item.Data);
                     }
                     dataMngr.AddResults(startT, "Maximum", item.PMUName, item.SignalName, max, item.TimeStamps.LastOrDefault());
-                    Console.WriteLine("Maximum:");
-                    Console.WriteLine(max);
+                    //Console.WriteLine("Maximum:");
+                    //Console.WriteLine(max);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -820,8 +820,8 @@ namespace AS.Config
                         min = SignatureCalculations.Minimum(item.Data);
                     }
                     dataMngr.AddResults(startT, "Minimum", item.PMUName, item.SignalName, min, item.TimeStamps.LastOrDefault());
-                    Console.WriteLine("Minimum:");
-                    Console.WriteLine(min);
+                    //Console.WriteLine("Minimum:");
+                    //Console.WriteLine(min);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -890,8 +890,8 @@ namespace AS.Config
                         range = SignatureCalculations.Range(item.Data);
                     }
                     dataMngr.AddResults(startT, "Range", item.PMUName, item.SignalName, range, item.TimeStamps.LastOrDefault());
-                    Console.WriteLine("Range:");
-                    Console.WriteLine(range);
+                    //Console.WriteLine("Range:");
+                    //Console.WriteLine(range);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -960,8 +960,8 @@ namespace AS.Config
                         rise = SignatureCalculations.Rise(item.Data);
                     }
                     dataMngr.AddResults(startT, "Rise", item.PMUName, item.SignalName, rise, item.TimeStamps.LastOrDefault());
-                    Console.WriteLine("Rise:");
-                    Console.WriteLine(rise);
+                    //Console.WriteLine("Rise:");
+                    //Console.WriteLine(rise);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);

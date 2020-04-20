@@ -30,7 +30,7 @@ namespace AS.Test
         {
             // Read in file and compare with known results
             var reader = DataFileReaderFactory.Create(DataFileType.csv);
-            Console.WriteLine(Environment.CurrentDirectory);
+            //Console.WriteLine(Environment.CurrentDirectory);
             List<Signal> signals = reader.Read("Data\\ExData_20170203_000800.csv");
 
             Assert.IsNotNull(signals);

@@ -422,7 +422,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             //_model.SaveConfigFile();
             var config = JsonConvert.SerializeObject(this, Formatting.Indented);
-            Console.WriteLine(config);
+            //Console.WriteLine(config);
 
             using (var fbd = new CommonSaveFileDialog())
             {

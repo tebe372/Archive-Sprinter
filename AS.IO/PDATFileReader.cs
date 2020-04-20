@@ -45,7 +45,7 @@ namespace AS.IO
                     }
                     else
                     {
-                        Console.WriteLine("sampling rate is 0 at: " + filename + "\nThe numbers are: " + time1.ToString() + " and " + time2.ToString());
+                        //Console.WriteLine("sampling rate is 0 at: " + filename + "\nThe numbers are: " + time1.ToString() + " and " + time2.ToString());
                     }
                     //}
                 }

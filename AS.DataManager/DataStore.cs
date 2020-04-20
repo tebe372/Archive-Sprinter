@@ -118,7 +118,7 @@ namespace AS.DataManager
                 }
                 StartTimeStamps.Add(startT);
                 var endT = e.FirstOrDefault().TimeStamps.LastOrDefault();
-                Console.WriteLine("Added end timestamp: " + endT.ToString("yyyyMMdd_HHmmss.ffffff") + " in " + e.FirstOrDefault().TimeStamps.Count() + " timestamps.");
+                //Console.WriteLine("Added end timestamp: " + endT.ToString("yyyyMMdd_HHmmss.ffffff") + " in " + e.FirstOrDefault().TimeStamps.Count() + " timestamps.");
                 TimePairs[endT] = startT;
                 foreach (var sig in e)
                 {

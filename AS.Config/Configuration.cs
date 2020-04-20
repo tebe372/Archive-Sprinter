@@ -136,7 +136,7 @@ namespace AS.Config
         public void SaveConfigFile()
         {
             var config = JsonConvert.SerializeObject(this, Formatting.None);
-            Console.WriteLine(config);
+            //Console.WriteLine(config);
             using (StreamWriter outputFile = new StreamWriter("Config.json"))
             {
                 outputFile.WriteLine(config);

@@ -50,7 +50,7 @@ namespace AS.IO
                 {
                     if (Utilities.CheckDataFileMatch(file, FileType))
                     {
-                        Console.WriteLine("Reading " + file);
+                        //Console.WriteLine("Reading " + file);
                         List<Signal> signals = null;
                         try
                         {
@@ -74,7 +74,7 @@ namespace AS.IO
                                 var lastTimeStampValidity = Math.Abs(c);
                                 if (item.SamplingRate != SamplingRate || item.TimeStamps.Count() != NumberOfDataPointInFile || lastTimeStampValidity > 1 / 600)
                                 {
-                                    Console.WriteLine(file + " has bad sampling rate or time stamps.");
+                                    //Console.WriteLine(file + " has bad sampling rate or time stamps.");
                                 }
                                 else
                                 {

@@ -149,12 +149,12 @@ namespace AS.ComputationManager.Calculations
                 {
                     var start = (int)(i * (Nw - Nover));
                     var end = (int)(i * (Nw - Nover) + Nw);
-                    Console.WriteLine("start from " + start.ToString() + ", end at " + end.ToString());
+                    //Console.WriteLine("start from " + start.ToString() + ", end at " + end.ToString());
                     //to match InspectionSpectral where mean is removed before calling pwelch
                     var frag = newSig.GetRange(start, (int)Nw);
                     //to match CalcPSD_OmegaB.m where mean is not removed from the data before calling fft
                     //var frag = dat.GetRange(start, (int)Nw);
-                    Console.WriteLine("number of point " + frag.Count());
+                    //Console.WriteLine("number of point " + frag.Count());
 
                     //double[] real = null;
                     var fragcount = frag.Count;
