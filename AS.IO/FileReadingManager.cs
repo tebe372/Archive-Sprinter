@@ -3,6 +3,7 @@ using AS.Core;
 using AS.Core.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -28,6 +29,7 @@ namespace AS.IO
             FileType = source.FileType;
             SamplingRate = source.SamplingRate;
             NumberOfDataPointInFile = source.NumberOfDataPointInFile;
+            Mnemonic = source.Mnemonic;
         }
 
         public async Task Start()
@@ -35,22 +37,26 @@ namespace AS.IO
             var reader = DataFileReaderFactory.Create(FileType);
             if (Directory.Exists(SourceDirectory))
             {
-                string[] allFiles;
+                var fileLength = NumberOfDataPointInFile / (double)SamplingRate;
+                DateTime time, endtime;
                 try
                 {
-                    allFiles = Directory.GetFiles(SourceDirectory, "*.*", SearchOption.AllDirectories);
+                    time = DateTime.ParseExact(DateTimeStart, "M/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                    endtime = DateTime.ParseExact(DateTimeEnd, "M/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                 }
                 catch (Exception ex)
                 {
                     throw ex;
                 }
-                Array.Sort(allFiles);
                 DateTime lastTimeStamp = new DateTime();
-                foreach (var file in allFiles)
+                while (time <= endtime)
                 {
-                    if (Utilities.CheckDataFileMatch(file, FileType))
+                    var fileTime = time.ToString("_yyyyMMdd_HHmmss");
+                    var yearDir = fileTime.Substring(1, 4);
+                    var dateDir = fileTime.Substring(3, 6);
+                    var file = SourceDirectory + "\\" + yearDir + "\\" + dateDir + "\\" + Mnemonic + fileTime + "." + FileType;
+                    if (File.Exists(file))
                     {
-                        //Console.WriteLine("Reading " + file);
                         List<Signal> signals = null;
                         try
                         {
@@ -91,7 +97,65 @@ namespace AS.IO
                         {
                         }
                     }
+                    time = time.AddSeconds(fileLength);
                 }
+                //string[] allFiles;
+                //try
+                //{
+                //    allFiles = Directory.GetFiles(SourceDirectory, "*.*", SearchOption.AllDirectories);
+                //}
+                //catch (Exception ex)
+                //{
+                //    throw ex;
+                //}
+                //Array.Sort(allFiles);
+                //DateTime lastTimeStamp = new DateTime();
+                //foreach (var file in allFiles)
+                //{
+                //    if (Utilities.CheckDataFileMatch(file, FileType))
+                //    {
+                //        //Console.WriteLine("Reading " + file);
+                //        List<Signal> signals = null;
+                //        try
+                //        {
+                //            signals = reader.Read(file);
+                //        }
+                //        catch (Exception ex)
+                //        {
+                //            continue;
+                //        }
+                //        var keepSig = new List<Signal>();
+                //        var a = _getFileDateTime(file);
+                //        var aa = 1.0 / SamplingRate * (NumberOfDataPointInFile - 1);
+                //        var lastTimePoint = a.AddSeconds(aa);
+                //        foreach (var item in signals)
+                //        {
+                //            var sig = item.PMUName + "_" + item.SignalName;
+                //            if (NeededSignalList.Contains(sig))
+                //            {
+                //                var b = item.TimeStamps.LastOrDefault() - lastTimePoint;
+                //                var c = b.TotalSeconds;
+                //                var lastTimeStampValidity = Math.Abs(c);
+                //                if (item.SamplingRate != SamplingRate || item.TimeStamps.Count() != NumberOfDataPointInFile || lastTimeStampValidity > 1 / 600)
+                //                {
+                //                    //Console.WriteLine(file + " has bad sampling rate or time stamps.");
+                //                }
+                //                else
+                //                {
+                //                    keepSig.Add(item);
+                //                }
+                //            }
+                //        }
+                //        if (keepSig.Count() == NeededSignalList.Count())
+                //        {
+                //            lastTimeStamp = keepSig.FirstOrDefault().TimeStamps.LastOrDefault();
+                //            OnFileReadingDone(keepSig);
+                //        }
+                //        else
+                //        {
+                //        }
+                //    }
+                //}
                 OnDataReadingDone(lastTimeStamp);
             }
         }
@@ -116,6 +180,20 @@ namespace AS.IO
         }
         public int SamplingRate { get; set; }
         public int NumberOfDataPointInFile { get; set; }
+        public string Mnemonic { get; private set; }
+        public string DateTimeEnd { get; set; }
+        public string DateTimeStart { get; set; }
+
+        //private string _exampleFileName;
+        //public string ExampleFileName 
+        //{
+        //    get { return _exampleFileName; }
+        //    set 
+        //    { 
+        //        _exampleFileName = value; 
+        //    } 
+        //}
+
         private DateTime _getFileDateTime(string filename)
         {
             string[] namestrings = Path.GetFileNameWithoutExtension(filename).Split('_');

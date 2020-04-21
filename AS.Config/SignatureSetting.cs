@@ -192,8 +192,10 @@ namespace AS.Config
                         mean = SignatureCalculations.Mean(item.Data);
                     }
                     dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Mean", item.PMUName, item.SignalName, mean, item.TimeStamps.LastOrDefault());
-                    //Console.WriteLine("Mean:");
-                    //Console.WriteLine(mean);
+#if DEBUG
+                    Console.WriteLine("Mean:");
+                    Console.WriteLine(mean);
+#endif
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -669,8 +671,10 @@ namespace AS.Config
                         med = SignatureCalculations.Median(item.Data);
                     }
                     dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Median", item.PMUName, item.SignalName, med, item.TimeStamps.LastOrDefault());
-                    //Console.WriteLine("Median:");
-                    //Console.WriteLine(med);
+#if DEBUG
+                    Console.WriteLine("Median:");
+                        Console.WriteLine(med);
+#endif
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);

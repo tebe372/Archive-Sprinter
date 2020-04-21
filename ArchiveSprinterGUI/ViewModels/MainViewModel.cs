@@ -95,11 +95,13 @@ namespace ArchiveSprinterGUI.ViewModels
             data.NeededSignalList = neededSignalList;
             data.FileReadingDone += FileReadingDone;
             data.DataReadingDone += DataReadingDone;
+            data.DateTimeStart = SettingsVM.DateTimeStart;
+            data.DateTimeEnd = SettingsVM.DateTimeEnd;
             DataMngr.Clean();
             // this need to be put on a thread
             try
             {
-                Task.Run(async () => { await data.Start(); }) ;
+                Task.Run(async () => { await _startAS(data); }) ;
             }
             catch (Exception ex)
             {
@@ -189,7 +191,17 @@ namespace ArchiveSprinterGUI.ViewModels
             _preprocessData(e);
             _numberOfFilesRead++;
         }
-
+        private async Task _startAS(FileReadingManager mgr)
+        {
+            try
+            {
+                mgr.Start();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
         private void _preprocessData(List<Signal> e)
         {
             bool newStage = true;
@@ -255,7 +267,14 @@ namespace ArchiveSprinterGUI.ViewModels
                     sig.ChangeFlaggedValueToNAN();
                 }
             }
-            DataMngr.AddData(e);
+            try
+            {
+                DataMngr.AddData(e);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
             // concat data, different signature concat data differently
 
             //foreach (var item in SettingsVM.SignatureSettings)

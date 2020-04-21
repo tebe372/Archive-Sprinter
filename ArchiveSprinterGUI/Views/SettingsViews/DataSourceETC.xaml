@@ -4,15 +4,27 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ArchiveSprinterGUI.Views.SettingsViews"
+             xmlns:toolkit="http://schemas.xceed.com/wpf/xaml/toolkit"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <local:DataSourceView DataContext="{Binding DataSourceVM}" Grid.Row="0"/>
-        <Grid Grid.Row="1"  Margin="2,20,0,0">
+        <StackPanel Orientation="Vertical" Grid.Row="1" Margin="2, 20, 0, 0">
+            <StackPanel Orientation="Horizontal" Margin="2">
+                <Label Content="Start Time:" Width="200" Margin="2" VerticalAlignment="Center"/>
+                <toolkit:DateTimePicker AutoCloseCalendar="True" Value="{Binding DateTimeStart, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="2" MinWidth="170" HorizontalContentAlignment="Center" FormatString="MM/dd/yyyy HH:mm:ss" Format="Custom" Kind="Utc" TimeFormat="Custom" TimeFormatString="MM/dd/yyyy HH:mm:ss"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Margin="2">
+                <Label Content="End Time:" Width="200" Margin="2" VerticalAlignment="Center"/>
+                <toolkit:DateTimePicker AutoCloseCalendar="True" Value="{Binding DateTimeEnd, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Right" Margin="2" MinWidth="170" HorizontalContentAlignment="Center" FormatString="MM/dd/yyyy HH:mm:ss" Format="Custom" Kind="Utc" TimeFormat="Custom" TimeFormatString="MM/dd/yyyy HH:mm:ss"/>
+            </StackPanel>
+        </StackPanel>
+        <Grid Grid.Row="2"  Margin="2,0,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>

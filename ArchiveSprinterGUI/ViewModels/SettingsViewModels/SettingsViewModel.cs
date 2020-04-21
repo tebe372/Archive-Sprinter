@@ -25,7 +25,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         }
         [JsonIgnore]
         public SampleDataManagerViewModel SampleDataMngr { get; set; }
-
         private StepViewModel _selectedStep;
         [JsonIgnore]
         public StepViewModel SelectedStep
@@ -37,7 +36,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-
         private ObservableCollection<PreProcessStepViewModel> _preProcessSteps;
         public ObservableCollection<PreProcessStepViewModel> PreProcessSteps
         {
@@ -48,7 +46,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-
         public SettingsViewModel()
         {
             _model = new Configuration();
@@ -87,7 +84,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             get{return _dataSourceVMList; }
             set{ _dataSourceVMList = value; }
         }
-
         [JsonIgnore]
         public ICommand DataConfigStepSelected { get; set; }
         private void _dataConfigStepSelected(object obj)
@@ -98,7 +94,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             OnPropertyChanged();
 
         }
-
         [JsonIgnore]
         public ICommand DataConfigStepAdded { get; set; }
         private void _dataConfigStepAdded(object obj)
@@ -114,7 +109,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             OnPropertyChanged();
 
         }
-
         [JsonIgnore]
         public ICommand DeleteDataConfigStep { get; set; }
         private void _deleteDataConfigStep(object obj)
@@ -146,7 +140,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-
         private void _stepSelectedToEdit(object obj)
         {
             PreProcessStepViewModel step = obj as PreProcessStepViewModel;
@@ -169,7 +162,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 SampleDataMngr.DetermineCheckStatusOfGroupedSignals();
             }
         }
-
         private void _signalCheckStatusChanged(SignalTree e)
         {
             _updateSignals(e);
@@ -182,7 +174,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
-
         private void _updateSignals(SignalTree e)
         {
             SignalTree tree = e as SignalTree;
@@ -206,7 +197,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 tree.CheckDirectParent();
             }
         }
-
         private void _addSignalsToStep(SignalTree tree)
         {
             if (tree.Signal != null)
@@ -221,7 +211,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
-
         private void _removeSignalsFromStep(SignalTree tree)
         {
             if (tree.Signal != null && SelectedStep.InputChannels.Contains(tree.Signal))
@@ -422,8 +411,9 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             //_model.SaveConfigFile();
             var config = JsonConvert.SerializeObject(this, Formatting.Indented);
-            //Console.WriteLine(config);
-
+#if DEBUG
+            Console.WriteLine(config);
+#endif
             using (var fbd = new CommonSaveFileDialog())
             {
                 fbd.InitialDirectory = _previousSaveFileDirectory;
@@ -508,6 +498,8 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 SignatureOutputDir = config.SignatureOutputDir;
                 PreProcessSteps = new ObservableCollection<PreProcessStepViewModel>();
                 SignatureSettings = new ObservableCollection<SignatureSettingViewModel>();
+                DateTimeStart = config.DateTimeStart;
+                DateTimeEnd = config.DateTimeEnd;
                 foreach (var pre in config.PreProcessSteps)
                 {
                     var newStep = new PreProcessStepViewModel(pre.Name);
@@ -600,13 +592,29 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
-
-
         //string jsonTypeNameAll = JsonConvert.SerializeObject(SignatureSettings, Formatting.Indented, new JsonSerializerSettings
         //{
         //    TypeNameHandling = TypeNameHandling.All
         //});
 
         //Console.WriteLine(jsonTypeNameAll);
+        public string DateTimeStart 
+        {
+            get { return _model.DateTimeStart; }
+            set
+            {
+                _model.DateTimeStart = value;
+                OnPropertyChanged();
+            }
+        }
+        public string DateTimeEnd
+        {
+            get { return _model.DateTimeEnd; }
+            set
+            {
+                _model.DateTimeEnd = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

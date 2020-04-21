@@ -152,6 +152,8 @@ namespace AS.Config
             }
         }
         public string SignatureOutputDir { get; set; }
+        public string DateTimeStart { get; set; } = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
+        public string DateTimeEnd { get; set; } = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
     }
     public class SignatureCalMenu {
         public SignatureCalMenu(string sig)
