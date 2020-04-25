@@ -140,9 +140,7 @@
                                         </ScrollViewer>
                                     </Expander>
                                 </Border>
-                            </DataTemplate>
-
-                           
+                            </DataTemplate>                           
                         </ItemsControl.Resources>
                     </ItemsControl>
                     <Border Grid.Row="2" Margin="2">

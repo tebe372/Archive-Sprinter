@@ -123,7 +123,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
-
+        
         internal void GetSignalNameList()
         {
             _model.InputSignals = InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList();
@@ -133,5 +133,9 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             _model.SamplingRate = InputChannels.FirstOrDefault().SamplingRate;
         }
+        //public override void AddSignal(SignalViewModel signal)
+        //{
+        //    InputChannels.Add(signal);
+        //}
     }
 }

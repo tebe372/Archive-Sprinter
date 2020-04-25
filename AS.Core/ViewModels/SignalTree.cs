@@ -287,8 +287,11 @@ namespace AS.Core.ViewModels
             }
             else
             {
-                _isChecked = Signal.IsChecked;
-                OnPropertyChanged("IsChecked");
+                if (Signal != null)
+                {
+                    _isChecked = Signal.IsChecked;
+                    OnPropertyChanged("IsChecked");
+                }
             }
         }
     }

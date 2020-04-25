@@ -18,6 +18,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             _isSelected = false;
             _isExpanded = false;
             _inputChannels = new ObservableCollection<SignalViewModel>();
+            _outputChannels = new ObservableCollection<SignalViewModel>();
             //ThisStepOutputsGroupedByPMU = new SignalTree();
         }
         private int _stepCounter;
@@ -97,9 +98,28 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         public SignalTree ThisStepInputsGroupedByType { get; set; }
         [JsonIgnore]
         public SignalTree ThisStepOutputsGroupedByPMU { get; set; }
-
-        internal void UpdateInputOutputTree()
+        private ObservableCollection<SignalViewModel> _outputChannels;
+        [JsonIgnore]
+        public ObservableCollection<SignalViewModel> OutputChannels
         {
+            get
+            {
+                return _outputChannels;
+            }
+            set
+            {
+                _outputChannels = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public void UpdateInputOutputTree()
+        {
+        }
+
+        public virtual void RemoveSignal(SignalViewModel signal)
+        {
+            InputChannels.Remove(signal);
         }
     }
 }

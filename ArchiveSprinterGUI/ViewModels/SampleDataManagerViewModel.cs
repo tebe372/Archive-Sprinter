@@ -21,7 +21,7 @@ namespace ArchiveSprinterGUI.ViewModels
         {
             _model = SampleDataMngr.Instance;
             _model.SignalsUpdated += SampleSignalsUpdated;
-            DataviewGroupMethods = new List<string>() { "View Signal by Type", "View Signal by PMU" };
+            DataviewGroupMethods = new List<string>() { "View Signal by Type", "View Signal by PMU", "Input Channels by Step", "Output Channels by Step" };
             SelectedDataViewingGroupMethod = "View Signal by Type";
             _signalsVM = new ObservableCollection<SignalViewModel>();
         }
@@ -97,6 +97,89 @@ namespace ArchiveSprinterGUI.ViewModels
             }
         }
         #endregion
+
+        #region pre process related
+        private ObservableCollection<SignalTree> _groupedSignalByPreProcessStepsInput = new ObservableCollection<SignalTree>();
+        public ObservableCollection<SignalTree> GroupedSignalByPreProcessStepsInput
+        {
+            get
+            {
+                return _groupedSignalByPreProcessStepsInput;
+            }
+            set
+            {
+                _groupedSignalByPreProcessStepsInput = value;
+                OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<SignalTree> _groupedSignalByPreProcessStepsOutput = new ObservableCollection<SignalTree>();
+        public ObservableCollection<SignalTree> GroupedSignalByPreProcessStepsOutput
+        {
+            get
+            {
+                return _groupedSignalByPreProcessStepsOutput;
+            }
+            set
+            {
+                _groupedSignalByPreProcessStepsOutput = value;
+                OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<SignalTree> _allPreProcessOutputGroupedByType = new ObservableCollection<SignalTree>();
+        public ObservableCollection<SignalTree> AllPreProcessOutputGroupedByType
+        {
+            get
+            {
+                return _allPreProcessOutputGroupedByType;
+            }
+            set
+            {
+                _allPreProcessOutputGroupedByType = value;
+                OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<SignalTree> _allPreProcessOutputGroupedByPMU = new ObservableCollection<SignalTree>();
+        public ObservableCollection<SignalTree> AllPreProcessOutputGroupedByPMU
+        {
+            get
+            {
+                return _allPreProcessOutputGroupedByPMU;
+            }
+            set
+            {
+                _allPreProcessOutputGroupedByPMU = value;
+                OnPropertyChanged();
+            }
+        }
+        #endregion
+
+        private ObservableCollection<SignalTree> _groupedSignalBySignatureStepsInput = new ObservableCollection<SignalTree>();
+        public ObservableCollection<SignalTree> GroupedSignalBySignatureStepsInput
+        {
+            get
+            {
+                return _groupedSignalBySignatureStepsInput;
+            }
+            set
+            {
+                _groupedSignalBySignatureStepsInput = value;
+                OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<SignalTree> _groupedSignalByDataWriterStepsInput = new ObservableCollection<SignalTree>();
+        public ObservableCollection<SignalTree> GroupedSignalByDataWriterStepsInput
+        {
+            get
+            {
+                return _groupedSignalByDataWriterStepsInput;
+            }
+            set
+            {
+                _groupedSignalByDataWriterStepsInput = value;
+                OnPropertyChanged();
+            }
+        }
+
         public void DetermineCheckStatusOfGroupedSignals()
         {
             if (GroupedRawSignalsByPMU != null)
@@ -109,6 +192,48 @@ namespace ArchiveSprinterGUI.ViewModels
             if (GroupedRawSignalsByType != null)
             {
                 foreach (var item in GroupedRawSignalsByType)
+                {
+                    item.DetermineIsCheckedStatusFromTopToBottom();
+                }
+            }
+            if (GroupedSignalByPreProcessStepsInput != null)
+            {
+                foreach (var item in GroupedSignalByPreProcessStepsInput)
+                {
+                    item.DetermineIsCheckedStatusFromTopToBottom();
+                }
+            }
+            if (GroupedSignalByPreProcessStepsOutput != null)
+            {
+                foreach (var item in GroupedSignalByPreProcessStepsOutput)
+                {
+                    item.DetermineIsCheckedStatusFromTopToBottom();
+                }
+            }
+            if (AllPreProcessOutputGroupedByType != null)
+            {
+                foreach (var item in AllPreProcessOutputGroupedByType)
+                {
+                    item.DetermineIsCheckedStatusFromTopToBottom();
+                }
+            }
+            if (AllPreProcessOutputGroupedByPMU != null)
+            {
+                foreach (var item in AllPreProcessOutputGroupedByPMU)
+                {
+                    item.DetermineIsCheckedStatusFromTopToBottom();
+                }
+            }
+            if (GroupedSignalBySignatureStepsInput != null)
+            {
+                foreach (var item in GroupedSignalBySignatureStepsInput)
+                {
+                    item.DetermineIsCheckedStatusFromTopToBottom();
+                }
+            }
+            if (GroupedSignalByDataWriterStepsInput != null)
+            {
+                foreach (var item in GroupedSignalByDataWriterStepsInput)
                 {
                     item.DetermineIsCheckedStatusFromTopToBottom();
                 }

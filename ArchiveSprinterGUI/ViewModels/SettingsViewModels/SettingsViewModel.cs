@@ -67,6 +67,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             DeleteASignatureStep = new RelayCommand(_deleteASignatureStep);
             DeSelectAllSteps = new RelayCommand(_deSelectAllSteps);
             SelectSignatureOutputDir = new RelayCommand(_selectSignatureOutputDir);
+
+            AddDataWriter = new RelayCommand(_addDataWriter);
+            DataWriterSelected = new RelayCommand(_dataWriterSelected);
+            DeleteDataWriter = new RelayCommand(_deleteAdatawriter);
         }
         private DataSourceSettingViewModel _dataSourceVM = new DataSourceSettingViewModel();
         public DataSourceSettingViewModel DataSourceVM 
@@ -91,7 +95,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             PreProcessStepViewModel newStep = obj as PreProcessStepViewModel;
             // Set step to edit
             _stepSelectedToEdit(newStep);
-            OnPropertyChanged();
+            //OnPropertyChanged();
 
         }
         [JsonIgnore]
@@ -102,12 +106,17 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             PreProcessStepViewModel newStep = new PreProcessStepViewModel(stepName);
      
             newStep.StepCounter = PreProcessSteps.Count + 1;
+            newStep.ThisStepInputsGroupedByType = new SignalTree("Step " + newStep.StepCounter.ToString() + " _ " + newStep.Name);
             newStep.ThisStepOutputsGroupedByPMU = new SignalTree("Step " + newStep.StepCounter.ToString() + " _ " + newStep.Name);
             PreProcessSteps.Add(newStep);
+            SampleDataMngr.GroupedSignalByPreProcessStepsInput.Add(newStep.ThisStepInputsGroupedByType);
+            if (newStep.Model is Customization)
+            {
+                SampleDataMngr.GroupedSignalByPreProcessStepsOutput.Add(newStep.ThisStepOutputsGroupedByPMU);
+            }
             // Set step to edit
             _stepSelectedToEdit(newStep);
-            OnPropertyChanged();
-
+            //OnPropertyChanged();
         }
         [JsonIgnore]
         public ICommand DeleteDataConfigStep { get; set; }
@@ -137,7 +146,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 {
                     SelectedStep.IsSelected = false;
                 }
-                OnPropertyChanged();
+                //OnPropertyChanged();
             }
         }
         private void _stepSelectedToEdit(object obj)
@@ -147,6 +156,11 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             {
                 if (SelectedStep != null)
                 {
+                    SelectedStep.ThisStepInputsGroupedByType.SignalList = SampleDataMngr.SortSignalsByType(SelectedStep.InputChannels);
+                    if (((PreProcessStepViewModel)SelectedStep).Model is Customization)
+                    {
+                        SelectedStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(SelectedStep.OutputChannels);
+                    }
                     // Deselect previously selected step
                     SelectedStep.IsSelected = false;
 
@@ -156,9 +170,29 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     //   MessageBox.Show("Missing field(s) in this step, please double check!", "Error!", MessageBoxButtons.OK);
                     //}
                 }
+                var lastNmberOfSteps = step.StepCounter;
+                var stepsInputAsSignalHierachy = new ObservableCollection<SignalTree>();
+                var stepsOutputAsSignalHierachy = new ObservableCollection<SignalTree>();
+                foreach (var stp in PreProcessSteps)
+                {
+                    if (stp.StepCounter < lastNmberOfSteps)
+                    {
+                        stepsInputAsSignalHierachy.Add(stp.ThisStepInputsGroupedByType);
+                        if (stp.Model is Customization)
+                        {
+                            stepsOutputAsSignalHierachy.Add(stp.ThisStepOutputsGroupedByPMU);
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
                 // Set this step to selected
                 step.IsSelected = true;
                 SelectedStep = step;
+                SampleDataMngr.GroupedSignalByPreProcessStepsInput = stepsInputAsSignalHierachy;
+                SampleDataMngr.GroupedSignalByPreProcessStepsOutput = stepsOutputAsSignalHierachy;
                 SampleDataMngr.DetermineCheckStatusOfGroupedSignals();
             }
         }
@@ -167,11 +201,26 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             _updateSignals(e);
             if (SelectedStep != null)
             {
-                SelectedStep.UpdateInputOutputTree();
+                //SelectedStep.UpdateInputOutputTree();
+                SelectedStep.ThisStepInputsGroupedByType.SignalList = SampleDataMngr.SortSignalsByType(SelectedStep.InputChannels);
                 if (SelectedStep is PreProcessStepViewModel)
                 {
-                    SelectedStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(SelectedStep.InputChannels);
+                    //SampleDataMngr.GroupedSignalByPreProcessStepsInput.Add(SelectedStep.ThisStepInputsGroupedByType);
+                    SelectedStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(SelectedStep.OutputChannels);
+                    //var thisSelectedStep = SelectedStep as PreProcessStepViewModel;
+                    //if (thisSelectedStep.Model is Customization)
+                    //{
+                    //    SampleDataMngr.GroupedSignalByPreProcessStepsOutput.Add(SelectedStep.ThisStepOutputsGroupedByPMU);
+                    //}
                 }
+                //if (SelectedStep is SignatureSettingViewModel)
+                //{
+                //    SampleDataMngr.GroupedSignalBySignatureStepsInput.Add(SelectedStep.ThisStepInputsGroupedByType);
+                //}
+                //if (SelectedStep is DataWriterViewModel)
+                //{
+                //    SampleDataMngr.GroupedSignalByDataWriterStepsInput.Add(SelectedStep.ThisStepInputsGroupedByType);
+                //}
             }
         }
         private void _updateSignals(SignalTree e)
@@ -215,7 +264,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             if (tree.Signal != null && SelectedStep.InputChannels.Contains(tree.Signal))
             {
-                SelectedStep.InputChannels.Remove(tree.Signal);
+                SelectedStep.RemoveSignal(tree.Signal);
             }
             else
             {
@@ -243,6 +292,9 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             newSig.WindowOverlapStr = WindowOverlapStr;
             newSig.WindowSizeStr = WindowSizeStr;
             newSig.StepCounter = SignatureSettings.Count + 1;
+            newSig.ThisStepInputsGroupedByType = new SignalTree("Step " + newSig.StepCounter.ToString() + " _ " + newSig.SignatureName);
+            newSig.ThisStepOutputsGroupedByPMU = new SignalTree("Step " + newSig.StepCounter.ToString() + " _ " + newSig.SignatureName);
+            SampleDataMngr.GroupedSignalBySignatureStepsInput.Add(newSig.ThisStepInputsGroupedByType);
             SignatureSettings.Add(newSig);
             Model.SignatureSettings.Add(newSig.Model);
             _signatureStepSelected(newSig);
@@ -256,10 +308,25 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             {
                 if (SelectedStep != null)
                 {
+                    SelectedStep.ThisStepInputsGroupedByType.SignalList = SampleDataMngr.SortSignalsByType(SelectedStep.InputChannels);
                     SelectedStep.IsSelected = false;
+                }
+                var lastNmberOfSteps = step.StepCounter;
+                var stepsInputAsSignalHierachy = new ObservableCollection<SignalTree>();
+                foreach (var sig in SignatureSettings)
+                {
+                    if (sig.StepCounter < lastNmberOfSteps)
+                    {
+                        stepsInputAsSignalHierachy.Add(sig.ThisStepInputsGroupedByType);
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
                 step.IsSelected = true;
                 SelectedStep = step;
+                SampleDataMngr.GroupedSignalBySignatureStepsInput = stepsInputAsSignalHierachy;
                 SampleDataMngr.DetermineCheckStatusOfGroupedSignals();
             }
         }
@@ -302,10 +369,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             if (SelectedStep != null)
             {
-                foreach (var s in SelectedStep.InputChannels)
-                {
-                    s.IsChecked = false;
-                }
+                //foreach (var s in SelectedStep.InputChannels)
+                //{
+                //    s.IsChecked = false;
+                //}
                 SelectedStep.IsSelected = false;
                 SelectedStep = null;
                 SampleDataMngr.DetermineCheckStatusOfGroupedSignals();
@@ -328,6 +395,12 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             set {
                 if (_currentTabIndex != value)
                 {
+                    if (_currentTabIndex == 1)
+                    {
+                        var allDataPreprocessOutputSignals = _getAllPreprocessOutput();
+                        SampleDataMngr.AllPreProcessOutputGroupedByType = SampleDataMngr.SortSignalsByType(allDataPreprocessOutputSignals);
+                        SampleDataMngr.AllPreProcessOutputGroupedByPMU = SampleDataMngr.SortSignalByPMU(allDataPreprocessOutputSignals);
+                    }
                     _currentTabIndex = value;
                     _deSelectAllSteps(null);
                     //if (_oldTabIndex == 1)
@@ -338,6 +411,21 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     OnPropertyChanged();
                 }
             }
+        }
+        private ObservableCollection<SignalViewModel> _getAllPreprocessOutput()
+        {
+            var results = new ObservableCollection<SignalViewModel>();
+            foreach (var stp in PreProcessSteps)
+            {
+                foreach (var sig in stp.OutputChannels)
+                {
+                    if (!results.Contains(sig))
+                    {
+                        results.Add(sig);
+                    }
+                }
+            }
+            return results;
         }
         [JsonProperty("DatawriteOutFrequency")]
         public string DatawriteOutFrequencyStr
@@ -498,23 +586,14 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 SignatureOutputDir = config.SignatureOutputDir;
                 PreProcessSteps = new ObservableCollection<PreProcessStepViewModel>();
                 SignatureSettings = new ObservableCollection<SignatureSettingViewModel>();
+                DataWriters = new ObservableCollection<DataWriterViewModel>();
                 DateTimeStart = config.DateTimeStart;
                 DateTimeEnd = config.DateTimeEnd;
                 foreach (var pre in config.PreProcessSteps)
                 {
                     var newStep = new PreProcessStepViewModel(pre.Name);
                     newStep.StepCounter = PreProcessSteps.Count + 1;
-                    newStep.ThisStepOutputsGroupedByPMU = new SignalTree("Step " + newStep.StepCounter.ToString() + " _ " + newStep.Name);
                     PreProcessSteps.Add(newStep);
-                    foreach (var sig in pre.InputChannels)
-                    {
-                        var foundSig = SampleDataMngr.FindSignal(sig.PMUName, sig.SignalName);
-                        if (foundSig != null)
-                        {
-                            newStep.InputChannels.Add(foundSig);
-                        }
-                    }
-                    newStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(newStep.InputChannels);
                     if (newStep.Model is VoltPhasorFilt)
                     {
                         newStep.NomVoltage = pre.NomVoltage;
@@ -528,6 +607,35 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                         newStep.FreqPctChan = pre.FreqPctChan;
                         newStep.FreqMaxSamp = pre.FreqMaxSamp;
                         newStep.FreqMinSamp = pre.FreqMinSamp;
+                    }
+                    // take care of all input output signals
+                    foreach (var sig in pre.InputChannels)
+                    {
+                        var foundSig = SampleDataMngr.FindSignal(sig.PMUName, sig.SignalName);
+                        if (foundSig != null)
+                        {
+                            newStep.AddSignal(foundSig);
+                        }
+                    }
+                    //if (newStep.Model is Filter)
+                    //{
+                    //    newStep.OutputChannels = newStep.InputChannels;
+                    //}
+                    //else
+                    //{
+                    //    foreach (var sig in newStep.InputChannels)
+                    //    {
+                    //        // need to make up output signals from each input, which might depends on different customization and all differ
+                    //    }
+                    //}
+                    newStep.ThisStepInputsGroupedByType = new SignalTree("Step " + newStep.StepCounter.ToString() + " _ " + newStep.Name);
+                    newStep.ThisStepOutputsGroupedByPMU = new SignalTree("Step " + newStep.StepCounter.ToString() + " _ " + newStep.Name);
+                    newStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(newStep.OutputChannels);
+                    newStep.ThisStepInputsGroupedByType.SignalList = SampleDataMngr.SortSignalsByType(newStep.InputChannels);
+                    SampleDataMngr.GroupedSignalByPreProcessStepsInput.Add(newStep.ThisStepInputsGroupedByType);
+                    if (newStep.Model is Customization)
+                    {
+                        SampleDataMngr.GroupedSignalByPreProcessStepsOutput.Add(newStep.ThisStepOutputsGroupedByPMU);
                     }
                 }
                 foreach (var signature in config.SignatureSettings)
@@ -547,6 +655,35 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                             newSig.InputChannels.Add(foundSig);
                         }
                     }
+                    newSig.ThisStepInputsGroupedByType = new SignalTree("Step " + newSig.StepCounter.ToString() + " _ " + newSig.SignatureName);
+                    //newStep.ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(newStep.OutputChannels);
+                    newSig.ThisStepInputsGroupedByType.SignalList = SampleDataMngr.SortSignalsByType(newSig.InputChannels);
+                    SampleDataMngr.GroupedSignalBySignatureStepsInput.Add(newSig.ThisStepInputsGroupedByType);
+                    //if (newStep.Model is Customization)
+                    //{
+                    //    SampleDataMngr.GroupedSignalByPreProcessStepsOutput.Add(newStep.ThisStepOutputsGroupedByPMU);
+                    //}
+                }
+                foreach (var writer in config.DataWriters)
+                {
+                    var newWriter = new DataWriterViewModel(writer.Name);
+                    newWriter.StepCounter = DataWriters.Count + 1;
+                    newWriter.Mnemonic = writer.Mnemonic;
+                    newWriter.SeparatePMUs = writer.SeparatePMUs;
+                    newWriter.SavePath = writer.SavePath;
+                    DataWriters.Add(newWriter);
+                    Model.DataWriters.Add(newWriter.Model);
+                    foreach (var sig in writer.InputChannels)
+                    {
+                        var foundSig = SampleDataMngr.FindSignal(sig.PMUName, sig.SignalName);
+                        if (foundSig != null)
+                        {
+                            newWriter.InputChannels.Add(foundSig);
+                        }
+                    }
+                    newWriter.ThisStepInputsGroupedByType = new SignalTree(newWriter.Name + " " + newWriter.StepCounter.ToString());
+                    newWriter.ThisStepInputsGroupedByType.SignalList = SampleDataMngr.SortSignalsByType(newWriter.InputChannels);
+                    SampleDataMngr.GroupedSignalByDataWriterStepsInput.Add(newWriter.ThisStepInputsGroupedByType);
                 }
             }
         }
@@ -614,6 +751,93 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             {
                 _model.DateTimeEnd = value;
                 OnPropertyChanged();
+            }
+        }
+        private ObservableCollection<DataWriterViewModel> _dataWriters = new ObservableCollection<DataWriterViewModel>();
+        public ObservableCollection<DataWriterViewModel> DataWriters 
+        {
+            get { return _dataWriters; }
+            set
+            {
+                _dataWriters = value;
+                OnPropertyChanged();
+            }
+        }
+        [JsonIgnore]
+        public ICommand AddDataWriter { get; set; }
+        private void _addDataWriter(object obj)
+        {
+            var newWriter = new DataWriterViewModel();
+            newWriter.StepCounter = DataWriters.Count + 1;
+            newWriter.ThisStepInputsGroupedByType = new SignalTree("Step " + newWriter.StepCounter.ToString() + " _ " + newWriter.Name);
+            newWriter.ThisStepOutputsGroupedByPMU = new SignalTree("Step " + newWriter.StepCounter.ToString() + " _ " + newWriter.Name);
+            SampleDataMngr.GroupedSignalByDataWriterStepsInput.Add(newWriter.ThisStepInputsGroupedByType);
+            DataWriters.Add(newWriter);
+            Model.DataWriters.Add(newWriter.Model);
+            _dataWriterSelected(newWriter);
+        }
+        [JsonIgnore]
+        public ICommand DataWriterSelected { get; set; }
+        private void _dataWriterSelected(object obj)
+        {
+            DataWriterViewModel step = obj as DataWriterViewModel;
+            if (SelectedStep != step)
+            {
+                if (SelectedStep != null)
+                {
+                    SelectedStep.ThisStepInputsGroupedByType.SignalList = SampleDataMngr.SortSignalsByType(SelectedStep.InputChannels);
+                    SelectedStep.IsSelected = false;
+                }
+                var lastNmberOfSteps = step.StepCounter;
+                var stepsInputAsSignalHierachy = new ObservableCollection<SignalTree>();
+                foreach (var sig in DataWriters)
+                {
+                    if (sig.StepCounter < lastNmberOfSteps)
+                    {
+                        stepsInputAsSignalHierachy.Add(sig.ThisStepInputsGroupedByType);
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                step.IsSelected = true;
+                SelectedStep = step;
+                SampleDataMngr.GroupedSignalByDataWriterStepsInput = stepsInputAsSignalHierachy;
+                SampleDataMngr.DetermineCheckStatusOfGroupedSignals();
+            }
+        }
+        [JsonIgnore]
+        public ICommand DeleteDataWriter { get; set; }
+        private void _deleteAdatawriter(object obj)
+        {
+            // Delete step
+            DataWriterViewModel stepRemove = (DataWriterViewModel)obj;
+            if (MessageBox.Show("Delete data writer " + stepRemove.StepCounter.ToString() + "?", "Warning!", MessageBoxButtons.OKCancel) == DialogResult.OK)
+            {
+                // Try to delete current step
+                try
+                {
+                    DataWriters.Remove(stepRemove);
+                    foreach (var step in DataWriters)
+                    {
+                        if (step.StepCounter > stepRemove.StepCounter)
+                        {
+                            step.StepCounter -= 1;
+                        }
+                    }
+                    Model.DataWriters.Remove(stepRemove.Model);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Error deleting a data writer");
+                }
+                // Select a different step?
+                if (SelectedStep != null)
+                {
+                    SelectedStep.IsSelected = false;
+                    SelectedStep = null;
+                }
             }
         }
     }

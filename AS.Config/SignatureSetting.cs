@@ -73,11 +73,24 @@ namespace AS.Config
         public int WindowOverlapNumberOfSamples { get; set; }
         public void RemoveNanValue(Signal sig)
         {
-            for (int i = sig.Data.Count - 1; i >= 0; i--)
+            if (sig.Data.Count > 0)
             {
-                if (!sig.Flags[i])
+                for (int i = sig.Data.Count - 1; i >= 0; i--)
                 {
-                    sig.Data.RemoveAt(i);
+                    if (double.IsNaN(sig.Data[i]))
+                    {
+                        sig.Data.RemoveAt(i);
+                    }
+                }
+            }
+            else
+            {
+                for (int i = sig.ComplexData.Count - 1; i >= 0; i--)
+                {
+                    if (double.IsNaN(sig.ComplexData[i].Real) || double.IsNaN(sig.ComplexData[i].Imaginary))
+                    {
+                        sig.ComplexData.RemoveAt(i);
+                    }
                 }
             }
         }

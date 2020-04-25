@@ -4,8 +4,14 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ArchiveSprinterGUI.Views.SettingsViews"
+             xmlns:converters="clr-namespace:ArchiveSprinterGUI.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <converters:SignalSelectionDropDownConverter x:Key="SignalSelectionDropDownConverter"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -13,7 +19,14 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Label Content="Pick Channels for:" Margin="2" Grid.Row="0"/>
-        <ComboBox ItemsSource="{Binding DataviewGroupMethods}" Text="{Binding SelectedDataViewingGroupMethod}" Margin="2" Grid.Row="1"/>
+        <ComboBox Text="{Binding SelectedDataViewingGroupMethod}" Margin="2" Grid.Row="1">
+            <ComboBox.ItemsSource>
+                <MultiBinding Converter="{StaticResource SignalSelectionDropDownConverter}">
+                    <Binding Path="DataviewGroupMethods"/>
+                    <Binding Path="DataContext.CurrentTabIndex" RelativeSource="{RelativeSource AncestorType=UserControl, Mode=FindAncestor, AncestorLevel=3}"/>
+                </MultiBinding>
+            </ComboBox.ItemsSource>
+        </ComboBox>
         <TreeView Grid.Row="2" Margin="2">
             <TreeView.Style>
                 <Style TargetType="{x:Type TreeView}">
@@ -24,6 +37,40 @@
                         <DataTrigger Binding="{Binding SelectedDataViewingGroupMethod}" Value="View Signal by PMU">
                             <Setter Property="ItemsSource" Value="{Binding GroupedRawSignalsByPMU}"/>
                         </DataTrigger>
+                        <MultiDataTrigger>
+                        <MultiDataTrigger.Conditions>
+                            <Condition Binding="{Binding SelectedDataViewingGroupMethod}" Value="Input Channels by Step"/>
+                            <Condition Binding="{Binding DataContext.CurrentTabIndex, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor, AncestorLevel=3}}" Value="1"/>
+                        </MultiDataTrigger.Conditions>
+                            <Setter Property="ItemsSource" Value="{Binding GroupedSignalByPreProcessStepsInput}"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding SelectedDataViewingGroupMethod}" Value="Output Channels by Step"/>
+                                <Condition Binding="{Binding DataContext.CurrentTabIndex, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor, AncestorLevel=3}}" Value="1"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="ItemsSource" Value="{Binding GroupedSignalByPreProcessStepsOutput}"/>
+                        </MultiDataTrigger>
+                        <DataTrigger Binding="{Binding SelectedDataViewingGroupMethod}" Value="Output from Data Quality and Customization by Signal Type">
+                            <Setter Property="ItemsSource" Value="{Binding AllPreProcessOutputGroupedByType}"/>
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SelectedDataViewingGroupMethod}" Value="Output from Data Quality and Customization by PMU">
+                            <Setter Property="ItemsSource" Value="{Binding AllPreProcessOutputGroupedByPMU}"/>
+                        </DataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding SelectedDataViewingGroupMethod}" Value="Input Channels by Step"/>
+                                <Condition Binding="{Binding DataContext.CurrentTabIndex, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor, AncestorLevel=3}}" Value="2"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="ItemsSource" Value="{Binding GroupedSignalBySignatureStepsInput}"/>
+                        </MultiDataTrigger>
+                        <MultiDataTrigger>
+                            <MultiDataTrigger.Conditions>
+                                <Condition Binding="{Binding SelectedDataViewingGroupMethod}" Value="Input Channels by Step"/>
+                                <Condition Binding="{Binding DataContext.CurrentTabIndex, RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor, AncestorLevel=3}}" Value="3"/>
+                            </MultiDataTrigger.Conditions>
+                            <Setter Property="ItemsSource" Value="{Binding GroupedSignalByDataWriterStepsInput}"/>
+                        </MultiDataTrigger>
                     </Style.Triggers>
                 </Style>
             </TreeView.Style>

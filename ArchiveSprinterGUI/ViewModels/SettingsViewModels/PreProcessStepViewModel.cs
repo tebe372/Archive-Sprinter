@@ -290,7 +290,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-
         public PreProcessStepViewModel() : base()
         {
             _isComplete = false;
@@ -325,20 +324,45 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
          
         public override void AddSignal(SignalViewModel signal)
         {
-            switch (Name)
+            if (_model is Filter)
             {
-                case "Status Flags":
-                case "Zeros":
-                case "Missing":
-                case "Nominal Voltage":
-                case "Nominal Frequency":
-                    InputChannels.Add(signal); // redundant with baseclass function
-                    break;
-                case "Subtraction":
-                    // Set parameter
-                    SetFocusedTextBox(signal);
-                    break;
+                InputChannels.Add(signal); // Override baseclass function
+                OutputChannels.Add(signal);
+            }
+            else
+            {
+                switch (Name)
+                {
+                    //case "Status Flags":
+                    //case "Zeros":
+                    //case "Missing":
+                    //case "Nominal Voltage":
+                    //case "Nominal Frequency":
+                    //    break;
+                    case "Subtraction":
+                        // Set parameter
+                        SetFocusedTextBox(signal); // if step is a customization, need to make up the output signal from input signal depends on type of customizaion
+                        break;
 
+                }
+            }
+        }
+        public override void RemoveSignal(SignalViewModel signal)
+        {
+            if (_model is Filter)
+            {
+                InputChannels.Remove(signal);
+                OutputChannels.Remove(signal);
+            }
+            else
+            {//need to remove the output signal depends on type of customization
+                switch (Name)
+                {
+                    case "Subtraction":
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
