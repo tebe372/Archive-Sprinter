@@ -32,7 +32,7 @@ namespace AS.Config
         {
             string filename;
             var writer = new JSISCSVWriter();
-            var lasttime = dataMngr.TimeZero;
+            var lasttime = DateTime.MinValue;
             var fileLength = dataMngr.NumberOfDataPointInFile / (double)dataMngr.SamplingRate;
             while (true)
             {
@@ -41,9 +41,10 @@ namespace AS.Config
 #endif
                 if (dataMngr.StartTimeStamps.Count() > 0)
                 {
-                    if (dataMngr.GetDataWriterData(InputSignals, lasttime, out List<Signal> signals))
+                    if (dataMngr.GetDataWriterData(InputSignals, lasttime, out List<Signal> signals, out DateTime timeStamp))
                     {
-                        var datetime = lasttime.ToString("_yyyyMMdd_HHmmss");
+                        lasttime = timeStamp;
+                        var datetime = timeStamp.ToString("_yyyyMMdd_HHmmss");
                         var year = datetime.Substring(1, 4);
                         var date = datetime.Substring(3, 6);
 #if DEBUG
@@ -70,7 +71,6 @@ namespace AS.Config
                             Console.WriteLine("Wrote all PMU in one file: " + filename);
 #endif
                         }
-                        lasttime = lasttime.AddSeconds(fileLength);
                     }
                     else
                     {

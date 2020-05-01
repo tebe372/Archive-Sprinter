@@ -152,11 +152,11 @@ namespace AS.DataManager
             }
         }
         private Dictionary<DateTime, List<bool>> _doneDataWriterFlags = new Dictionary<DateTime, List<bool>>();
-        public bool GetDataWriterData(List<string> signalNames, DateTime stime, out List<Signal> signals)
+        public bool GetDataWriterData(List<string> signalNames, DateTime lasttime, out List<Signal> signals, out DateTime stime)
         {
             signals = new List<Signal>();
-            //var stime = StartTimeStamps.Find(x => x == lasttime);
-            if (StartTimeStamps.Contains(stime))
+            stime = StartTimeStamps.Find(x => x > lasttime);
+            if (stime != DateTime.MinValue)
             {
 #if DEBUG
                 Console.WriteLine("start time stamp in GetDataWriterData: " + stime.ToString("yyyyMMdd_HHmmss"));
