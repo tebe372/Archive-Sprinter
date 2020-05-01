@@ -473,6 +473,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     {
                         sigSetting.WindowSizeStr = value;
                     }
+                    //do I need to do this for data writers too?
                 }
             }
         }

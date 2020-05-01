@@ -63,6 +63,10 @@
       <Project>{F1DA46A2-C2E4-4D00-9AD6-775EBC4A2673}</Project>
       <Name>AS.DataManager</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AS.IO\AS.IO.csproj">
+      <Project>{7f5148d5-1206-44cf-b918-cc92daec221c}</Project>
+      <Name>AS.IO</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AS.SampleDataManager\AS.SampleDataManager.csproj">
       <Project>{c256af11-b60a-4212-9e0d-9fd9d5bbe18d}</Project>
       <Name>AS.SampleDataManager</Name>

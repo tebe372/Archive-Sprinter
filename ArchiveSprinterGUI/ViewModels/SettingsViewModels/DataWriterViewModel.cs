@@ -95,5 +95,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             }
 
         }
+
+        internal void GetSignalNameList()
+        {
+            _model.InputSignals = InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList();
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using AS.Config;
+﻿//using AS.Config;
 using AS.Core;
 using AS.Core.Models;
 using System;
@@ -23,14 +23,14 @@ namespace AS.IO
         {
 
         }
-        public FileReadingManager(DataSourceSetting source)
-        {
-            SourceDirectory = source.FileDirectory;
-            FileType = source.FileType;
-            SamplingRate = source.SamplingRate;
-            NumberOfDataPointInFile = source.NumberOfDataPointInFile;
-            Mnemonic = source.Mnemonic;
-        }
+        //public FileReadingManager(DataSourceSetting source)
+        //{
+        //    SourceDirectory = source.FileDirectory;
+        //    FileType = source.FileType;
+        //    SamplingRate = source.SamplingRate;
+        //    NumberOfDataPointInFile = source.NumberOfDataPointInFile;
+        //    Mnemonic = source.Mnemonic;
+        //}
 
         public async Task Start()
         {
@@ -180,7 +180,7 @@ namespace AS.IO
         }
         public int SamplingRate { get; set; }
         public int NumberOfDataPointInFile { get; set; }
-        public string Mnemonic { get; private set; }
+        public string Mnemonic { get; set; }
         public string DateTimeEnd { get; set; }
         public string DateTimeStart { get; set; }
 

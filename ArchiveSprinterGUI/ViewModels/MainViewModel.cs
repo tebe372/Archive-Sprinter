@@ -91,13 +91,21 @@ namespace ArchiveSprinterGUI.ViewModels
 
             //read files first by sending this source parameter
             var source = SettingsVM.DataSourceVM.Model;
-            var data = new FileReadingManager(source);
+            var data = new FileReadingManager();
+            data.SourceDirectory = source.FileDirectory;
+            data.FileType = source.FileType;
+            data.SamplingRate = source.SamplingRate;
+            data.NumberOfDataPointInFile = source.NumberOfDataPointInFile;
+            data.Mnemonic = source.Mnemonic;
             data.NeededSignalList = neededSignalList;
             data.FileReadingDone += FileReadingDone;
             data.DataReadingDone += DataReadingDone;
             data.DateTimeStart = SettingsVM.DateTimeStart;
             data.DateTimeEnd = SettingsVM.DateTimeEnd;
+
             DataMngr.Clean();
+            var numberOfDataWriters = SettingsVM.DataWriters.Count();
+            DataMngr.NumberOfDataWriters = numberOfDataWriters;
             // this need to be put on a thread
             try
             {
@@ -112,6 +120,17 @@ namespace ArchiveSprinterGUI.ViewModels
             while (_numberOfFilesRead <= 1)
             {
                 Thread.Sleep(500);
+            }
+            if (numberOfDataWriters > 0)
+            {
+                try
+                {
+                    Task.Run(async () => { await _startDataWriters(); });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
             try
             {
@@ -131,7 +150,22 @@ namespace ArchiveSprinterGUI.ViewModels
                 MessageBox.Show(ex.Message);
             }
         }
-
+        private async Task _startDataWriters()
+        {
+            DataMngr.DatawriteOutFrequency = _settingsVM.Model.DatawriteOutFrequency;
+            DataMngr.DatawriteOutFrequencyUnit = _settingsVM.Model.DatawriteOutFrequencyUnit;
+            DataMngr.WindowSize = _settingsVM.Model.WindowSize;
+            DataMngr.WindowOverlap = _settingsVM.Model.WindowOverlap;
+            DataMngr.NumberOfSignatures = SettingsVM.SignatureSettings.Count();
+            DataMngr.SignatureOutputDir = SettingsVM.SignatureOutputDir;
+            DataMngr.NumberOfDataPointInFile = SettingsVM.DataSourceVM.Model.NumberOfDataPointInFile;
+            DataMngr.SamplingRate = SettingsVM.DataSourceVM.Model.SamplingRate;
+            foreach (var item in SettingsVM.DataWriters)
+            {
+                item.GetSignalNameList();
+                Task.Factory.StartNew(() => item.Model.Process(DataMngr));
+            }
+        }
         private List<string> _getAllNeededSignals()
         {
             var signalList = new List<string>();
@@ -174,15 +208,17 @@ namespace ArchiveSprinterGUI.ViewModels
             {
                 signalList.AddRange(item.InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList());
             }
+            foreach (var item in SettingsVM.DataWriters)
+            {
+                signalList.AddRange(item.InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList());
+            }
             return signalList.Distinct().ToList();
         }
-
         private void DataReadingDone(object sender, DateTime e)
         {
             DataMngr.DataCompleted = true;
             DataMngr.FinalTimeStamp = e;
         }
-
         public DataStore DataMngr { get; set; }
         private int _numberOfFilesRead;
         private void FileReadingDone(object sender, List<Signal> e)
@@ -293,12 +329,6 @@ namespace ArchiveSprinterGUI.ViewModels
         }
         private async Task _writeSignatureResults()
         {
-            DataMngr.DatawriteOutFrequency = _settingsVM.Model.DatawriteOutFrequency;
-            DataMngr.DatawriteOutFrequencyUnit = _settingsVM.Model.DatawriteOutFrequencyUnit;
-            DataMngr.WindowSize = _settingsVM.Model.WindowSize;
-            DataMngr.WindowOverlap = _settingsVM.Model.WindowOverlap;
-            DataMngr.NumberOfSignatures = SettingsVM.SignatureSettings.Count();
-            DataMngr.SignatureOutputDir = SettingsVM.SignatureOutputDir;
             int columnCount = 0;
             foreach (var item in SettingsVM.SignatureSettings)
             {
