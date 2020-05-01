@@ -55,8 +55,14 @@ namespace AS.IO
                     var yearDir = fileTime.Substring(1, 4);
                     var dateDir = fileTime.Substring(3, 6);
                     var file = SourceDirectory + "\\" + yearDir + "\\" + dateDir + "\\" + Mnemonic + fileTime + "." + FileType;
+#if DEBUG
+                    Console.WriteLine(file);
+#endif
                     if (File.Exists(file))
                     {
+#if DEBUG
+                        Console.WriteLine("File exists: " + file);
+#endif
                         List<Signal> signals = null;
                         try
                         {
@@ -64,6 +70,7 @@ namespace AS.IO
                         }
                         catch (Exception ex)
                         {
+                            time = time.AddSeconds(fileLength);
                             continue;
                         }
                         var keepSig = new List<Signal>();
