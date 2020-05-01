@@ -41,8 +41,8 @@ namespace AS.IO
                 DateTime time, endtime;
                 try
                 {
-                    time = DateTime.ParseExact(DateTimeStart, "M/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
-                    endtime = DateTime.ParseExact(DateTimeEnd, "M/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                    time = DateTime.ParseExact(DateTimeStart, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                    endtime = DateTime.ParseExact(DateTimeEnd, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                 }
                 catch (Exception ex)
                 {
