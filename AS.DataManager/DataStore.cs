@@ -513,7 +513,7 @@ namespace AS.DataManager
                         }
                     }
                     var endTime = signatures.FirstOrDefault().EndTimestamp;
-                    List<string> thisRow = new List<string> { time.ToString("yyyyMMdd_HHmmss.ffffff"), endTime.ToString("yyyyMMdd_HHmmss.ffffff") };
+                    List<string> thisRow = new List<string> { time.ToString("yyyy-MM-dd HH:mm:ss.ffffff"), endTime.ToString("yyyy-MM-dd HH:mm:ss.ffffff") };
 
                     //if (signatures.Count > NumberOfColumns)
                     //{
