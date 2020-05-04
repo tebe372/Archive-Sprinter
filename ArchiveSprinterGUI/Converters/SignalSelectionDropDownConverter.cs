@@ -20,13 +20,13 @@ namespace ArchiveSprinterGUI.Converters
                 switch (index)
                 {
                     case 1:
-                        value1 = new List<string>() { "View Signal by Type", "View Signal by PMU", "Input Channels by Step", "Output Channels by Step" };
+                        value1 = new List<string>() { "Input Signals by Type", "Input Signals by PMU", "Input Channels by Step", "Output Channels by Step" };
                         break;
                     case 2:
-                        value1 = new List<string>() { "View Signal by Type", "View Signal by PMU", "Output from Data Quality and Customization by Signal Type", "Output from Data Quality and Customization by PMU", "Input Channels by Step" };
+                        value1 = new List<string>() { "Input Signals by Type", "Input Signals by PMU", "Output from Data Quality and Customization by Signal Type", "Output from Data Quality and Customization by PMU", "Input Channels by Step" };
                         break;
                     case 3:
-                        value1 = new List<string>() { "View Signal by Type", "View Signal by PMU", "Output from Data Quality and Customization by Signal Type", "Output from Data Quality and Customization by PMU", "Input Channels by Step" };
+                        value1 = new List<string>() { "Input Signals by Type", "Input Signals by PMU", "Output from Data Quality and Customization by Signal Type", "Output from Data Quality and Customization by PMU", "Input Channels by Step" };
                         break;
                     default:
                         break;

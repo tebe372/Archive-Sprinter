@@ -192,13 +192,10 @@ namespace AS.Config
                 foreach (var item in signals)
                 {
                     double mean = Double.NaN;
-                    if (item.Flags.Contains(false))
+                    if (OmitNan)
                     {
-                        if (OmitNan)
-                        {
-                            ProcessNANData(item);
-                            mean = SignatureCalculations.Mean(item.Data);
-                        }
+                        ProcessNANData(item);
+                        mean = SignatureCalculations.Mean(item.Data);
                     }
                     else
                     {
@@ -263,13 +260,10 @@ namespace AS.Config
                 foreach (var item in signals)
                 {
                     double variance = Double.NaN;
-                    if (item.Flags.Contains(false))
+                    if (OmitNan)
                     {
-                        if (OmitNan)
-                        {
-                            ProcessNANData(item);
-                            variance = SignatureCalculations.Variance(item.Data);
-                        }
+                        ProcessNANData(item);
+                        variance = SignatureCalculations.Variance(item.Data);
                     }
                     else
                     {
@@ -333,14 +327,12 @@ namespace AS.Config
                 foreach (var item in signals)
                 {
                     double std = Double.NaN;
-                    if (item.Flags.Contains(false))
+
+                    if (OmitNan)
                     {
-                        if (OmitNan)
-                        {
-                            ProcessNANData(item);
-                            std = SignatureCalculations.Stdev(item.Data);
-                        }
-                    }
+                        ProcessNANData(item);
+                        std = SignatureCalculations.Stdev(item.Data);
+                    }                    
                     else
                     {
                         std = SignatureCalculations.Stdev(item.Data);
@@ -403,14 +395,11 @@ namespace AS.Config
                 foreach (var item in signals)
                 {
                     double kurt = Double.NaN;
-                    if (item.Flags.Contains(false))
+                    if (OmitNan)
                     {
-                        if (OmitNan)
-                        {
-                            ProcessNANData(item);
-                            kurt = SignatureCalculations.Kurtosis(item.Data);
-                        }
-                    }
+                        ProcessNANData(item);
+                        kurt = SignatureCalculations.Kurtosis(item.Data);
+                    }                    
                     else
                     {
                         kurt = SignatureCalculations.Kurtosis(item.Data);
@@ -473,13 +462,10 @@ namespace AS.Config
                 foreach (var item in signals)
                 {
                     double skew = Double.NaN;
-                    if (item.Flags.Contains(false))
+                    if (OmitNan)
                     {
-                        if (OmitNan)
-                        {
-                            ProcessNANData(item);
-                            skew = SignatureCalculations.Skewness(item.Data);
-                        }
+                        ProcessNANData(item);
+                        skew = SignatureCalculations.Skewness(item.Data);
                     }
                     else
                     {
@@ -671,13 +657,10 @@ namespace AS.Config
                 foreach (var item in signals)
                 {
                     double med = Double.NaN;
-                    if (item.Flags.Contains(false))
+                    if (OmitNan)
                     {
-                        if (OmitNan)
-                        {
-                            ProcessNANData(item);
-                            med = SignatureCalculations.Median(item.Data);
-                        }
+                        ProcessNANData(item);
+                        med = SignatureCalculations.Median(item.Data);
                     }
                     else
                     {
@@ -740,35 +723,23 @@ namespace AS.Config
                         continue;
                     }
                 }
-                {
-                    if (dataMngr.DataCompleted)
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        Thread.Sleep(500);
-                        continue;
-                    }
-                }
                 foreach (var item in signals)
                 {
                     double max = Double.NaN;
-                    if (item.Flags.Contains(false))
+                    if (OmitNan)
                     {
-                        if (OmitNan)
-                        {
-                            ProcessNANData(item);
-                            max = SignatureCalculations.Maximum(item.Data);
-                        }
+                        ProcessNANData(item);
+                        max = SignatureCalculations.Maximum(item.Data);
                     }
                     else
                     {
                         max = SignatureCalculations.Maximum(item.Data);
                     }
                     dataMngr.AddResults(startT, "Maximum", item.PMUName, item.SignalName, max, item.TimeStamps.LastOrDefault());
-                    //Console.WriteLine("Maximum:");
-                    //Console.WriteLine(max);
+#if DEBUG
+                    Console.WriteLine("Maximum:");
+                    Console.WriteLine(max);
+#endif
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -824,13 +795,10 @@ namespace AS.Config
                 foreach (var item in signals)
                 {
                     double min = Double.NaN;
-                    if (item.Flags.Contains(false))
+                    if (OmitNan)
                     {
-                        if (OmitNan)
-                        {
-                            ProcessNANData(item);
-                            min = SignatureCalculations.Minimum(item.Data);
-                        }
+                        ProcessNANData(item);
+                        min = SignatureCalculations.Minimum(item.Data);
                     }
                     else
                     {
@@ -894,13 +862,10 @@ namespace AS.Config
                 foreach (var item in signals)
                 {
                     double range = Double.NaN;
-                    if (item.Flags.Contains(false))
+                    if (OmitNan)
                     {
-                        if (OmitNan)
-                        {
-                            ProcessNANData(item);
-                            range = SignatureCalculations.Range(item.Data);
-                        }
+                        ProcessNANData(item);
+                        range = SignatureCalculations.Range(item.Data);
                     }
                     else
                     {
@@ -964,13 +929,10 @@ namespace AS.Config
                 foreach (var item in signals)
                 {
                     double rise = Double.NaN;
-                    if (item.Flags.Contains(false))
+                    if (OmitNan)
                     {
-                        if (OmitNan)
-                        {
-                            ProcessNANData(item);
-                            rise = SignatureCalculations.Rise(item.Data);
-                        }
+                        ProcessNANData(item);
+                        rise = SignatureCalculations.Rise(item.Data);
                     }
                     else
                     {
