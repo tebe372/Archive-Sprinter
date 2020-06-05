@@ -274,6 +274,7 @@ namespace AS.DataManager
                     lastSig = sig[possibleTimeStamps.LastOrDefault()];
                 }
                 var thisSig = new Signal(firstSig.PMUName, firstSig.SignalName);
+                thisSig.SamplingRate = firstSig.SamplingRate;
                 var firstDataPoint = firstSig.TimeStamps.IndexOf(startT);
                 var lastDataPoint = lastSig.TimeStamps.IndexOf(endT);
                 if (firstDataPoint == -1 && lastDataPoint == -1)

@@ -646,6 +646,17 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     newSig.WindowSizeStr = WindowSizeStr;
                     newSig.StepCounter = SignatureSettings.Count + 1;
                     newSig.OmitNan = signature.OmitNan;
+                    if (newSig.Model is RootMeanSquare)
+                    {
+                        newSig.RemoveMean = signature.RemoveMean;
+                    }
+                    if (newSig.Model is FrequencyBandRMS)
+                    {
+                        newSig.CalculateFull = signature.CalculateFull;
+                        newSig.CalculateBand2 = signature.CalculateBand2;
+                        newSig.CalculateBand3 = signature.CalculateBand3;
+                        newSig.CalculateBand4 = signature.CalculateBand4;
+                    }
                     SignatureSettings.Add(newSig);
                     Model.SignatureSettings.Add(newSig.Model);
                     foreach (var sig in signature.InputChannels)

@@ -61,10 +61,11 @@ namespace AS.Config
             }),
             new SignatureCalMenu("Correlation Coefficient"),
             new SignatureCalMenu("Covariance"),
-            //new SignatureCalMenu("Frequency-Domain Methods", new List<SignatureCalMenu>{
-            //    new SignatureCalMenu("Periodogram"),
-            //    new SignatureCalMenu("Generalized Magnitude Squared Coherence (GMSC) Spectrum"),
-            //}),
+            new SignatureCalMenu("Frequency-Domain Methods", new List<SignatureCalMenu>{
+                //new SignatureCalMenu("Periodogram"),
+                //new SignatureCalMenu("Generalized Magnitude Squared Coherence (GMSC) Spectrum"),
+                new SignatureCalMenu("Frequency Band Root Mean Squared Value")
+            }),
             new SignatureCalMenu("Order Statistics", new List<SignatureCalMenu>{
                 new SignatureCalMenu("Percentile"),
                 new SignatureCalMenu("Quartiles"),
@@ -74,7 +75,8 @@ namespace AS.Config
                 new SignatureCalMenu("Range")
             }),
             new SignatureCalMenu("Rise"),
-            new SignatureCalMenu("Histogram")
+            new SignatureCalMenu("Histogram"),
+            new SignatureCalMenu("Root Mean Squared Value")
         };
         [JsonProperty("WindowSize")]
         public int WindowSize { get; set; }

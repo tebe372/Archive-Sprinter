@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MathNet.Numerics.IntegralTransforms;
+using System.Numerics;
 
 namespace AS.ComputationManager.Calculations
 {
@@ -133,6 +135,108 @@ namespace AS.ComputationManager.Calculations
 
             }
             return output;
+        }
+
+        public static double RootMeanSquare(List<double> data, bool removeMean)
+        {
+            if (removeMean)
+            {
+                return RMSNormalized(data);
+            }
+            else
+            {
+                return RMS(data);
+            }
+        }
+
+        public static double RMS(List<double> data)
+        {
+            var n = data.Count;
+            if (n == 0)
+            {
+                return double.NaN;
+            }
+
+            double total = 0;
+            for (int i = 0; i < n; i++)
+            {
+                total += data[i] * data[i];
+            }
+
+            return Math.Sqrt(total / n);
+        }
+
+        public static double RMSNormalized(List<double> data)
+        {
+            var n = data.Count;
+            if (n == 0)
+            {
+                return double.NaN;
+            }
+
+            double mean = data.Mean();
+            double total = 0;
+            for (int i = 0; i < n; i++)
+            {
+                var r = data[i] - mean;
+                total += r * r;
+            }
+
+            return Math.Sqrt(total / n);
+        }
+
+        public static Dictionary<string, double> FrequencyBandRMS(List<double> data, int samplingRate, bool calculateFull, bool calculateBand2, bool calculateBand3, bool calculateBand4)
+        {
+            var result = new Dictionary<string, double>(); // might need to be a dictionary
+
+            var signalLen = data.Count;
+            var mean = data.Mean();
+            var complex = new Complex[signalLen];
+            for (int i = 0; i < signalLen; i++)
+            {
+                complex[i] = new Complex(data[i] - mean, 0);
+            }
+            Fourier.Forward(complex, FourierOptions.Matlab);
+            var Pk = new List<double>();
+            var fk = new List<double>();
+            var band2 = new List<double>();
+            var band3 = new List<double>();
+            var band4 = new List<double>();
+            for (int i = 0; i < signalLen; i++)
+            {
+                Pk.Add(Math.Pow(complex[i].Magnitude, 2) / signalLen);
+                var fki = i / signalLen * samplingRate;
+                fk.Add(fki);
+                if (fki >= 0.1 && fki <= 1)
+                {
+                    band2.Add(fki);
+                }
+                else if (fki >= 1 && fki <= 5)
+                {
+                    band3.Add(fki);
+                }
+                else if (fki >= 5 && fki <= samplingRate / 2)
+                {
+                    band4.Add(fki);
+                }
+            }
+            if (calculateFull)
+            {
+                result["Full"] = Math.Sqrt(Pk.Sum() / signalLen);
+            }
+            if (calculateBand2)
+            {
+                result["Band2"] = Math.Sqrt(band2.Sum() / signalLen * 2);
+            }
+            if (calculateBand3)
+            {
+                result["Band3"] = Math.Sqrt(band3.Sum() / signalLen * 2);
+            }
+            if (calculateBand4)
+            {
+                result["Band4"] = Math.Sqrt(band4.Sum() / signalLen * 2);
+            }
+            return result;
         }
     }
 }

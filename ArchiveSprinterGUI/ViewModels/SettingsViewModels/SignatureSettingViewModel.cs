@@ -70,6 +70,12 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 case "Histogram":
                     _model = new Histogram();
                     break;
+                case "Root Mean Squared Value":
+                    _model = new RootMeanSquare();
+                    break;
+                case "Frequency Band Root Mean Squared Value":
+                    _model = new FrequencyBandRMS();
+                    break;
                 default:
                     _model = null;
                     break;
@@ -133,9 +139,145 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         {
             _model.SamplingRate = InputChannels.FirstOrDefault().SamplingRate;
         }
-        //public override void AddSignal(SignalViewModel signal)
-        //{
-        //    InputChannels.Add(signal);
-        //}
+        public bool? RemoveMean 
+        {
+            get 
+            {
+                if (_model is RootMeanSquare)
+                {
+                    var m = _model as RootMeanSquare;
+                    return m.RemoveMean;
+                }
+                else
+                {
+                    //throw new NotImplementedException();
+                    return null;
+                }
+            }
+            set
+            {
+                if (_model is RootMeanSquare)
+                {
+                    var m = _model as RootMeanSquare;
+                    if (value != null && m.RemoveMean != (bool)value)
+                    {
+                        m.RemoveMean = (bool)value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public bool? CalculateFull
+        {
+            get
+            {
+                if (_model is FrequencyBandRMS)
+                {
+                    var m = _model as FrequencyBandRMS;
+                    return m.CalculateFull;
+                }
+                else
+                {
+                    //throw new NotImplementedException();
+                    return null;
+                }
+            }
+            set
+            {
+                if (_model is FrequencyBandRMS)
+                {
+                    var m = _model as FrequencyBandRMS;
+                    if (value != null && m.CalculateFull != (bool)value)
+                    {
+                        m.CalculateFull = (bool)value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public bool? CalculateBand2
+        {
+            get
+            {
+                if (_model is FrequencyBandRMS)
+                {
+                    var m = _model as FrequencyBandRMS;
+                    return m.CalculateBand2;
+                }
+                else
+                {
+                    //throw new NotImplementedException();
+                    return null;
+                }
+            }
+            set
+            {
+                if (_model is FrequencyBandRMS)
+                {
+                    var m = _model as FrequencyBandRMS;
+                    if (value != null && m.CalculateBand2 != (bool)value)
+                    {
+                        m.CalculateBand2 = (bool)value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public bool? CalculateBand3
+        {
+            get
+            {
+                if (_model is FrequencyBandRMS)
+                {
+                    var m = _model as FrequencyBandRMS;
+                    return m.CalculateBand3;
+                }
+                else
+                {
+                    //throw new NotImplementedException();
+                    return null;
+                }
+            }
+            set
+            {
+                if (_model is FrequencyBandRMS)
+                {
+                    var m = _model as FrequencyBandRMS;
+                    if (value != null && m.CalculateBand3 != (bool)value)
+                    {
+                        m.CalculateBand3 = (bool)value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public bool? CalculateBand4
+        {
+            get
+            {
+                if (_model is FrequencyBandRMS)
+                {
+                    var m = _model as FrequencyBandRMS;
+                    return m.CalculateBand4;
+                }
+                else
+                {
+                    //throw new NotImplementedException();
+                    return null;
+                }
+            }
+            set
+            {
+                if (_model is FrequencyBandRMS)
+                {
+                    var m = _model as FrequencyBandRMS;
+                    if (value != null && m.CalculateBand4 != (bool)value)
+                    {
+                        m.CalculateBand4 = (bool)value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
     }
 }

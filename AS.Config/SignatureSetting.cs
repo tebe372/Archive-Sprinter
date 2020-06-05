@@ -968,4 +968,142 @@ namespace AS.Config
             RemoveNanValue(sig);
         }
     }
+    public class RootMeanSquare : SignatureSetting
+    {
+        public override string SignatureName { get { return "Root Mean Squared Value"; } }
+        public bool RemoveMean { get; set; }
+
+        public override void Process(DataStore dataMngr)
+        {
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double rms = Double.NaN;
+                    if (OmitNan)
+                    {
+                        ProcessNANData(item);
+                        rms = SignatureCalculations.RootMeanSquare(item.Data, RemoveMean);
+                    }
+                    else
+                    {
+                        rms = SignatureCalculations.RootMeanSquare(item.Data, RemoveMean);
+                    }
+                    dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Root Mean Squared Value", item.PMUName, item.SignalName, rms, item.TimeStamps.LastOrDefault());
+#if DEBUG
+                    Console.WriteLine("Root Mean Squared Value:");
+                    Console.WriteLine(rms);
+#endif
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+            dataMngr.FinishedSignatures.Add("Root Mean Squared Value");
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
+        }
+    }
+    public class FrequencyBandRMS : SignatureSetting
+    {
+        public override string SignatureName { get { return "Frequency Band Root Mean Squared Value"; } }
+        public bool CalculateFull { get; set; }
+        public bool CalculateBand2 { get; set; }
+        public bool CalculateBand3 { get; set; }
+        public bool CalculateBand4 { get; set; }
+
+        public override void Process(DataStore dataMngr)
+        {
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    Dictionary<string, double> fbrms = null; //should be a dictionary
+                    if (OmitNan)
+                    {
+                        ProcessNANData(item);
+                        fbrms = SignatureCalculations.FrequencyBandRMS(item.Data, item.SamplingRate, CalculateFull, CalculateBand2, CalculateBand3, CalculateBand4);
+                    }
+                    else
+                    {
+                        fbrms = SignatureCalculations.FrequencyBandRMS(item.Data, item.SamplingRate, CalculateFull, CalculateBand2, CalculateBand3, CalculateBand4);
+                    }
+                    foreach (var re in fbrms)
+                    {
+                        dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Frequency Band Root Mean Squared Value_" + re.Key, item.PMUName, item.SignalName, re.Value, item.TimeStamps.LastOrDefault());
+                    }
+#if DEBUG
+                    Console.WriteLine("Frequency Band Root Mean Squared Value:");
+                    Console.WriteLine(fbrms);
+#endif
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+            dataMngr.FinishedSignatures.Add("Frequency Band Root Mean Squared Value");
+        }
+
+        public override void ProcessNANData(Signal sig)
+        {
+            RemoveNanValue(sig);
+        }
+    }
 }

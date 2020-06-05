@@ -17,11 +17,23 @@
             <DataTemplate x:Key="BasicSignatureView">
                 <local:BasicSignatureView/>
             </DataTemplate>
+            <DataTemplate x:Key="RootMeanSquareView">
+                <local:RootMeanSquareView/>
+            </DataTemplate>
+            <DataTemplate x:Key="FrequencyBandRMSView">
+                <local:FrequencyBandRMSView/>
+            </DataTemplate>
             <Style x:Key="SignatureStepStyle" TargetType="ContentPresenter">
                 <Setter Property="ContentTemplate" Value="{StaticResource BasicSignatureView}"/>
                 <Style.Triggers>
-                    <DataTrigger Binding="{Binding Name}" Value="Mean">
+                    <!--<DataTrigger Binding="{Binding Name}" Value="Mean">
                         <Setter Property="ContentTemplate" Value="{StaticResource BasicSignatureView}"/>
+                    </DataTrigger>-->
+                    <DataTrigger Binding="{Binding SignatureName}" Value="Root Mean Squared Value">
+                        <Setter Property="ContentTemplate" Value="{StaticResource RootMeanSquareView}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding SignatureName}" Value="Frequency Band Root Mean Squared Value">
+                        <Setter Property="ContentTemplate" Value="{StaticResource FrequencyBandRMSView}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
