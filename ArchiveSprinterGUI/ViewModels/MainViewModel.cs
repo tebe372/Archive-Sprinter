@@ -106,6 +106,14 @@ namespace ArchiveSprinterGUI.ViewModels
             DataMngr.Clean();
             var numberOfDataWriters = SettingsVM.DataWriters.Count();
             DataMngr.NumberOfDataWriters = numberOfDataWriters;
+            DataMngr.DatawriteOutFrequency = _settingsVM.Model.DatawriteOutFrequency;
+            DataMngr.DatawriteOutFrequencyUnit = _settingsVM.Model.DatawriteOutFrequencyUnit;
+            DataMngr.WindowSize = _settingsVM.Model.WindowSize;
+            DataMngr.WindowOverlap = _settingsVM.Model.WindowOverlap;
+            DataMngr.NumberOfSignatures = SettingsVM.SignatureSettings.Count();
+            DataMngr.SignatureOutputDir = SettingsVM.SignatureOutputDir;
+            DataMngr.NumberOfDataPointInFile = SettingsVM.DataSourceVM.Model.NumberOfDataPointInFile;
+            DataMngr.SamplingRate = SettingsVM.DataSourceVM.Model.SamplingRate;
             // this need to be put on a thread
             try
             {
@@ -152,14 +160,6 @@ namespace ArchiveSprinterGUI.ViewModels
         }
         private async Task _startDataWriters()
         {
-            DataMngr.DatawriteOutFrequency = _settingsVM.Model.DatawriteOutFrequency;
-            DataMngr.DatawriteOutFrequencyUnit = _settingsVM.Model.DatawriteOutFrequencyUnit;
-            DataMngr.WindowSize = _settingsVM.Model.WindowSize;
-            DataMngr.WindowOverlap = _settingsVM.Model.WindowOverlap;
-            DataMngr.NumberOfSignatures = SettingsVM.SignatureSettings.Count();
-            DataMngr.SignatureOutputDir = SettingsVM.SignatureOutputDir;
-            DataMngr.NumberOfDataPointInFile = SettingsVM.DataSourceVM.Model.NumberOfDataPointInFile;
-            DataMngr.SamplingRate = SettingsVM.DataSourceVM.Model.SamplingRate;
             foreach (var item in SettingsVM.DataWriters)
             {
                 item.GetSignalNameList();

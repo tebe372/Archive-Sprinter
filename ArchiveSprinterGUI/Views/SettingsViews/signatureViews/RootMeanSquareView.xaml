@@ -18,7 +18,8 @@
         <Grid Margin="2" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -32,10 +33,10 @@
             <Label Grid.Row="1" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Window Overlap:" HorizontalAlignment="Left"/>
             <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="1" Margin="0,1" Width="120" Text="{Binding WindowOverlapStr, UpdateSourceTrigger=LostFocus}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
             <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,1" Width="50" Text=" seconds" VerticalAlignment="Center" HorizontalAlignment="Left"/>-->
-            <Label Grid.Row="0" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Omit Nan?" HorizontalAlignment="Left"/>
-            <CheckBox Grid.Row="0" Grid.Column="1" Margin="0,1" Width="120" IsChecked="{Binding OmitNan}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-            <Label Grid.Row="1" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Remove Mean?" HorizontalAlignment="Left"/>
-            <CheckBox Grid.Row="1" Grid.Column="1" Margin="0,1" Width="120" IsChecked="{Binding RemoveMean}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+            <Label Grid.Row="0" Grid.Column="0" Margin="0,1" Width="130" VerticalAlignment="Center" Content="Omit Nan?" HorizontalAlignment="Left"/>
+            <CheckBox Grid.Row="0" Grid.Column="1" Margin="0,1" Width="20" IsChecked="{Binding OmitNan}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+            <Label Grid.Row="1" Grid.Column="0" Margin="0,1" Width="130" VerticalAlignment="Center" Content="Remove Mean?" HorizontalAlignment="Left"/>
+            <CheckBox Grid.Row="1" Grid.Column="1" Margin="0,1" Width="20" IsChecked="{Binding RemoveMean}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
         </Grid>
     </Grid>
 </UserControl>

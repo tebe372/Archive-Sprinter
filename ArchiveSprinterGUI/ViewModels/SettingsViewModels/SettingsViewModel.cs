@@ -656,6 +656,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                         newSig.CalculateBand2 = signature.CalculateBand2;
                         newSig.CalculateBand3 = signature.CalculateBand3;
                         newSig.CalculateBand4 = signature.CalculateBand4;
+                        newSig.Threshold = signature.Threshold;
                     }
                     SignatureSettings.Add(newSig);
                     Model.SignatureSettings.Add(newSig.Model);

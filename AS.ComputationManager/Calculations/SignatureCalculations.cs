@@ -204,20 +204,21 @@ namespace AS.ComputationManager.Calculations
             var band4 = new List<double>();
             for (int i = 0; i < signalLen; i++)
             {
-                Pk.Add(Math.Pow(complex[i].Magnitude, 2) / signalLen);
-                var fki = i / signalLen * samplingRate;
+                var Pki = Math.Pow(complex[i].Magnitude, 2) / signalLen;
+                Pk.Add(Pki);
+                var fki = i / (double)signalLen * (double)samplingRate;
                 fk.Add(fki);
                 if (fki >= 0.1 && fki <= 1)
                 {
-                    band2.Add(fki);
+                    band2.Add(Pki);
                 }
                 else if (fki >= 1 && fki <= 5)
                 {
-                    band3.Add(fki);
+                    band3.Add(Pki);
                 }
                 else if (fki >= 5 && fki <= samplingRate / 2)
                 {
-                    band4.Add(fki);
+                    band4.Add(Pki);
                 }
             }
             if (calculateFull)

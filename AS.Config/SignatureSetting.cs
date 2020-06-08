@@ -94,9 +94,74 @@ namespace AS.Config
                 }
             }
         }
-        public void InterpolateNanValue(Signal sig)
+        public bool InterpolateNanValue(Signal sig, double threshold)
         {
-
+            if (sig.Data.Count > 0)
+            {
+                bool nanAtBeginning = true;
+                int nNan = 0;
+                bool nanFrag = false;
+                int beginIndex = 0;                             // 1 before the beginning of a NAN sequence.
+                int endIndex = 0;                               // 1 after the end of a NAN sequence.
+                for (int i = sig.Data.Count - 1; i >= 0; i--)   // going backwards as we need to remove points at the beginning and end if there's NAN.
+                {
+                    if (double.IsNaN(sig.Data[i]) && nanAtBeginning)
+                    {
+                        sig.Data.RemoveAt(i);
+                    }
+                    else
+                    {
+                        if (nanAtBeginning)
+                        {
+                            nanAtBeginning = false;
+                        }
+                        if (double.IsNaN(sig.Data[i]))
+                        {
+                            if (!nanFrag)
+                            {
+                                nanFrag = true;
+                                beginIndex = i + 1;
+                            }
+                            nNan++;
+                        }
+                        else
+                        {
+                            if (nanFrag)
+                            {
+                                nanFrag = false;
+                                endIndex = i;
+                                if (nNan >= threshold)
+                                {
+                                    return false;
+                                }
+                                else
+                                {
+                                    nNan = 0;
+                                    var point1 = sig.Data[endIndex];
+                                    var point2 = sig.Data[beginIndex];
+                                    var slope = (point2 - point1) / (beginIndex - endIndex);
+                                    for (int ii = 1 ; ii < beginIndex - endIndex ; ii++)
+                                    {
+                                        sig.Data[ii + endIndex] = point1 + slope * ii;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (nanFrag)
+                {
+                    for (int i = beginIndex - 1; i >= 0; i--)
+                    {
+                        sig.Data.RemoveAt(i);
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
     public class Mean : SignatureSetting
@@ -1017,7 +1082,7 @@ namespace AS.Config
                     {
                         rms = SignatureCalculations.RootMeanSquare(item.Data, RemoveMean);
                     }
-                    dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Root Mean Squared Value", item.PMUName, item.SignalName, rms, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "RMS", item.PMUName, item.SignalName, rms, item.TimeStamps.LastOrDefault());
 #if DEBUG
                     Console.WriteLine("Root Mean Squared Value:");
                     Console.WriteLine(rms);
@@ -1041,7 +1106,7 @@ namespace AS.Config
         public bool CalculateBand2 { get; set; }
         public bool CalculateBand3 { get; set; }
         public bool CalculateBand4 { get; set; }
-
+        public double Threshold { get; set; }
         public override void Process(DataStore dataMngr)
         {
             var startT = dataMngr.TimeZero;
@@ -1079,8 +1144,30 @@ namespace AS.Config
                     Dictionary<string, double> fbrms = null; //should be a dictionary
                     if (OmitNan)
                     {
-                        ProcessNANData(item);
-                        fbrms = SignatureCalculations.FrequencyBandRMS(item.Data, item.SamplingRate, CalculateFull, CalculateBand2, CalculateBand3, CalculateBand4);
+                        if (InterpolateNanValue(item, Threshold))
+                        {
+                            fbrms = SignatureCalculations.FrequencyBandRMS(item.Data, item.SamplingRate, CalculateFull, CalculateBand2, CalculateBand3, CalculateBand4);
+                        }
+                        else
+                        {
+                            fbrms = new Dictionary<string, double>();
+                            if (CalculateFull)
+                            {
+                                fbrms["Full"] = double.NaN;
+                            }
+                            if (CalculateBand2)
+                            {
+                                fbrms["Band2"] = double.NaN;
+                            }
+                            if (CalculateBand3)
+                            {
+                                fbrms["Band3"] = double.NaN;
+                            }
+                            if (CalculateBand4)
+                            {
+                                fbrms["Band4"] = double.NaN;
+                            }
+                        }
                     }
                     else
                     {
@@ -1088,12 +1175,12 @@ namespace AS.Config
                     }
                     foreach (var re in fbrms)
                     {
-                        dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Frequency Band Root Mean Squared Value_" + re.Key, item.PMUName, item.SignalName, re.Value, item.TimeStamps.LastOrDefault());
-                    }
+                        dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Frequency Band RMS_" + re.Key, item.PMUName, item.SignalName, re.Value, item.TimeStamps.LastOrDefault());
 #if DEBUG
-                    Console.WriteLine("Frequency Band Root Mean Squared Value:");
-                    Console.WriteLine(fbrms);
+                        Console.WriteLine("Frequency Band Root Mean Squared Value: " + re.Key);
+                        Console.WriteLine(re.Value);
 #endif
+                    }
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -1103,7 +1190,7 @@ namespace AS.Config
 
         public override void ProcessNANData(Signal sig)
         {
-            RemoveNanValue(sig);
+            //return InterpolateNanValue(sig, Threshold);
         }
     }
 }

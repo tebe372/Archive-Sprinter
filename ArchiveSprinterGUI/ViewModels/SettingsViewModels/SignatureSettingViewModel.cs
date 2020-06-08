@@ -279,5 +279,33 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
+        public string Threshold
+        {
+            get
+            {
+                if (_model is FrequencyBandRMS)
+                {
+                    var m = _model as FrequencyBandRMS;
+                    return m.Threshold.ToString();
+                }
+                else
+                {
+                    //throw new NotImplementedException();
+                    return null;
+                }
+            }
+            set
+            {
+                if (_model is FrequencyBandRMS)
+                {
+                    var m = _model as FrequencyBandRMS;
+                    if (double.TryParse(value, out double v) && m.Threshold != v)
+                    {
+                        m.Threshold = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
     }
 }

@@ -18,7 +18,8 @@
         <Grid Margin="2" Grid.Column="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -34,16 +35,18 @@
             <Label Grid.Row="1" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Window Overlap:" HorizontalAlignment="Left"/>
             <TextBox IsEnabled="False" Grid.Row="1" Grid.Column="1" Margin="0,1" Width="120" Text="{Binding WindowOverlapStr, UpdateSourceTrigger=LostFocus}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
             <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,1" Width="50" Text=" seconds" VerticalAlignment="Center" HorizontalAlignment="Left"/>-->
-            <Label Grid.Row="0" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Omit Nan?" HorizontalAlignment="Left"/>
-            <CheckBox Grid.Row="0" Grid.Column="1" Margin="0,1" Width="120" IsChecked="{Binding OmitNan}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-            <Label Grid.Row="1" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Calculate Full?" HorizontalAlignment="Left"/>
-            <CheckBox Grid.Row="1" Grid.Column="1" Margin="0,1" Width="120" IsChecked="{Binding CalculateFull}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-            <Label Grid.Row="2" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Calculate Band 2?" HorizontalAlignment="Left"/>
-            <CheckBox Grid.Row="2" Grid.Column="1" Margin="0,1" Width="120" IsChecked="{Binding CalculateBand2}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-            <Label Grid.Row="3" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Calculate Band 3?" HorizontalAlignment="Left"/>
-            <CheckBox Grid.Row="3" Grid.Column="1" Margin="0,1" Width="120" IsChecked="{Binding CalculateBand3}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-            <Label Grid.Row="4" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Calculate Band 4?" HorizontalAlignment="Left"/>
-            <CheckBox Grid.Row="4" Grid.Column="1" Margin="0,1" Width="120" IsChecked="{Binding CalculateBand4}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+            <Label Grid.Row="0" Grid.Column="0" Margin="0,1" Width="130" VerticalAlignment="Center" Content="Interpolate Nan?" HorizontalAlignment="Left"/>
+            <CheckBox Grid.Row="0" Grid.Column="1" Margin="0,1" Width="20" IsChecked="{Binding OmitNan}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+            <Label Grid.Row="0" Grid.Column="2" Margin="10,1,0,1" Width="80" VerticalAlignment="Center" Content="Threshold: " HorizontalAlignment="Left"/>
+            <TextBox Grid.Row="0" Grid.Column="3" Margin="0,1" Width="100" Text="{Binding Threshold}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+            <Label Grid.Row="1" Grid.Column="0" Margin="0,1" Width="130" VerticalAlignment="Center" Content="Calculate Full?" HorizontalAlignment="Left"/>
+            <CheckBox Grid.Row="1" Grid.Column="1" Margin="0,1" Width="20" IsChecked="{Binding CalculateFull}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+            <Label Grid.Row="2" Grid.Column="0" Margin="0,1" Width="130" VerticalAlignment="Center" Content="Calculate Band 2?" HorizontalAlignment="Left"/>
+            <CheckBox Grid.Row="2" Grid.Column="1" Margin="0,1" Width="20" IsChecked="{Binding CalculateBand2}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+            <Label Grid.Row="3" Grid.Column="0" Margin="0,1" Width="130" VerticalAlignment="Center" Content="Calculate Band 3?" HorizontalAlignment="Left"/>
+            <CheckBox Grid.Row="3" Grid.Column="1" Margin="0,1" Width="20" IsChecked="{Binding CalculateBand3}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+            <Label Grid.Row="4" Grid.Column="0" Margin="0,1" Width="130" VerticalAlignment="Center" Content="Calculate Band 4?" HorizontalAlignment="Left"/>
+            <CheckBox Grid.Row="4" Grid.Column="1" Margin="0,1" Width="20" IsChecked="{Binding CalculateBand4}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
         </Grid>
     </Grid>
 </UserControl>
