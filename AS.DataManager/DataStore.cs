@@ -383,8 +383,16 @@ namespace AS.DataManager
                     thisSig.Data.RemoveRange(windowSize, thisSig.Data.Count - windowSize);
                     thisSig.Flags.RemoveRange(windowSize, thisSig.Flags.Count - windowSize);
                     thisSig.TimeStamps.RemoveRange(windowSize, thisSig.TimeStamps.Count - windowSize);
+                    signals.Add(thisSig);
                 }
-                signals.Add(thisSig);
+                else if (thisSig.Data.Count == windowSize)
+                {
+                    signals.Add(thisSig);
+                }
+                else
+                {
+                    return false;
+                }
             }
             //EndTimeStamps.RemoveRange(0, i1);
             return true;
@@ -498,13 +506,15 @@ namespace AS.DataManager
             timeStampsInRange.Sort();
             using (StreamWriter outputFile = new StreamWriter(filename))
             {
-                foreach (var time in timeStampsInRange)
+                for (int i = 0; i < timeStampsInRange.Count; i++)
                 {
+                    var time = timeStampsInRange[i];
                     List<SignatureResult> signatures;
                     lock (_theResultsLock)
                     {
                         signatures = _results[time];
                     }
+                    //var nextTime = timeStampsInRange[i + 1];
                     while (signatures.Count < NumberOfColumns)
                     {
                         Thread.Sleep(500);
@@ -516,15 +526,6 @@ namespace AS.DataManager
                     var endTime = signatures.FirstOrDefault().EndTimestamp;
                     List<string> thisRow = new List<string> { time.ToString("yyyy-MM-dd HH:mm:ss.ffffff"), endTime.ToString("yyyy-MM-dd HH:mm:ss.ffffff") };
 
-                    //if (signatures.Count > NumberOfColumns)
-                    //{
-                    //    var keep = signatures.GroupBy(x => x.EndTimestamp - x.TimeStamp).OrderByDescending(g => g.Key).First();
-                    //    signatures;
-                    //    foreach (var item in keep)
-                    //    {
-                    //        signatures.Add(item);
-                    //    }
-                    //}
                     var groupedTitle = signatures.GroupBy(x => x.Title).OrderBy(x => x.Key);
                     foreach (var group in groupedTitle)
                     {
@@ -555,6 +556,65 @@ namespace AS.DataManager
                     outputFile.WriteLine(String.Join(",", thisRow));
                     firstTimeStamp = false;
                 }
+                //foreach (var time in timeStampsInRange)
+                //{
+                //    List<SignatureResult> signatures;
+                //    lock (_theResultsLock)
+                //    {
+                //        signatures = _results[time];
+                //    }
+                //    var waitCount = 0;
+                //    while (signatures.Count < NumberOfColumns && waitCount < 10)
+                //    {
+                //        Thread.Sleep(500);
+                //        lock (_theResultsLock)
+                //        {
+                //            signatures = _results[time];
+                //        }
+                //        waitCount++;
+                //    }
+                //    var endTime = signatures.FirstOrDefault().EndTimestamp;
+                //    List<string> thisRow = new List<string> { time.ToString("yyyy-MM-dd HH:mm:ss.ffffff"), endTime.ToString("yyyy-MM-dd HH:mm:ss.ffffff") };
+
+                //    //if (signatures.Count > NumberOfColumns)
+                //    //{
+                //    //    var keep = signatures.GroupBy(x => x.EndTimestamp - x.TimeStamp).OrderByDescending(g => g.Key).First();
+                //    //    signatures;
+                //    //    foreach (var item in keep)
+                //    //    {
+                //    //        signatures.Add(item);
+                //    //    }
+                //    //}
+                //    var groupedTitle = signatures.GroupBy(x => x.Title).OrderBy(x => x.Key);
+                //    foreach (var group in groupedTitle)
+                //    {
+                //        var title = group.Key;
+                //        var groupedByPMU = group.GroupBy(x => x.PMUName).OrderBy(x => x.Key);
+                //        foreach (var group2 in groupedByPMU)
+                //        {
+                //            var pmu = group2.Key;
+                //            var orderedByName = group2.OrderBy(x => x.SignalName);
+                //            foreach (var sig in orderedByName)
+                //            {
+                //                if (firstTimeStamp)
+                //                {
+                //                    titleRow.Add(title);
+                //                    PMURow.Add(pmu);
+                //                    SignalRow.Add(sig.SignalName);
+                //                }
+                //                thisRow.Add(sig.Value.ToString());
+                //            }
+                //        }
+                //    }
+                //    if (firstTimeStamp)
+                //    {
+                //        outputFile.WriteLine(String.Join(",", titleRow));
+                //        outputFile.WriteLine(String.Join(",", PMURow));
+                //        outputFile.WriteLine(String.Join(",", SignalRow));
+                //    }
+                //    outputFile.WriteLine(String.Join(",", thisRow));
+                //    firstTimeStamp = false;
+                //}
             }
         }
 
