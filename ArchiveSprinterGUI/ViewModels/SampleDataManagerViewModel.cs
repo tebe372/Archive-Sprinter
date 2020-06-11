@@ -21,8 +21,8 @@ namespace ArchiveSprinterGUI.ViewModels
         {
             _model = SampleDataMngr.Instance;
             _model.SignalsUpdated += SampleSignalsUpdated;
-            DataviewGroupMethods = new List<string>() { "View Signal by Type", "View Signal by PMU", "Input Channels by Step", "Output Channels by Step" };
-            SelectedDataViewingGroupMethod = "View Signal by Type";
+            DataviewGroupMethods = new List<string>() { "Input Signals by Type", "Input Signals by PMU", "Input Channels by Step", "Output Channels by Step" };
+            SelectedDataViewingGroupMethod = "Input Signals by Type";
             _signalsVM = new ObservableCollection<SignalViewModel>();
         }
 
