@@ -10,9 +10,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Images\AddCommand.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\Add_16x.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\delete.bmp" />
     <Content Include="$(MSBuildThisFileDirectory)Images\open.gif" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\pause.PNG" />
     <Content Include="$(MSBuildThisFileDirectory)Images\RemoveCommand_16x.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\resume.PNG" />
     <Content Include="$(MSBuildThisFileDirectory)Images\Run_16x.png" />
     <Content Include="$(MSBuildThisFileDirectory)Images\Save24.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Images\stop.PNG" />
   </ItemGroup>
 </Project>

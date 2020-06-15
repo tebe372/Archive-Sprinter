@@ -107,6 +107,7 @@
     <Compile Include="Converters\SignalSelectionDropDownConverter.cs" />
     <Compile Include="Converters\VisibleIfNonZeroConverter.cs" />
     <Compile Include="ViewModels\DataFilterViewModel.cs" />
+    <Compile Include="ViewModels\ProjectManagerViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModels\DataWriterViewModel.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="ViewModels\SampleDataManagerViewModel.cs" />
@@ -119,8 +120,20 @@
     <Compile Include="ViewModels\SignalInspectionViewModels\InspectionAnalysisParametersViewModel.cs" />
     <Compile Include="ViewModels\SignalInspectionViewModels\SignalInspectionViewModel.cs" />
     <Compile Include="ViewModels\SignalInspectionViewModels\SignalPlotPanel.cs" />
+    <Compile Include="Views\AddAProjectPopup.xaml.cs">
+      <DependentUpon>AddAProjectPopup.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AddATaskPopup.xaml.cs">
+      <DependentUpon>AddATaskPopup.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProjectsBrowserView.xaml.cs">
+      <DependentUpon>ProjectsBrowserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ProjectTreeView.xaml.cs">
+      <DependentUpon>ProjectTreeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsViews\customizationViews\SubtractionCustomization.xaml.cs">
       <DependentUpon>SubtractionCustomization.xaml</DependentUpon>
@@ -214,7 +227,23 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\AddAProjectPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\AddATaskPopup.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProjectsBrowserView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ProjectTreeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -329,6 +358,10 @@
       <Project>{7F5148D5-1206-44CF-B918-CC92DAEC221C}</Project>
       <Name>AS.IO</Name>
     </ProjectReference>
+    <ProjectReference Include="..\AS.ProjectManager\AS.ProjectManager.csproj">
+      <Project>{e08b6778-1d14-4f06-b6d4-6b3a8443b431}</Project>
+      <Name>AS.ProjectManager</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AS.SampleDataManager\AS.SampleDataManager.csproj">
       <Project>{c256af11-b60a-4212-9e0d-9fd9d5bbe18d}</Project>
       <Name>AS.SampleDataManager</Name>
@@ -356,6 +389,31 @@
   <ItemGroup>
     <Resource Include="..\Resources\Images\Save24.png">
       <Link>Resources\Save24.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Resources\Images\delete.bmp">
+      <Link>Resources\delete.bmp</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Resources\Images\pause.PNG">
+      <Link>Resources\pause.PNG</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Resources\Images\resume.PNG">
+      <Link>Resources\resume.PNG</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Resources\Images\stop.PNG">
+      <Link>Resources\stop.PNG</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\Resources\Images\Add_16x.png">
+      <Link>Resources\Add_16x.png</Link>
     </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

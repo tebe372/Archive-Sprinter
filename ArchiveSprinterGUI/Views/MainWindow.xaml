@@ -10,6 +10,8 @@
         xmlns:localv="clr-namespace:ArchiveSprinterGUI.Views.SettingsViews"
         xmlns:localsv="clr-namespace:ArchiveSprinterGUI.Views.SignalInspectionViews"
         xmlns:converters="clr-namespace:ArchiveSprinterGUI.Converters"
+        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:behaviors="clr-namespace:AS.Utilities;assembly=AS.Utilities"
         mc:Ignorable="d"
         Title="Archive Sprinter" Height="450" Width="800" WindowState="Maximized">
     <Window.DataContext>
@@ -32,17 +34,17 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Expander ExpandDirection="Right" Grid.Column="0">
-            <!--<i:Interaction.Behaviors>
+            <i:Interaction.Behaviors>
                 <behaviors:GridColumnWidthReseterBehaviour TargetGridColumnIndex="0"></behaviors:GridColumnWidthReseterBehaviour>
             </i:Interaction.Behaviors>
             <Expander.Header>
-                <TextBlock Text="BPA Archive Walker Projects">
+                <TextBlock Text="Archive Sprinter Projects">
                     <TextBlock.LayoutTransform>
                         <RotateTransform Angle="-90"/>
                     </TextBlock.LayoutTransform>
                 </TextBlock>
             </Expander.Header>
-            <localv:ProjectsBrowserView DataContext="{Binding ProjectControlVM}"/>-->
+            <local:ProjectsBrowserView DataContext="{Binding ProjectControlVM}"/>
         </Expander>
         <GridSplitter Grid.Column="1" Width="5" VerticalAlignment="Stretch" ResizeBehavior="PreviousAndNext"/>
         <Grid Grid.Column="2">
@@ -77,9 +79,9 @@
                 <Button Width="20" Height="20" Command="{Binding SaveConfigFile}">
                     <Image Source="/ArchiveSprinterGUI;component/Resources/Save24.png" Stretch="Uniform"/>
                 </Button>
-                <Button Width="20" Height="20" Command="{Binding OpenConfigFile}">
+                <!--<Button Width="20" Height="20" Command="{Binding OpenConfigFile}">
                     <Image Source="/ArchiveSprinterGUI;component/Resources/open.gif" Stretch="Uniform"/>
-                </Button>
+                </Button>-->
                 <!--<Button ToolTip="Save Config File" Width="22" Height="22" Margin="2" Command="{Binding ProjectControlVM.SaveConfigFile}" CommandParameter="{Binding}" Visibility="{Binding CurrentView, Converter={StaticResource ViewVisibilityConverter}}">
                     <Image Source="/ArchiveWalker;component/MyResources/Save24.png"/>
                 </Button>
@@ -87,7 +89,7 @@
                     <Image Source="/ArchiveWalker;component/MyResources/Save24.png"/>
                 </Button>-->
             </StackPanel>
-            <ContentPresenter Content="{Binding CurrentView}" Grid.Row="1"/>
+            <ContentPresenter Content="{Binding CurrentView, Mode=TwoWay}" Grid.Row="1"/>
             <!--<localv:SettingsTabControl Grid.Row="1"/>-->
         </Grid>
     </Grid>

@@ -496,37 +496,41 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         }
         [JsonIgnore]
         private string _previousSaveFileDirectory;
-        internal void SaveConfigFile()
+        internal void SaveConfigFile(string configFilePath)
         {
             //_model.SaveConfigFile();
             var config = JsonConvert.SerializeObject(this, Formatting.Indented);
 #if DEBUG
             Console.WriteLine(config);
 #endif
-            using (var fbd = new CommonSaveFileDialog())
+            //using (var fbd = new CommonSaveFileDialog())
+            //{
+            //    fbd.InitialDirectory = _previousSaveFileDirectory;
+            //    fbd.AddToMostRecentlyUsedList = true;
+            //    fbd.DefaultDirectory = _previousSaveFileDirectory;
+            //    fbd.EnsureFileExists = true;
+            //    fbd.EnsurePathExists = true;
+            //    fbd.EnsureReadOnly = false;
+            //    fbd.EnsureValidNames = true;
+            //    fbd.ShowPlacesList = true;
+            //    fbd.RestoreDirectory = true;
+            //    fbd.Title = "Please Select a Directory to Save Config file.";
+            //    fbd.Filters.Add(new CommonFileDialogFilter("Json files", "*.json"));
+            //    fbd.Filters.Add(new CommonFileDialogFilter("All files", "*.*"));
+            //    CommonFileDialogResult result = fbd.ShowDialog();
+            //    if (result == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(fbd.FileName))
+            //    {
+            //        ConfigFile = fbd.FileName;
+            //        _previousSaveFileDirectory = Path.GetDirectoryName(fbd.FileName);
+            //        using (StreamWriter outputFile = new StreamWriter(ConfigFile))
+            //        {
+            //            outputFile.WriteLine(config);
+            //        }
+            //    }
+            //}
+            using (StreamWriter outputFile = new StreamWriter(configFilePath))
             {
-                fbd.InitialDirectory = _previousSaveFileDirectory;
-                fbd.AddToMostRecentlyUsedList = true;
-                fbd.DefaultDirectory = _previousSaveFileDirectory;
-                fbd.EnsureFileExists = true;
-                fbd.EnsurePathExists = true;
-                fbd.EnsureReadOnly = false;
-                fbd.EnsureValidNames = true;
-                fbd.ShowPlacesList = true;
-                fbd.RestoreDirectory = true;
-                fbd.Title = "Please Select a Directory to Save Config file.";
-                fbd.Filters.Add(new CommonFileDialogFilter("Json files", "*.json"));
-                fbd.Filters.Add(new CommonFileDialogFilter("All files", "*.*"));
-                CommonFileDialogResult result = fbd.ShowDialog();
-                if (result == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(fbd.FileName))
-                {
-                    ConfigFile = fbd.FileName;
-                    _previousSaveFileDirectory = Path.GetDirectoryName(fbd.FileName);
-                    using (StreamWriter outputFile = new StreamWriter(ConfigFile))
-                    {
-                        outputFile.WriteLine(config);
-                    }
-                }
+                outputFile.WriteLine(config);
             }
         }
         private string _configFile;
@@ -569,11 +573,11 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             }
             if (File.Exists(ConfigFile))
             {
-                _readConfigFile(ConfigFile);
+                ReadConfigFile(ConfigFile);
                 //_model.ReadConfigFile(ConfigFile);
             }
         }
-        private void _readConfigFile(string configFile)
+        public void ReadConfigFile(string configFile)
         {
             using (StreamReader reader = File.OpenText(configFile))
             {

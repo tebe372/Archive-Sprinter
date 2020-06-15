@@ -8,6 +8,7 @@ using AS.SampleDataManager;
 using AS.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -24,12 +25,14 @@ namespace ArchiveSprinterGUI.ViewModels
             _sampleDataMgr = SampleDataMngr.Instance;
             _settingsVM = new SettingsViewModel();
             _sgnlInspctVM = new SignalInspectionViewModel();
+            _projectControlVM = new ProjectManagerViewModel();
+            _projectControlVM.RunSelected += _onRunSelected;
             _currentView = _settingsVM;
             MainViewSelected = new RelayCommand(_switchView);
             StartArchiveSprinter = new RelayCommand(_startArchiveSprinter);
             DataMngr = new DataStore();
             SaveConfigFile = new RelayCommand(_saveConfigFile);
-            OpenConfigFile = new RelayCommand(_openConfigFile);
+            //OpenConfigFile = new RelayCommand(_openConfigFile);
             _numberOfFilesRead = 0;
         }
         private SampleDataMngr _sampleDataMgr;
@@ -60,6 +63,16 @@ namespace ArchiveSprinterGUI.ViewModels
             set
             {
                 _sgnlInspctVM = value;
+                OnPropertyChanged();
+            }
+        }
+        private ProjectManagerViewModel _projectControlVM;
+        public ProjectManagerViewModel ProjectControlVM 
+        {
+            get { return _projectControlVM; }
+            set
+            {
+                _projectControlVM = value;
                 OnPropertyChanged();
             }
         }
@@ -362,12 +375,26 @@ namespace ArchiveSprinterGUI.ViewModels
         public ICommand SaveConfigFile { get; set; }
         private void _saveConfigFile(object obj)
         {
-            SettingsVM.SaveConfigFile();
+            SettingsVM.SaveConfigFile(ProjectControlVM.SelectedProject.SelectedRun.ConfigFilePath);
         }
-        public ICommand OpenConfigFile { get; set; }
-        private void _openConfigFile(object obj)
+        //public ICommand OpenConfigFile { get; set; }
+        //private void _openConfigFile(object obj)
+        //{
+        //    SettingsVM.OpenConfigFile();
+        //}
+        private void _onRunSelected(object sender, ProjectViewModel e)
         {
-            SettingsVM.OpenConfigFile();
+            SettingsVM = new SettingsViewModel();
+            string configFile = e.SelectedRun.ConfigFilePath;
+            if (File.Exists(configFile))
+            {
+                SettingsVM.ReadConfigFile(configFile);
+            }
+            if (CurrentView is SettingsViewModel)
+            {
+                CurrentView = SettingsVM;
+            }
         }
+
     }
 }

@@ -34,6 +34,8 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "PDAT_Reader", "..\..\PDAT\P
 		{EF399FF1-82CA-4BF9-8162-217B162466C6} = {EF399FF1-82CA-4BF9-8162-217B162466C6}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AS.ProjectManager", "AS.ProjectManager\AS.ProjectManager.csproj", "{E08B6778-1D14-4F06-B6D4-6B3A8443B431}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		Resources\Resources.projitems*{b8f54723-3799-4777-9bef-5e29991632b2}*SharedItemsImports = 13
@@ -91,6 +93,10 @@ Global
 		{E47435AC-0919-4D8B-AA34-930CB58A8D97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E47435AC-0919-4D8B-AA34-930CB58A8D97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E47435AC-0919-4D8B-AA34-930CB58A8D97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E08B6778-1D14-4F06-B6D4-6B3A8443B431}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E08B6778-1D14-4F06-B6D4-6B3A8443B431}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E08B6778-1D14-4F06-B6D4-6B3A8443B431}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E08B6778-1D14-4F06-B6D4-6B3A8443B431}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

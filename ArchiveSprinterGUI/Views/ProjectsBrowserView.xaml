@@ -1,0 +1,66 @@
+﻿<UserControl x:Class="ArchiveSprinterGUI.Views.ProjectsBrowserView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ArchiveSprinterGUI.Views"
+             xmlns:converters="clr-namespace:ArchiveSprinterGUI.Converters"
+             xmlns:coreConverter="clr-namespace:AS.Core.Converters;assembly=AS.Core"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <coreConverter:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+            <coreConverter:InverseBooleanVisibilityConverter x:Key="InverseBooleanVisibilityConverter"/>
+            <coreConverter:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter"/>
+            <!--<converters:EnabledIfRunningOrPausedConverter x:Key="EnabledIfRunningOrPausedConverter"/>
+            <converters2:ProgressVisibilityConverter x:Key="ProgressVisibilityConverter"/>-->
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}" CanContentScroll="True">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Please Select Results Storage Directory" VerticalAlignment="Center" Margin="2,0" FontWeight="Black" TextWrapping="WrapWithOverflow" HorizontalAlignment="Left"/>
+            <TextBox Grid.Row="1" Text="{Binding ResultsStoragePath}" Margin="2,5,2,2" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+             <Button Grid.Row="2" Command="{Binding BrowseResultsStorage}" Width="25" Height="25" HorizontalAlignment="Left" ToolTip="Open results file folder" Margin="2,5,2,0" VerticalAlignment="Top">
+                <Image Source="/ArchiveSprinterGUI;component/Resources/open.gif"/>
+            </Button>
+            <StackPanel Orientation="Vertical" Grid.Row="3" Margin="2,0">
+                <Separator Margin="0,10,0,5"/>
+                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                    <Button Margin="2" Command="{Binding StartArchiveSprinter}" CommandParameter="{Binding SelectedRun}" IsEnabled="{Binding CanRun, Mode=OneWay}" ToolTip="Start Archive Sprinter run">
+                        <Image Source="/ArchiveSprinterGUI;component/Resources/Run_16x.png"/>
+                    </Button>
+                    <Button Margin="2" Command="{Binding PauseArchiveSprinter}" CommandParameter="{Binding SelectedRun}" IsEnabled="{Binding RunCommands.Engine.IsMatlabEngineRunning}" ToolTip="Pause Archive Sprinter run" Visibility="{Binding SelectedRun.IsNormalRunPaused, Converter={StaticResource InverseBooleanVisibilityConverter}}">
+                        <Image Source="/ArchiveSprinterGUI;component/Resources/pause.PNG"/>
+                    </Button>
+                    <Button Margin="2" Command="{Binding ResumeArchiveSprinter}" CommandParameter="{Binding SelectedRun}" IsEnabled="{Binding SelectedRun.IsNormalRunPaused}" ToolTip="Continue Archive Sprinter run" Visibility="{Binding SelectedRun.IsNormalRunPaused, Converter={StaticResource BooleanVisibilityConverter}, ConverterParameter=ResumeArchiveWalkerNormal}">
+                        <Image Source="/ArchiveSprinterGUI;component/Resources/resume.PNG"/>
+                    </Button>
+                    <Button Margin="2"  Command="{Binding StopArchiveSprinter}" CommandParameter="{Binding SelectedRun}" ToolTip="Stop Archive Sprinter run">
+                        <Image Source="/ArchiveSprinterGUI;component/Resources/stop.PNG"/>
+                        <!--<Button.IsEnabled>
+                            <MultiBinding Converter="{StaticResource EnabledIfRunningOrPausedConverter}">
+                                <Binding Path="RunCommands.Engine.IsMatlabEngineRunning"/>
+                                <Binding Path="SelectedRun.IsNormalRunPaused"/>
+                            </MultiBinding>
+                        </Button.IsEnabled>-->
+                    </Button>
+                    <Button Margin="2" Command="{Binding DeleteATask}" CommandParameter="{Binding SelectedRun}" IsEnabled="{Binding IsASRunning, Converter={StaticResource InverseBooleanConverter}}">
+                        <Image Source="/ArchiveSprinterGUI;component/Resources/delete.bmp"/>
+                    </Button>
+                </StackPanel>
+                <!--<TextBlock Text="{Binding RunCommands.Engine.NormalRunProgress, StringFormat=Current File Time: {0}}" Margin="2" Visibility="{Binding RunCommands.Engine.NormalRunProgress, Converter={StaticResource ProgressVisibilityConverter}}"/>-->
+                <Button Content="Add Project" ToolTip="Add A New Project" Margin="0,5" Command="{Binding AddAProject}" Width="100" HorizontalAlignment="Left"/>
+                <local:ProjectTreeView DataContext="{Binding Projects}"/>
+            </StackPanel>
+            <!--<Image Source="/ArchiveWalker;component/MyResources/Archive_Walker_Gray_Final.jpg" Grid.Row="4" Width="150" Height="150" Margin="2" HorizontalAlignment="Left"/>-->
+        </Grid>
+    </ScrollViewer>
+</UserControl>

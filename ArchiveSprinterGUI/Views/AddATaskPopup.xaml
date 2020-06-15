@@ -1,0 +1,25 @@
+﻿<Window x:Class="ArchiveSprinterGUI.Views.AddATaskPopup"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ArchiveSprinterGUI.Views"
+        xmlns:xtlkt="http://schemas.xceed.com/wpf/xaml/toolkit"
+        mc:Ignorable="d"
+        Title="AddARunPopup" Height="450" Width="800">
+    <StackPanel>
+        <TextBlock Text="Create new task in project:" Margin="2"/>
+        <ComboBox Margin="2,20" FontSize="24" FontWeight="Black" Width="250" HorizontalContentAlignment="Center" ItemsSource="{Binding Projects}" DisplayMemberPath="ProjectName" SelectedItem="{Binding SelectedProject}">
+        </ComboBox>
+        <TextBlock Text="Please enter a name for this new task:" Margin="5,0,5,0"/>
+        <xtlkt:WatermarkTextBox Watermark="Enter Task Name" Margin="5" Text="{Binding NewTaskName, UpdateSourceTrigger=PropertyChanged}"/>
+        <Grid Margin="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+            <Button Content="OK" Margin="25" Width="50" Command="{Binding AcceptName}" CommandParameter="DialogResult.OK" IsDefault="True" HorizontalAlignment="Center" Grid.Column="0"/>
+            <Button Content="Cancel" Margin="25" Width="50" Command="{Binding CancelNewTask}" IsCancel="True" HorizontalAlignment="Center" Grid.Column="1"/>
+        </Grid>
+    </StackPanel>
+</Window>
