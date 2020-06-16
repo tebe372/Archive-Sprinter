@@ -494,6 +494,7 @@ namespace AS.DataManager
                     }
                 }
             }
+            OnResultsWrittenDone();
         }
 
         private void _writeASignatureOutput(List<DateTime> timeStampsInRange)
@@ -681,6 +682,11 @@ namespace AS.DataManager
             }
         }
 
+        public event EventHandler ResultsWrittenDone;
+        protected virtual void OnResultsWrittenDone()
+        {
+            ResultsWrittenDone?.Invoke(this, EventArgs.Empty);
+        }
     }
     public class SignatureResult
     {

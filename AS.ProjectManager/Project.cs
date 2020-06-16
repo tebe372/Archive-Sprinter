@@ -65,7 +65,9 @@ namespace AS.ProjectManager
         public ASTask CreatTaskDir(string name)
         {
             var taskDir = Projectpath + "Task_" + name;
-            DirectoryInfo dir = Directory.CreateDirectory(taskDir);
+            var signaturePath = taskDir + "\\Signatures\\";
+            Directory.CreateDirectory(signaturePath);
+            //DirectoryInfo dir = Directory.CreateDirectory(taskDir);
             var newTask = new ASTask(taskDir);
             newTask.ConfigFilePath = taskDir + "\\Config.json";
             if (Directory.Exists(taskDir) && !File.Exists(newTask.ConfigFilePath))

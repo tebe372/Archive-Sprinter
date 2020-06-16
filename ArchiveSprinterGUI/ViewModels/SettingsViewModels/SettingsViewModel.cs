@@ -53,7 +53,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             _preProcessSteps = new ObservableCollection<PreProcessStepViewModel>();
             _currentTabIndex = 0;
             //_oldTabIndex = 0;
-            _previousOutputDirectory = Environment.CurrentDirectory;
+            //_previousOutputDirectory = Environment.CurrentDirectory;
 
             SampleDataMngr = new SampleDataManagerViewModel();
             SampleDataMngr.SignalCheckStatusChanged += _signalCheckStatusChanged;
@@ -66,7 +66,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             SignatureStepSelected = new RelayCommand(_signatureStepSelected);
             DeleteASignatureStep = new RelayCommand(_deleteASignatureStep);
             DeSelectAllSteps = new RelayCommand(_deSelectAllSteps);
-            SelectSignatureOutputDir = new RelayCommand(_selectSignatureOutputDir);
+            //SelectSignatureOutputDir = new RelayCommand(_selectSignatureOutputDir);
 
             AddDataWriter = new RelayCommand(_addDataWriter);
             DataWriterSelected = new RelayCommand(_dataWriterSelected);
@@ -588,7 +588,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 DataSourceVM = config.DataSourceVM;
                 DatawriteOutFrequencyStr = config.DatawriteOutFrequencyStr;
                 DatawriteOutFrequencyUnit = config.DatawriteOutFrequencyUnit;
-                SignatureOutputDir = config.SignatureOutputDir;
+                //SignatureOutputDir = config.SignatureOutputDir;
                 PreProcessSteps = new ObservableCollection<PreProcessStepViewModel>();
                 SignatureSettings = new ObservableCollection<SignatureSettingViewModel>();
                 DataWriters = new ObservableCollection<DataWriterViewModel>();
@@ -704,48 +704,48 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 }
             }
         }
-        public string SignatureOutputDir
-        {
-            get { return _model.SignatureOutputDir; }
-            set
-            {
-                if (_model.SignatureOutputDir != value)
-                {
-                    _model.SignatureOutputDir = value;
-                    OnPropertyChanged();
-                }
-            }
-        }
-        private string _previousOutputDirectory;
-        [JsonIgnore]
-        public ICommand SelectSignatureOutputDir { get; set; }
-        private void _selectSignatureOutputDir(object obj)
-        {
-            using (var fbd = new CommonOpenFileDialog())
-            {
-                fbd.InitialDirectory = _previousOutputDirectory;
-                fbd.IsFolderPicker = true;
-                fbd.AddToMostRecentlyUsedList = true;
-                fbd.AllowNonFileSystemItems = false;
-                fbd.DefaultDirectory = _previousOutputDirectory;
-                fbd.EnsureFileExists = true;
-                fbd.EnsurePathExists = true;
-                fbd.EnsureReadOnly = false;
-                fbd.EnsureValidNames = true;
-                fbd.Multiselect = false;
-                fbd.ShowPlacesList = true;
-                fbd.RestoreDirectory = true;
-                fbd.Title = "Please Select Signature Output Directory.";
-                //fbd.Filters.Add(new CommonFileDialogFilter("CSV files", "*.csv"));
-                //fbd.Filters.Add(new CommonFileDialogFilter("All files", "*.*"));
-                CommonFileDialogResult result = fbd.ShowDialog();
-                if (result == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(fbd.FileName))
-                {
-                    SignatureOutputDir = fbd.FileName;
-                    _previousOutputDirectory = fbd.FileName;
-                }
-            }
-        }
+        //public string SignatureOutputDir
+        //{
+        //    get { return _model.SignatureOutputDir; }
+        //    set
+        //    {
+        //        if (_model.SignatureOutputDir != value)
+        //        {
+        //            _model.SignatureOutputDir = value;
+        //            OnPropertyChanged();
+        //        }
+        //    }
+        //}
+        //private string _previousOutputDirectory;
+        //[JsonIgnore]
+        //public ICommand SelectSignatureOutputDir { get; set; }
+        //private void _selectSignatureOutputDir(object obj)
+        //{
+        //    using (var fbd = new CommonOpenFileDialog())
+        //    {
+        //        fbd.InitialDirectory = _previousOutputDirectory;
+        //        fbd.IsFolderPicker = true;
+        //        fbd.AddToMostRecentlyUsedList = true;
+        //        fbd.AllowNonFileSystemItems = false;
+        //        fbd.DefaultDirectory = _previousOutputDirectory;
+        //        fbd.EnsureFileExists = true;
+        //        fbd.EnsurePathExists = true;
+        //        fbd.EnsureReadOnly = false;
+        //        fbd.EnsureValidNames = true;
+        //        fbd.Multiselect = false;
+        //        fbd.ShowPlacesList = true;
+        //        fbd.RestoreDirectory = true;
+        //        fbd.Title = "Please Select Signature Output Directory.";
+        //        //fbd.Filters.Add(new CommonFileDialogFilter("CSV files", "*.csv"));
+        //        //fbd.Filters.Add(new CommonFileDialogFilter("All files", "*.*"));
+        //        CommonFileDialogResult result = fbd.ShowDialog();
+        //        if (result == CommonFileDialogResult.Ok && !string.IsNullOrWhiteSpace(fbd.FileName))
+        //        {
+        //            SignatureOutputDir = fbd.FileName;
+        //            _previousOutputDirectory = fbd.FileName;
+        //        }
+        //    }
+        //}
         //string jsonTypeNameAll = JsonConvert.SerializeObject(SignatureSettings, Formatting.Indented, new JsonSerializerSettings
         //{
         //    TypeNameHandling = TypeNameHandling.All

@@ -19,7 +19,7 @@ namespace ArchiveSprinterGUI.ViewModels
             BrowseResultsStorage = new RelayCommand(_browseResultsStorage);
             AddAProject = new RelayCommand(_addAASProject);
             DeleteProject = new RelayCommand(_deleteAProject);
-            AddATask = new RelayCommand(_addATask);
+            AddATask = new RelayCommand(AddTask);
             DeleteATask = new RelayCommand(_deleteATask);
         }
         private ProjectControl _model;
@@ -57,10 +57,12 @@ namespace ArchiveSprinterGUI.ViewModels
                     prj.IsSelected = false;
                 }
             }
-            //SelectedRun = e.SelectedRun;
             if (e.SelectedRun != null)
             {
                 OnRunSelected(e);
+                //#if !DEBUG
+                CanRun = !e.SelectedRun.Model.FindRunGeneratedFile() && !e.SelectedRun.IsTaskRunning;
+                //#endif
             }
         }
         public event EventHandler<ProjectViewModel> RunSelected;
@@ -194,7 +196,7 @@ namespace ArchiveSprinterGUI.ViewModels
         }
         private AddATaskPopup _addataskdialogbox;
         public ICommand AddATask { get; set; }
-        private void _addATask(object obj)
+        public void AddTask(object obj)
         {
             var thisProject = (ProjectViewModel)obj;
             _showAddTaskPopupWindow(thisProject);
@@ -230,22 +232,41 @@ namespace ArchiveSprinterGUI.ViewModels
         {
             _addataskdialogbox.Close();
             var newtaskName = ((AddTaskViewModel)sender).NewTaskName;
-            var TaskExistsFlag = false;
+            //var TaskExistsFlag = false;
+            ASTaskViewModel taskExist = null;
             foreach (var task in e.Tasks)
             {
                 if (task.TaskName == newtaskName)
                 {
-                    TaskExistsFlag = true;
+                    taskExist = task;
+                    //TaskExistsFlag = true;
                     break;
                 }
             }
-            if (TaskExistsFlag)
+            if (taskExist != null)
             {
-                MessageBox.Show("Task exists, please give a new name!", "ERROR!", MessageBoxButton.OK);
-                _showAddTaskPopupWindow(e);
+                var taskCanRun = !taskExist.Model.FindRunGeneratedFile();
+                if (taskCanRun)
+                {
+                    var rsp = MessageBox.Show("Task exists, do you want to overwrite it?", "Warning!", MessageBoxButton.YesNo);
+                    if (rsp == MessageBoxResult.Yes)
+                    {
+                        taskExist.IsSelected = true;
+                    }
+                    else
+                    {
+                        _showAddTaskPopupWindow(e);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Task exists, please give a new name!", "Error!", MessageBoxButton.OK);
+                    _showAddTaskPopupWindow(e);
+                }
             }
             else
             {
+                SelectedProject = e;
                 e.AddANewTask(newtaskName);
                 //_model.GenerateProjectTree();
                 //_setupProjectTree();
@@ -254,20 +275,33 @@ namespace ArchiveSprinterGUI.ViewModels
         public ICommand DeleteATask { get; set; }
         private void _deleteATask(object obj)
         {
-            var runToDelete = (ASTaskViewModel)obj;
-            runToDelete.Parent.DeleteATask(runToDelete);
+            //var runToDelete = (ASTaskViewModel)obj;
+            SelectedProject.DeleteATask(SelectedProject.SelectedRun);
         }
-        private ASTaskViewModel _selectedRun;
-        public ASTaskViewModel SelectedRun
+//        private ASTaskViewModel _selectedRun;
+//        public ASTaskViewModel SelectedRun
+//        {
+//            get { return _selectedRun; }
+//            set
+//            {
+//                _selectedRun = value;
+////#if !DEBUG
+//                //CanRun = !_findRunGeneratedFile(value.TaskPath);
+////#endif
+//                OnPropertyChanged();
+//            }
+//        }
+        private bool _canRun;
+        public bool CanRun
         {
-            get { return _selectedRun; }
             set
             {
-                _selectedRun = value;
-//#if !DEBUG
-//                CanRun = !_findRunGeneratedFile(value.Model.RunPath);
-//#endif
+                _canRun = value;
                 OnPropertyChanged();
+            }
+            get
+            {
+                return _canRun;
             }
         }
         private ProjectViewModel _selectedProject;
@@ -414,11 +448,13 @@ namespace ArchiveSprinterGUI.ViewModels
 
             ASTask newTask = _model.CreatTaskDir(newtaskName);
 
-            var newTaskVieModel = new ASTaskViewModel(newTask);
-            newTaskVieModel.RunSelected += _onOneOfTheRunSelected;
-            Tasks.Add(newTaskVieModel);
-            newTaskVieModel.Parent = this;
+            var newTaskViewModel = new ASTaskViewModel(newTask);
+            newTaskViewModel.RunSelected += _onOneOfTheRunSelected;
+            Tasks.Add(newTaskViewModel);
+            newTaskViewModel.Parent = this;
+            this.SelectedRun = newTaskViewModel;
             Tasks = new ObservableCollection<ASTaskViewModel>(Tasks);
+            newTaskViewModel.IsSelected = true;
         }
 
         public void DeleteATask(ASTaskViewModel e)
@@ -504,7 +540,7 @@ namespace ArchiveSprinterGUI.ViewModels
     public class ASTaskViewModel : ViewModelBase
     {
         private ASTask _model;
-
+        public ASTask Model { get {return _model; } }
         public ASTaskViewModel(ASTask tsk)
         {
             _model = tsk;
@@ -535,12 +571,52 @@ namespace ArchiveSprinterGUI.ViewModels
             set { _parent = value; }
         }
 
+        public string TaskPath { get { return _model.TaskPath; } }
         public string ConfigFilePath { get { return _model.ConfigFilePath; } }
+        public string PauseFilePath 
+        { 
+            get { return _model.PauseFilePath; } 
+            set 
+            { 
+                _model.PauseFilePath = value;
+                OnPropertyChanged();
+            } 
+        }
+        public string SignaturePath { get { return _model.SignaturePath; } }
 
         public event EventHandler<ASTaskViewModel> RunSelected;
         protected virtual void OnRunSelected(ASTaskViewModel e)
         {
             RunSelected?.Invoke(this, e);
         }
+        internal void CheckTaskDirIntegrity()
+        {
+            _model.CheckTaskDirIntegrity();
+            //var integrity = _model.CheckTaskDirIntegrity();
+            //if (!integrity)
+            //{
+
+            //}
+        }
+
+        private bool _isTaskrunning;
+        public bool IsTaskRunning
+        {
+            get { return _isTaskrunning; }
+            set
+            {
+                _isTaskrunning = value;
+                OnPropertyChanged();
+                //if (value)
+                //{
+                //    OnTaskingIsRunning(this);
+                //}
+            }
+        }
+        //public event EventHandler<ASTaskViewModel> TaskIsRunning;
+        //protected virtual void OnTaskingIsRunning(ASTaskViewModel e)
+        //{
+        //    TaskIsRunning?.Invoke(this, e);
+        //}
     }
 }

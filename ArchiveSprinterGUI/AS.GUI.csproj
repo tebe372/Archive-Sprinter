@@ -102,6 +102,7 @@
     </Compile>
     <Compile Include="Converters\DataQualityConverters.cs" />
     <Compile Include="Converters\EnumToStringConverters.cs" />
+    <Compile Include="Converters\FileExistenceBooleanConverter.cs" />
     <Compile Include="Converters\HeaderConverters.cs" />
     <Compile Include="Converters\RadioButtonViewConverters.cs" />
     <Compile Include="Converters\SignalSelectionDropDownConverter.cs" />

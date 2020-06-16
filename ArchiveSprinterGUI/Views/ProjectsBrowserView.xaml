@@ -13,6 +13,7 @@
             <coreConverter:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
             <coreConverter:InverseBooleanVisibilityConverter x:Key="InverseBooleanVisibilityConverter"/>
             <coreConverter:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter"/>
+            <converters:FileExistenceBooleanConverter x:Key="FileExistenceBooleanConverter"/>
             <!--<converters:EnabledIfRunningOrPausedConverter x:Key="EnabledIfRunningOrPausedConverter"/>
             <converters2:ProgressVisibilityConverter x:Key="ProgressVisibilityConverter"/>-->
         </ResourceDictionary>
@@ -34,29 +35,23 @@
             <StackPanel Orientation="Vertical" Grid.Row="3" Margin="2,0">
                 <Separator Margin="0,10,0,5"/>
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Button Margin="2" Command="{Binding StartArchiveSprinter}" CommandParameter="{Binding SelectedRun}" IsEnabled="{Binding CanRun, Mode=OneWay}" ToolTip="Start Archive Sprinter run">
+                    <Button Margin="2" Command="{Binding RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Window, Mode=FindAncestor}, Path=DataContext.StartArchiveSprinter}" IsEnabled="{Binding CanRun, Mode=OneWay}" ToolTip="Start Archive Sprinter run">
                         <Image Source="/ArchiveSprinterGUI;component/Resources/Run_16x.png"/>
                     </Button>
-                    <Button Margin="2" Command="{Binding PauseArchiveSprinter}" CommandParameter="{Binding SelectedRun}" IsEnabled="{Binding RunCommands.Engine.IsMatlabEngineRunning}" ToolTip="Pause Archive Sprinter run" Visibility="{Binding SelectedRun.IsNormalRunPaused, Converter={StaticResource InverseBooleanVisibilityConverter}}">
+                    <Button Margin="2" Command="{Binding RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Window, Mode=FindAncestor}, Path=DataContext.PauseArchiveSprinter}" IsEnabled="{Binding SelectedProject.SelectedRun.IsTaskRunning}" ToolTip="Pause Archive Sprinter run" Visibility="{Binding SelectedProject.SelectedRun.IsTaskRunning, Converter={StaticResource BooleanVisibilityConverter}}">
                         <Image Source="/ArchiveSprinterGUI;component/Resources/pause.PNG"/>
                     </Button>
-                    <Button Margin="2" Command="{Binding ResumeArchiveSprinter}" CommandParameter="{Binding SelectedRun}" IsEnabled="{Binding SelectedRun.IsNormalRunPaused}" ToolTip="Continue Archive Sprinter run" Visibility="{Binding SelectedRun.IsNormalRunPaused, Converter={StaticResource BooleanVisibilityConverter}, ConverterParameter=ResumeArchiveWalkerNormal}">
+                    <Button Margin="2" Command="{Binding RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Window, Mode=FindAncestor}, Path=DataContext.ResumeArchiveSprinter}" IsEnabled="{Binding SelectedProject.SelectedRun.PauseFilePath, Converter={StaticResource FileExistenceBooleanConverter}}" ToolTip="Continue Archive Sprinter run" Visibility="{Binding SelectedProject.SelectedRun.IsTaskRunning, Converter={StaticResource InverseBooleanVisibilityConverter}}">
                         <Image Source="/ArchiveSprinterGUI;component/Resources/resume.PNG"/>
                     </Button>
-                    <Button Margin="2"  Command="{Binding StopArchiveSprinter}" CommandParameter="{Binding SelectedRun}" ToolTip="Stop Archive Sprinter run">
+                    <Button Margin="2"  Command="{Binding RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Window, Mode=FindAncestor}, Path=DataContext.StopArchiveSprinter}" IsEnabled="{Binding SelectedProject.SelectedRun.IsTaskRunning}" ToolTip="Stop Archive Sprinter run">
                         <Image Source="/ArchiveSprinterGUI;component/Resources/stop.PNG"/>
-                        <!--<Button.IsEnabled>
-                            <MultiBinding Converter="{StaticResource EnabledIfRunningOrPausedConverter}">
-                                <Binding Path="RunCommands.Engine.IsMatlabEngineRunning"/>
-                                <Binding Path="SelectedRun.IsNormalRunPaused"/>
-                            </MultiBinding>
-                        </Button.IsEnabled>-->
                     </Button>
-                    <Button Margin="2" Command="{Binding DeleteATask}" CommandParameter="{Binding SelectedRun}" IsEnabled="{Binding IsASRunning, Converter={StaticResource InverseBooleanConverter}}">
+                    <Button Margin="2" Command="{Binding DeleteATask}" IsEnabled="{Binding SelectedProject.SelectedRun.IsTaskRunning, Converter={StaticResource InverseBooleanConverter}}">
                         <Image Source="/ArchiveSprinterGUI;component/Resources/delete.bmp"/>
                     </Button>
                 </StackPanel>
-                <!--<TextBlock Text="{Binding RunCommands.Engine.NormalRunProgress, StringFormat=Current File Time: {0}}" Margin="2" Visibility="{Binding RunCommands.Engine.NormalRunProgress, Converter={StaticResource ProgressVisibilityConverter}}"/>-->
+                <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Window, Mode=FindAncestor}, Path=DataContext.CurrentFileTime, StringFormat=Current File Time: {0}}" Margin="2" Visibility="{Binding SelectedProject.SelectedRun.IsTaskRunning, Converter={StaticResource BooleanVisibilityConverter}}"/>
                 <Button Content="Add Project" ToolTip="Add A New Project" Margin="0,5" Command="{Binding AddAProject}" Width="100" HorizontalAlignment="Left"/>
                 <local:ProjectTreeView DataContext="{Binding Projects}"/>
             </StackPanel>

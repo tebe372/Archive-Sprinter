@@ -35,6 +35,7 @@ namespace AS.IO
         public async Task Start()
         {
             var reader = DataFileReaderFactory.Create(FileType);
+            DataCompleted = false;
             if (Directory.Exists(SourceDirectory))
             {
                 var fileLength = NumberOfDataPointInFile / (double)SamplingRate;
@@ -49,24 +50,24 @@ namespace AS.IO
                     throw ex;
                 }
                 DateTime lastTimeStamp = new DateTime();
-                while (time <= endtime)
+                while (time <= endtime && !DataCompleted)
                 {
                     var fileTime = time.ToString("_yyyyMMdd_HHmmss");
                     var yearDir = fileTime.Substring(1, 4);
                     var dateDir = fileTime.Substring(3, 6);
-                    var file = SourceDirectory + "\\" + yearDir + "\\" + dateDir + "\\" + Mnemonic + fileTime + "." + FileType;
+                    CurrentFile = SourceDirectory + "\\" + yearDir + "\\" + dateDir + "\\" + Mnemonic + fileTime + "." + FileType;
 #if DEBUG
-                    Console.WriteLine(file);
+                    Console.WriteLine(CurrentFile);
 #endif
-                    if (File.Exists(file))
+                    if (File.Exists(CurrentFile))
                     {
 #if DEBUG
-                        Console.WriteLine("File exists: " + file);
+                        Console.WriteLine("File exists: " + CurrentFile);
 #endif
                         List<Signal> signals = null;
                         try
                         {
-                            signals = reader.Read(file);
+                            signals = reader.Read(CurrentFile);
                         }
                         catch (Exception ex)
                         {
@@ -74,9 +75,9 @@ namespace AS.IO
                             continue;
                         }
                         var keepSig = new List<Signal>();
-                        var a = _getFileDateTime(file);
+                        //var a = _getFileDateTime(CurrentFile);
                         var aa = 1.0 / SamplingRate * (NumberOfDataPointInFile - 1);
-                        var lastTimePoint = a.AddSeconds(aa);
+                        var lastTimePoint = time.AddSeconds(aa);
                         foreach (var item in signals)
                         {
                             var sig = item.PMUName + "_" + item.SignalName;
@@ -163,6 +164,7 @@ namespace AS.IO
                 //        }
                 //    }
                 //}
+                DateTimeStart = time.ToString("M/d/yyyy h:mm:ss tt");
                 OnDataReadingDone(lastTimeStamp);
             }
         }
@@ -201,31 +203,7 @@ namespace AS.IO
         //    } 
         //}
 
-        private DateTime _getFileDateTime(string filename)
-        {
-            string[] namestrings = Path.GetFileNameWithoutExtension(filename).Split('_');
-            int digit;
-            var dateS = "";
-            var timeS = "";
-            foreach (var strs in namestrings)
-            {
-                try
-                {
-                    digit = int.Parse(strs);
-                    if (strs.Length == 8)
-                        dateS = strs;
-                    else if (strs.Length == 6)
-                        timeS = strs;
-                }
-                catch (Exception ex)
-                {
-                }
-            }
-            string s = dateS.Substring(0, 4) + "/" + dateS.Substring(4, 2) + "/" + dateS.Substring(6, 2) + " "
-                            + timeS.Substring(0, 2) + ":" + timeS.Substring(2, 2) + ":" + timeS.Substring(4, 2);
-            DateTime b = DateTime.Parse(s);
-            return b;
-        }
-
+        public bool DataCompleted { get; set; }
+        public string CurrentFile { get; set; }
     }
 }

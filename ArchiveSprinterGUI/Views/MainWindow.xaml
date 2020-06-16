@@ -73,9 +73,9 @@
                         <Style TargetType="{x:Type RadioButton}" BasedOn="{StaticResource {x:Type ToggleButton}}"/>
                     </RadioButton.Style>
                 </RadioButton>
-                <Button Width="20" Height="20" Command="{Binding StartArchiveSprinter}">
+                <!--<Button Width="20" Height="20" Command="{Binding StartArchiveSprinter}">
                     <Image Source="/ArchiveSprinterGUI;component/Resources/Run_16x.png" Stretch="Uniform"/>
-                </Button>
+                </Button>-->
                 <Button Width="20" Height="20" Command="{Binding SaveConfigFile}">
                     <Image Source="/ArchiveSprinterGUI;component/Resources/Save24.png" Stretch="Uniform"/>
                 </Button>

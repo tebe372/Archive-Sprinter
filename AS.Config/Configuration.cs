@@ -153,7 +153,7 @@ namespace AS.Config
                 var config = (Configuration)serializer.Deserialize(reader, typeof(Configuration));
             }
         }
-        public string SignatureOutputDir { get; set; }
+        //public string SignatureOutputDir { get; set; }
         public string DateTimeStart { get; set; } = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
         public string DateTimeEnd { get; set; } = DateTime.Now.ToString("MM/dd/yyyy HH:mm:ss");
         public List<DataWriter> DataWriters { get; set; } = new List<DataWriter>();

@@ -6,6 +6,7 @@ using AS.DataManager;
 using AS.IO;
 using AS.SampleDataManager;
 using AS.Utilities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -30,7 +31,11 @@ namespace ArchiveSprinterGUI.ViewModels
             _currentView = _settingsVM;
             MainViewSelected = new RelayCommand(_switchView);
             StartArchiveSprinter = new RelayCommand(_startArchiveSprinter);
+            PauseArchiveSprinter = new RelayCommand(_pauseArchiveSprinter);
+            ResumeArchiveSprinter = new RelayCommand(_resumeArchiveSprinter);
+            StopArchiveSprinter = new RelayCommand(_stopArchiveSprinter);
             DataMngr = new DataStore();
+            DataMngr.ResultsWrittenDone += _onResultsWrittenDone;
             SaveConfigFile = new RelayCommand(_saveConfigFile);
             //OpenConfigFile = new RelayCommand(_openConfigFile);
             _numberOfFilesRead = 0;
@@ -76,6 +81,7 @@ namespace ArchiveSprinterGUI.ViewModels
                 OnPropertyChanged();
             }
         }
+        private FileReadingManager _reader;
         public ICommand MainViewSelected { get; set; }
         private void _switchView(object obj)
         {
@@ -94,43 +100,26 @@ namespace ArchiveSprinterGUI.ViewModels
             }
         }
         public ICommand StartArchiveSprinter { get; set; }
-        private async void _startArchiveSprinter(object obj)
+        private void _startArchiveSprinter(object obj)
         {
+            ProjectControlVM.SelectedProject.SelectedRun.CheckTaskDirIntegrity();
             _numberOfFilesRead = 0;
-            //scan through all the steps of configuration and figure out needed signals.
-            var neededSignalList = _getAllNeededSignals();
+            _setupFileManager();
 
-            //send list of signals to reader control
-
-            //read files first by sending this source parameter
-            var source = SettingsVM.DataSourceVM.Model;
-            var data = new FileReadingManager();
-            data.SourceDirectory = source.FileDirectory;
-            data.FileType = source.FileType;
-            data.SamplingRate = source.SamplingRate;
-            data.NumberOfDataPointInFile = source.NumberOfDataPointInFile;
-            data.Mnemonic = source.Mnemonic;
-            data.NeededSignalList = neededSignalList;
-            data.FileReadingDone += FileReadingDone;
-            data.DataReadingDone += DataReadingDone;
-            data.DateTimeStart = SettingsVM.DateTimeStart;
-            data.DateTimeEnd = SettingsVM.DateTimeEnd;
-
-            DataMngr.Clean();
             var numberOfDataWriters = SettingsVM.DataWriters.Count();
-            DataMngr.NumberOfDataWriters = numberOfDataWriters;
-            DataMngr.DatawriteOutFrequency = _settingsVM.Model.DatawriteOutFrequency;
-            DataMngr.DatawriteOutFrequencyUnit = _settingsVM.Model.DatawriteOutFrequencyUnit;
-            DataMngr.WindowSize = _settingsVM.Model.WindowSize;
-            DataMngr.WindowOverlap = _settingsVM.Model.WindowOverlap;
-            DataMngr.NumberOfSignatures = SettingsVM.SignatureSettings.Count();
-            DataMngr.SignatureOutputDir = SettingsVM.SignatureOutputDir;
-            DataMngr.NumberOfDataPointInFile = SettingsVM.DataSourceVM.Model.NumberOfDataPointInFile;
-            DataMngr.SamplingRate = SettingsVM.DataSourceVM.Model.SamplingRate;
+            _setupDataManager(numberOfDataWriters);
+
+            ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = true;
+            ProjectControlVM.CanRun = false;
+            _startAS(numberOfDataWriters);
+        }
+
+        private void _startAS(int numberOfDataWriters)
+        {
             // this need to be put on a thread
             try
             {
-                Task.Run(async () => { await _startAS(data); }) ;
+                Task.Run(async () => { await _startReadingFile(); });
             }
             catch (Exception ex)
             {
@@ -155,7 +144,7 @@ namespace ArchiveSprinterGUI.ViewModels
             }
             try
             {
-                Task.Run(async () => { await _signatureCalculation(); });                
+                Task.Run(async () => { await _signatureCalculation(); });
             }
             catch (Exception ex)
             {
@@ -170,6 +159,40 @@ namespace ArchiveSprinterGUI.ViewModels
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+        private void _setupFileManager()
+        {
+            //scan through all the steps of configuration and figure out needed signals.
+            var neededSignalList = _getAllNeededSignals();
+
+            //send list of signals to reader control
+
+            //read files first by sending this source parameter
+            var source = SettingsVM.DataSourceVM.Model;
+            _reader = new FileReadingManager();
+            _reader.SourceDirectory = source.FileDirectory;
+            _reader.FileType = source.FileType;
+            _reader.SamplingRate = source.SamplingRate;
+            _reader.NumberOfDataPointInFile = source.NumberOfDataPointInFile;
+            _reader.Mnemonic = source.Mnemonic;
+            _reader.NeededSignalList = neededSignalList;
+            _reader.FileReadingDone += _fileReadingDone;
+            _reader.DataReadingDone += DataReadingDone;
+            _reader.DateTimeStart = SettingsVM.DateTimeStart;
+            _reader.DateTimeEnd = SettingsVM.DateTimeEnd;
+        }
+        private void _setupDataManager(int numberOfDataWriters)
+        {
+            DataMngr.Clean();
+            DataMngr.NumberOfDataWriters = numberOfDataWriters;
+            DataMngr.DatawriteOutFrequency = _settingsVM.Model.DatawriteOutFrequency;
+            DataMngr.DatawriteOutFrequencyUnit = _settingsVM.Model.DatawriteOutFrequencyUnit;
+            DataMngr.WindowSize = _settingsVM.Model.WindowSize;
+            DataMngr.WindowOverlap = _settingsVM.Model.WindowOverlap;
+            DataMngr.NumberOfSignatures = SettingsVM.SignatureSettings.Count();
+            DataMngr.SignatureOutputDir = ProjectControlVM.SelectedProject.SelectedRun.SignaturePath;
+            DataMngr.NumberOfDataPointInFile = SettingsVM.DataSourceVM.Model.NumberOfDataPointInFile;
+            DataMngr.SamplingRate = SettingsVM.DataSourceVM.Model.SamplingRate;
         }
         private async Task _startDataWriters()
         {
@@ -234,17 +257,18 @@ namespace ArchiveSprinterGUI.ViewModels
         }
         public DataStore DataMngr { get; set; }
         private int _numberOfFilesRead;
-        private void FileReadingDone(object sender, List<Signal> e)
+        private void _fileReadingDone(object sender, List<Signal> e)
         {
             // this function call have been put on thread, and put the data that have gone through pre process steps into a container in time order
             _preprocessData(e);
             _numberOfFilesRead++;
+            CurrentFileTime = _getFileDateTime(_reader.CurrentFile).ToString("MM/dd/yyyy HH:mm:ss");
         }
-        private async Task _startAS(FileReadingManager mgr)
+        private async Task _startReadingFile()
         {
             try
             {
-                mgr.Start();
+                _reader.Start();
             }
             catch (Exception ex)
             {
@@ -372,10 +396,41 @@ namespace ArchiveSprinterGUI.ViewModels
             DataMngr.NumberOfColumns = columnCount;
             await Task.Factory.StartNew(() => DataMngr.WriteResults());
         }
+        private void _onResultsWrittenDone(object sender, EventArgs e)
+        {
+            ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
+        }
         public ICommand SaveConfigFile { get; set; }
         private void _saveConfigFile(object obj)
         {
-            SettingsVM.SaveConfigFile(ProjectControlVM.SelectedProject.SelectedRun.ConfigFilePath);
+            if (ProjectControlVM.CanRun)
+            {
+                SettingsVM.SaveConfigFile(ProjectControlVM.SelectedProject.SelectedRun.ConfigFilePath);
+            }
+            else
+            {
+                var config = JsonConvert.SerializeObject(SettingsVM, Formatting.Indented);
+                ProjectControlVM.AddTask(ProjectControlVM.SelectedProject);
+                using (StreamWriter outputFile = new StreamWriter(ProjectControlVM.SelectedProject.SelectedRun.ConfigFilePath))
+                {
+                    outputFile.WriteLine(config);
+                }
+                if (File.Exists(ProjectControlVM.SelectedProject.SelectedRun.ConfigFilePath))
+                {
+                    try
+                    {
+                        SettingsVM.ReadConfigFile(ProjectControlVM.SelectedProject.SelectedRun.ConfigFilePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show(ex.Message);
+                    }
+                }
+                if (CurrentView is SettingsViewModel)
+                {
+                    CurrentView = SettingsVM;
+                }
+            }
         }
         //public ICommand OpenConfigFile { get; set; }
         //private void _openConfigFile(object obj)
@@ -388,12 +443,103 @@ namespace ArchiveSprinterGUI.ViewModels
             string configFile = e.SelectedRun.ConfigFilePath;
             if (File.Exists(configFile))
             {
-                SettingsVM.ReadConfigFile(configFile);
+                try
+                {
+                    SettingsVM.ReadConfigFile(configFile);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
+            //SettingsVM.SignatureOutputDir = e.SelectedRun.SignaturePath;
             if (CurrentView is SettingsViewModel)
             {
                 CurrentView = SettingsVM;
             }
+        }
+        public ICommand PauseArchiveSprinter { get; set; }
+        private void _pauseArchiveSprinter(object obj)
+        {
+            _reader.DataCompleted = true;
+            while (!DataMngr.DataCompleted)
+            {
+                Thread.Sleep(500);
+            }
+            var config = JsonConvert.SerializeObject(_reader.DateTimeStart, Formatting.Indented);
+            var pf = ProjectControlVM.SelectedProject.SelectedRun.TaskPath + "\\Pause.json";
+            // in order for the file existence converter to work to show the resume button as soon as pause is clicked, 
+            // I need to generate the pause.json file first before update the PauseFilePath so the converter actually finds the json file.
+            using (StreamWriter outputFile = new StreamWriter(pf))
+            {
+                outputFile.WriteLine(config);
+            }
+            ProjectControlVM.SelectedProject.SelectedRun.PauseFilePath = pf;
+        }
+        public ICommand ResumeArchiveSprinter { get; set; }
+        private void _resumeArchiveSprinter(object obj)
+        {
+            if (File.Exists(ProjectControlVM.SelectedProject.SelectedRun.PauseFilePath))
+            {
+                string time;
+                using (StreamReader reader = File.OpenText(ProjectControlVM.SelectedProject.SelectedRun.PauseFilePath))
+                {
+                    JsonSerializer serializer = new JsonSerializer();
+                    time = (string)serializer.Deserialize(reader, typeof(string));
+                }
+                File.Delete(ProjectControlVM.SelectedProject.SelectedRun.PauseFilePath);
+                ProjectControlVM.SelectedProject.SelectedRun.PauseFilePath = null;
+                ProjectControlVM.SelectedProject.SelectedRun.CheckTaskDirIntegrity();
+                _numberOfFilesRead = 0;
+                _setupFileManager();
+                _reader.DateTimeStart = time;
+                var numberOfDataWriters = SettingsVM.DataWriters.Count();
+                _setupDataManager(numberOfDataWriters);
+
+                ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = true;
+                ProjectControlVM.CanRun = false;
+                _startAS(numberOfDataWriters);
+            }
+        }
+        public ICommand StopArchiveSprinter { get; set; }
+        private void _stopArchiveSprinter(object obj)
+        {
+            _reader.DataCompleted = true;
+        }
+        private string _currentFileTime;
+        public string CurrentFileTime 
+        {
+            get { return _currentFileTime; }
+            set
+            {
+                _currentFileTime = value;
+                OnPropertyChanged();
+            }
+        }
+        private DateTime _getFileDateTime(string filename)
+        {
+            string[] namestrings = Path.GetFileNameWithoutExtension(filename).Split('_');
+            int digit;
+            var dateS = "";
+            var timeS = "";
+            foreach (var strs in namestrings)
+            {
+                try
+                {
+                    digit = int.Parse(strs);
+                    if (strs.Length == 8)
+                        dateS = strs;
+                    else if (strs.Length == 6)
+                        timeS = strs;
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            string s = dateS.Substring(0, 4) + "/" + dateS.Substring(4, 2) + "/" + dateS.Substring(6, 2) + " "
+                            + timeS.Substring(0, 2) + ":" + timeS.Substring(2, 2) + ":" + timeS.Substring(4, 2);
+            DateTime b = DateTime.Parse(s);
+            return b;
         }
 
     }
