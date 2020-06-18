@@ -9,6 +9,7 @@ using AS.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -180,6 +181,7 @@ namespace ArchiveSprinterGUI.ViewModels
             _reader.DataReadingDone += DataReadingDone;
             _reader.DateTimeStart = SettingsVM.DateTimeStart;
             _reader.DateTimeEnd = SettingsVM.DateTimeEnd;
+            _reader.WindowSize = _settingsVM.Model.WindowSize;
         }
         private void _setupDataManager(int numberOfDataWriters)
         {
@@ -462,12 +464,17 @@ namespace ArchiveSprinterGUI.ViewModels
         private void _pauseArchiveSprinter(object obj)
         {
             _reader.DataCompleted = true;
-            while (!DataMngr.DataCompleted)
+            while (!DataMngr.DataCompleted || ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning)
             {
                 Thread.Sleep(500);
             }
-            var config = JsonConvert.SerializeObject(_reader.DateTimeStart, Formatting.Indented);
-            var pf = ProjectControlVM.SelectedProject.SelectedRun.TaskPath + "\\Pause.json";
+            var pauseConfig = new Pause();
+            pauseConfig.CurrentTimeStamp = DataMngr.CurrentTimeStamp;
+            pauseConfig.LastReadFileTime = _reader.DateTimeStart;
+            //pauseConfig.NextUnreadFileTime = DateTime.ParseExact(_reader.DateTimeStart, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+            pauseConfig.LastWrittenFileName = DataMngr.LastWrittenFile;
+            var config = JsonConvert.SerializeObject(pauseConfig, Formatting.Indented);
+            var pf = ProjectControlVM.SelectedProject.SelectedRun.TaskPath + "Pause.json";
             // in order for the file existence converter to work to show the resume button as soon as pause is clicked, 
             // I need to generate the pause.json file first before update the PauseFilePath so the converter actually finds the json file.
             using (StreamWriter outputFile = new StreamWriter(pf))
@@ -481,21 +488,27 @@ namespace ArchiveSprinterGUI.ViewModels
         {
             if (File.Exists(ProjectControlVM.SelectedProject.SelectedRun.PauseFilePath))
             {
-                string time;
+                Pause config;
                 using (StreamReader reader = File.OpenText(ProjectControlVM.SelectedProject.SelectedRun.PauseFilePath))
                 {
                     JsonSerializer serializer = new JsonSerializer();
-                    time = (string)serializer.Deserialize(reader, typeof(string));
+                    config = (Pause)serializer.Deserialize(reader, typeof(Pause));
                 }
                 File.Delete(ProjectControlVM.SelectedProject.SelectedRun.PauseFilePath);
+                var sigcsv = new CSVFileReader();
+                var data = sigcsv.ReadSignatureCSV(config.LastWrittenFileName);
+                var lasttime = data.LastOrDefault();
                 ProjectControlVM.SelectedProject.SelectedRun.PauseFilePath = null;
                 ProjectControlVM.SelectedProject.SelectedRun.CheckTaskDirIntegrity();
                 _numberOfFilesRead = 0;
                 _setupFileManager();
-                _reader.DateTimeStart = time;
+                _reader.DateTimeStart = config.LastReadFileTime;
                 var numberOfDataWriters = SettingsVM.DataWriters.Count();
                 _setupDataManager(numberOfDataWriters);
-
+                DataMngr.FirstFile = false;
+                DataMngr.ResumedTask = true;
+                DataMngr.CurrentTimeStamp = config.CurrentTimeStamp;
+                DataMngr.TimeZero = lasttime.AddSeconds(Convert.ToInt32(SettingsVM.WindowSizeStr) - Convert.ToInt32(SettingsVM.WindowOverlapStr));
                 ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = true;
                 ProjectControlVM.CanRun = false;
                 _startAS(numberOfDataWriters);

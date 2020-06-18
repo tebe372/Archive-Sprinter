@@ -428,5 +428,89 @@ namespace AS.IO
         {
             return _numberOfDataPointInFile;
         }
+
+        public List<DateTime> ReadSignatureCSV(string filename)
+        {
+            var startTimes = new List<DateTime>();
+            var endTimes = new List<DateTime>();
+            //var baseTime = _getFileDateTime(filename);
+            //var timeSpanRelativeToBaseTime = new List<double>();
+            //var timeStamps = new List<DateTime>();
+            //var timeStampeNumberInDays = new List<double>();
+            //Console.WriteLine(Environment.CurrentDirectory);
+            using (TextFieldParser reader = new TextFieldParser(filename))
+            {
+                reader.TextFieldType = FieldType.Delimited;
+                reader.SetDelimiters(",");
+                reader.HasFieldsEnclosedInQuotes = true;
+
+
+                //string pmuName = Path.GetFileNameWithoutExtension(filename).Split('_')[0];
+
+                List<string> signalNames = reader.ReadFields().Skip(1).ToList();
+
+                List<string> signalTypes = reader.ReadFields().Skip(1).ToList();
+
+                List<string> signalUnits = reader.ReadFields().Skip(1).ToList();
+
+                //reader.ReadLine(); //skip the 4th line.
+                //for (int i = 0; i < signalNames.Count; i++)
+                //{
+                //    var newSignal = new Signal();
+                //    newSignal.SignalName = signalNames[i];
+                //    newSignal.Unit = signalUnits[i];
+                //    newSignal.TypeAbbreviation = _getSignalType(signalTypes[i]);
+                //    newSignal.PMUName = pmuName;
+                //    newSignal.TimeStampNumber = timeStampeNumberInDays;
+                //    newSignal.TimeStamps = timeStamps;
+                //    signalList.Add(newSignal);
+                //}
+                while (!reader.EndOfData)
+                {
+                    //can read line by line
+                    var row = reader.ReadFields();
+                    _numberOfDataPointInFile++;
+                    var start = DateTime.ParseExact(row[0], "yyyy-MM-dd HH:mm:ss.ffffff", CultureInfo.InvariantCulture);
+                    startTimes.Add(start);
+                    var end = DateTime.ParseExact(row[1], "yyyy-MM-dd HH:mm:ss.ffffff", CultureInfo.InvariantCulture);
+                    endTimes.Add(end);
+                    //DataRow dr = dt.NewRow();
+                    //for (int i = 0; i < row.Length; i++)
+                    //{
+                    //    var success = double.TryParse(row[i], out double value);
+                    //    if (!success)
+                    //    {
+                    //        value = double.NaN; //if conversion fail, set value to NAN, is this the behaviour we want?
+                    //    }
+                    //    if (i == 0)
+                    //    {
+                    //        timeSpanRelativeToBaseTime.Add(value);
+                    //        var datetimed = baseTime.AddSeconds(value);
+                    //        timeStamps.Add(datetimed); //might need to change if the first time column changes
+                    //        timeStampeNumberInDays.Add(datetimed.ToOADate());
+                    //    }
+                    //    else
+                    //    {
+                    //        signalList[i - 1].Data.Add(value);
+                    //    }
+                    //}
+                    //dt.Rows.Add(dr);
+
+                }
+                //var a = dt.Columns[0];
+                //var time1 = timeSpanRelativeToBaseTime[0];
+                //var time2 = timeSpanRelativeToBaseTime[1];
+                //_samplingRate = (int)Math.Round((1 / (time2 - time1)) / 10) * 10;
+
+                //foreach (var sig in signalList)
+                //{
+                //    sig.SamplingRate = _samplingRate;
+                //}
+            }
+
+
+            return startTimes;
+        }
+
     }
 }

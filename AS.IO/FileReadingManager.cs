@@ -164,6 +164,15 @@ namespace AS.IO
                 //        }
                 //    }
                 //}
+                if (fileLength >= WindowSize)
+                {
+                    time = time.AddSeconds(-fileLength);
+                }
+                else
+                {
+                    var n = Math.Ceiling(WindowSize / fileLength);
+                    time = time.AddSeconds(-fileLength * n);
+                }
                 DateTimeStart = time.ToString("M/d/yyyy h:mm:ss tt");
                 OnDataReadingDone(lastTimeStamp);
             }
@@ -205,5 +214,6 @@ namespace AS.IO
 
         public bool DataCompleted { get; set; }
         public string CurrentFile { get; set; }
+        public int WindowSize { get; set; }
     }
 }

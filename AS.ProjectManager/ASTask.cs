@@ -12,7 +12,7 @@ namespace AS.ProjectManager
     {
         public ASTask(string dir)
         {
-            _taskPath = dir;
+            _taskPath = dir + "\\";
             _taskName = Path.GetFileName(dir).Split(new[] { '_' }, 2)[1];
             foreach (var file in Directory.GetFiles(dir))
             {
@@ -96,14 +96,14 @@ namespace AS.ProjectManager
         public bool CheckTaskDirIntegrity()
         {
             bool integrity = true;
-            var sigPath = TaskPath + "\\Signatures";
+            var sigPath = TaskPath + "Signatures";
             if (!Directory.Exists(sigPath))
             {
                 Directory.CreateDirectory(sigPath);
                 SignaturePath = sigPath;
                 integrity = false;
             }
-            var configFilePath = TaskPath + "\\Config.json";
+            var configFilePath = TaskPath + "Config.json";
             if (!File.Exists(configFilePath))
             {
                 var config = JsonConvert.SerializeObject(new object(), Formatting.Indented);
