@@ -18,10 +18,10 @@
             <TreeView.Style>
                 <Style TargetType="{x:Type TreeView}">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding SelectedDataViewingGroupMethod}" Value="View Signal by Type">
+                        <DataTrigger Binding="{Binding SelectedDataViewingGroupMethod}" Value="Input Signals by Type">
                             <Setter Property="ItemsSource" Value="{Binding GroupedRawSignalsByType}"/>
                         </DataTrigger>
-                        <DataTrigger Binding="{Binding SelectedDataViewingGroupMethod}" Value="View Signal by PMU">
+                        <DataTrigger Binding="{Binding SelectedDataViewingGroupMethod}" Value="Input Signals by PMU">
                             <Setter Property="ItemsSource" Value="{Binding GroupedRawSignalsByPMU}"/>
                         </DataTrigger>
                     </Style.Triggers>
