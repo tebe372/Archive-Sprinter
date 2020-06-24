@@ -1318,7 +1318,7 @@ namespace AS.Config
                         continue;
                     }
                 }
-                bool firstSignal = true;
+                //bool firstSignal = true;
                 foreach (var item in signals)
                 {
                     List<List<double>> re = null;
@@ -1333,16 +1333,16 @@ namespace AS.Config
                     }
                     for (int i = 0; i < NumberOfBins; i++)
                     {
-                        if (firstSignal)
-                        {
-                            dataMngr.AddResults(startT, "Histogram_" + "bc_" + i.ToString(), item.PMUName, item.SignalName, re[0][i], endT);
-                        }
-                        dataMngr.AddResults(startT, "Histogram_" + i.ToString(), item.PMUName, item.SignalName, re[1][i], endT);
+                        //if (firstSignal)
+                        //{
+                        //    dataMngr.AddResults(startT, "Histogram_" + "bc_" + i.ToString(), item.PMUName, item.SignalName, re[0][i], endT);
+                        //}
+                        dataMngr.AddResults(startT, "Histogram_" + re[0][i].ToString(), item.PMUName, item.SignalName, re[1][i], endT);
                     }
-                    if (firstSignal)
-                    {
-                        firstSignal = false;
-                    }
+                    //if (firstSignal)
+                    //{
+                    //    firstSignal = false;
+                    //}
 #if DEBUG
                     Console.WriteLine("Histogram:");
                     Console.WriteLine(re);
