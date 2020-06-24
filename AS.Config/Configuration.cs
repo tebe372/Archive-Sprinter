@@ -19,16 +19,16 @@ namespace AS.Config
         [JsonIgnore]
         public readonly List<string> DQFilterList = new List<string> {
             "Status Flags",
-                                                                                "Zeros",
-                                                                                "Missing",
-                 "Nominal Voltage",
-                "Nominal Frequency",
-            //   "Outliers",
-            //     "Stale Data",
-            //     "Data Frame",
-            //     "Channel",
-            //     "Entire PMU",
-            //     "Angle Wrapping"
+            "Zeros",
+            "Missing",
+            "Nominal Voltage",
+            "Nominal Frequency",
+            "Outliers",
+            "Stale Data",
+            "Data Frame",
+            "Channel",
+            "Entire PMU",
+            "Angle Wrapping"
         };
         [JsonIgnore]
         public readonly List<string> CustomizationList = new List<string> { //"Scalar Repetition",

@@ -140,5 +140,35 @@ namespace AS.ComputationManager.Calculations
                 s.Flags = s.Flags.Select(x => x = false).ToList();
             }
         }
+
+        public static void OutlierFilt(Signal signal, double stdDevMult)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void StaleDQFilt(Signal signal, string staleThresh, bool flagAllByFreq)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void DataFrameDQFilt(Signal signal, string percentBadThresh)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void PMUchanDQFilt(Signal signal, string percentBadThresh)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void PMUallDQFilt(Signal signal, string percentBadThresh)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static void WrappingFailureDQFilt(Signal signal, string angleThresh)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

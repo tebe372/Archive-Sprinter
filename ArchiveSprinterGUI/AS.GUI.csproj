@@ -154,17 +154,32 @@
     <Compile Include="Views\SettingsViews\FilterListBox.xaml.cs">
       <DependentUpon>FilterListBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\DataFramePMUchanDQFilterView.xaml.cs">
+      <DependentUpon>DataFramePMUchanDQFilterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\EntirePMUDQFilterView.xaml.cs">
+      <DependentUpon>EntirePMUDQFilterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsViews\filterViews\FreqDQFilterView.xaml.cs">
       <DependentUpon>FreqDQFilterView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\OutliersDQFilterView.xaml.cs">
+      <DependentUpon>OutliersDQFilterView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsViews\filterViews\PMUOnlyFilterListBox.xaml.cs">
       <DependentUpon>PMUOnlyFilterListBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\StaleDQFilterView.xaml.cs">
+      <DependentUpon>StaleDQFilterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsViews\filterViews\StatusFlagDQFilterView.xaml.cs">
       <DependentUpon>StatusFlagDQFilterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsViews\filterViews\VoltPhasorDQFilterView.xaml.cs">
       <DependentUpon>VoltPhasorDQFilterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\WrappingFailureDQFilterView.xaml.cs">
+      <DependentUpon>WrappingFailureDQFilterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsViews\filterViews\ZerosMissingDQFilterView.xaml.cs">
       <DependentUpon>ZerosMissingDQFilterView.xaml</DependentUpon>
@@ -278,11 +293,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SettingsViews\filterViews\DataFramePMUchanDQFilterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\filterViews\EntirePMUDQFilterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SettingsViews\filterViews\FreqDQFilterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SettingsViews\filterViews\OutliersDQFilterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SettingsViews\filterViews\PMUOnlyFilterListBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\filterViews\StaleDQFilterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -291,6 +322,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsViews\filterViews\VoltPhasorDQFilterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\filterViews\WrappingFailureDQFilterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

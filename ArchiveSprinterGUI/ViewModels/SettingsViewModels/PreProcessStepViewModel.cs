@@ -315,6 +315,24 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 case "Nominal Frequency":
                     _model = new FreqFilt();
                     break;
+                case "Outliers":
+                    _model = new OutlierFilt();
+                    break;
+                case "Stale Data":
+                    _model = new StaleDQFilt();
+                    break;
+                case "Data Frame":
+                    _model = new DataFrameDQFilt();
+                    break;
+                case "Channel":
+                    _model = new PMUchanDQFilt();
+                    break;
+                case "Entire PMU":
+                    _model = new PMUallDQFilt();
+                    break;
+                case "Angle Wrapping":
+                    _model = new WrappingFailureDQFilt();
+                    break;
                 case "Subtraction":
                     _model = new SubtractionCustomization();
                     break;

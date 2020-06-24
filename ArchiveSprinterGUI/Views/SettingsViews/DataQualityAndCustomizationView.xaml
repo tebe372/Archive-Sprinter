@@ -29,6 +29,21 @@
             <DataTemplate x:Key="FreqDQFilterView">
                 <local:FreqDQFilterView/>
             </DataTemplate>
+            <DataTemplate x:Key="OutliersDQFilterView">
+                <local:OutliersDQFilterView/>
+            </DataTemplate>
+            <DataTemplate x:Key="StaleDQFilterView">
+                <local:StaleDQFilterView/>
+            </DataTemplate>
+            <DataTemplate x:Key="DataFramePMUchanDQFilterView">
+                <local:DataFramePMUchanDQFilterView/>
+            </DataTemplate>
+            <DataTemplate x:Key="EntirePMUDQFilterView">
+                <local:EntirePMUDQFilterView/>
+            </DataTemplate>
+            <DataTemplate x:Key="WrappingFailureDQFilterView">
+                <local:WrappingFailureDQFilterView/>
+            </DataTemplate>
             <Style x:Key="ProcessStepStyle" TargetType="ContentPresenter">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Name}" Value="Status Flags">
@@ -45,6 +60,24 @@
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Nominal Frequency">
                         <Setter Property="ContentTemplate" Value="{StaticResource FreqDQFilterView}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Outliers">
+                        <Setter Property="ContentTemplate" Value="{StaticResource OutliersDQFilterView}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Stale Data">
+                        <Setter Property="ContentTemplate" Value="{StaticResource StaleDQFilterView}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Data Frame">
+                        <Setter Property="ContentTemplate" Value="{StaticResource DataFramePMUchanDQFilterView}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Channel">
+                        <Setter Property="ContentTemplate" Value="{StaticResource DataFramePMUchanDQFilterView}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Entire PMU">
+                        <Setter Property="ContentTemplate" Value="{StaticResource EntirePMUDQFilterView}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Angle Wrapping">
+                        <Setter Property="ContentTemplate" Value="{StaticResource WrappingFailureDQFilterView}"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Subtraction">
                         <Setter Property="ContentTemplate" Value="{StaticResource SubtractionCustomization}"/>

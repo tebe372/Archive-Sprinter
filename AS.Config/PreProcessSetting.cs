@@ -84,7 +84,6 @@ namespace AS.Config
             return new List<Signal>();
         }
     }
-
     public class PMUflagFilt : Filter
     {
         public int FlagBit { get; set; }
@@ -289,6 +288,161 @@ namespace AS.Config
         public double FreqPctChan { get; set; }
         public double FreqMinSamp { get; set; }
         public double FreqMaxSamp { get; set; }
+    }
+    public class OutlierFilt : Filter
+    {
+        public int FlagBit { get; set; }
+        public new string Name { get { return "Outliers"; } }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> filteredSignal = new List<Signal>();
+            //do some parameter process
+            //according to the input channels that is selected, call the actual function and process each signal.
+            foreach (var signal in e)
+            {
+                var type = signal.TypeAbbreviation;
+                if (type.Length == 1 && type == "F")
+                {
+                    var name = signal.PMUName + "_" + signal.SignalName;
+                    if (InputSignals.Contains(name))
+                    {
+                        Filters.OutlierFilt(signal, StdDevMult);
+                        filteredSignal.Add(signal);
+                    }
+                }
+            }
+            return filteredSignal;
+        }
+        public double StdDevMult { get; set; }
+    }
+    public class StaleDQFilt : Filter
+    {
+        public int FlagBit { get; set; }
+        public new string Name { get { return "Stale Data"; } }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> filteredSignal = new List<Signal>();
+            //do some parameter process
+            //according to the input channels that is selected, call the actual function and process each signal.
+            foreach (var signal in e)
+            {
+                var type = signal.TypeAbbreviation;
+                if (type.Length == 1 && type == "F")
+                {
+                    var name = signal.PMUName + "_" + signal.SignalName;
+                    if (InputSignals.Contains(name))
+                    {
+                        Filters.StaleDQFilt(signal, StaleThresh, FlagAllByFreq);
+                        filteredSignal.Add(signal);
+                    }
+                }
+            }
+            return filteredSignal;
+        }
+        public string StaleThresh { get; set; }
+        public bool FlagAllByFreq { get; set; }
+    }
+    public class DataFrameDQFilt : Filter
+    {
+        public int FlagBit { get; set; }
+        public new string Name { get { return "Data Frame"; } }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> filteredSignal = new List<Signal>();
+            //do some parameter process
+            //according to the input channels that is selected, call the actual function and process each signal.
+            foreach (var signal in e)
+            {
+                var type = signal.TypeAbbreviation;
+                if (type.Length == 1 && type == "F")
+                {
+                    var name = signal.PMUName + "_" + signal.SignalName;
+                    if (InputSignals.Contains(name))
+                    {
+                        Filters.DataFrameDQFilt(signal, PercentBadThresh);
+                        filteredSignal.Add(signal);
+                    }
+                }
+            }
+            return filteredSignal;
+        }
+        public string PercentBadThresh { get; set; }
+    }
+    public class PMUchanDQFilt : DataFrameDQFilt
+    {
+        public int FlagBit { get; set; }
+        public new string Name { get { return "Channel"; } }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> filteredSignal = new List<Signal>();
+            //do some parameter process
+            //according to the input channels that is selected, call the actual function and process each signal.
+            foreach (var signal in e)
+            {
+                var type = signal.TypeAbbreviation;
+                if (type.Length == 1 && type == "F")
+                {
+                    var name = signal.PMUName + "_" + signal.SignalName;
+                    if (InputSignals.Contains(name))
+                    {
+                        Filters.PMUchanDQFilt(signal, PercentBadThresh);
+                        filteredSignal.Add(signal);
+                    }
+                }
+            }
+            return filteredSignal;
+        }
+    }
+    public class PMUallDQFilt : DataFrameDQFilt
+    {
+        public int FlagBit { get; set; }
+        public new string Name { get { return "Entire PMU"; } }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> filteredSignal = new List<Signal>();
+            //do some parameter process
+            //according to the input channels that is selected, call the actual function and process each signal.
+            foreach (var signal in e)
+            {
+                var type = signal.TypeAbbreviation;
+                if (type.Length == 1 && type == "F")
+                {
+                    var name = signal.PMUName + "_" + signal.SignalName;
+                    if (InputSignals.Contains(name))
+                    {
+                        Filters.PMUallDQFilt(signal, PercentBadThresh);
+                        filteredSignal.Add(signal);
+                    }
+                }
+            }
+            return filteredSignal;
+        }
+    }
+    public class WrappingFailureDQFilt : Filter
+    {
+        public int FlagBit { get; set; }
+        public new string Name { get { return "Angle Wrapping"; } }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> filteredSignal = new List<Signal>();
+            //do some parameter process
+            //according to the input channels that is selected, call the actual function and process each signal.
+            foreach (var signal in e)
+            {
+                var type = signal.TypeAbbreviation;
+                if (type.Length == 1 && type == "F")
+                {
+                    var name = signal.PMUName + "_" + signal.SignalName;
+                    if (InputSignals.Contains(name))
+                    {
+                        Filters.WrappingFailureDQFilt(signal, AngleThresh);
+                        filteredSignal.Add(signal);
+                    }
+                }
+            }
+            return filteredSignal;
+        }
+        public string AngleThresh { get; set; }
     }
     public class SubtractionCustomization : Customization
     {
