@@ -115,7 +115,7 @@ namespace ArchiveSprinterGUI.ViewModels
             _startAS(numberOfDataWriters);
         }
 
-        private void _startAS(int numberOfDataWriters)
+        private async void _startAS(int numberOfDataWriters)
         {
             // this need to be put on a thread
             try
@@ -140,15 +140,21 @@ namespace ArchiveSprinterGUI.ViewModels
                 }
                 catch (Exception ex)
                 {
+                    //_reader.DataCompleted = true;
+                    //DataMngr.DataCompleted = true;
+                    //ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
                     MessageBox.Show(ex.Message);
                 }
             }
             try
             {
-                Task.Run(async () => { await _signatureCalculation(); });
+                await Task.Run(async () => { await _signatureCalculation(); });
             }
             catch (Exception ex)
             {
+                _reader.DataCompleted = true;
+                DataMngr.DataCompleted = true;
+                ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
                 MessageBox.Show(ex.Message);
             }
             Thread.Sleep(500);
@@ -361,7 +367,14 @@ namespace ArchiveSprinterGUI.ViewModels
         {
             foreach (var item in SettingsVM.SignatureSettings)
             {
-                item.GetSignalNameList();
+                try
+                {
+                    item.GetSignalNameList();
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
                 item.GetSamplingRAte();
                 Task.Factory.StartNew(() => item.Model.Process(DataMngr));
             }
@@ -373,9 +386,12 @@ namespace ArchiveSprinterGUI.ViewModels
             {
                 switch (item.SignatureName)
                 {
+                    case "Correlation Coefficient":
+                        columnCount += 1;
+                        break;
                     case "Covariance":
                         var c = item.InputChannels.Count;
-                        columnCount += c * (c + 1) / 2;
+                        columnCount += c * (c - 1) / 2;
                         break;
                     case "Quartiles":
                         foreach (var signal in item.InputChannels)

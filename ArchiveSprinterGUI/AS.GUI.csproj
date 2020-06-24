@@ -184,6 +184,12 @@
     <Compile Include="Views\SettingsViews\signatureViews\FrequencyBandRMSView.xaml.cs">
       <DependentUpon>FrequencyBandRMSView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\signatureViews\HistogramView.xaml.cs">
+      <DependentUpon>HistogramView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\signatureViews\PercentileView.xaml.cs">
+      <DependentUpon>PercentileView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsViews\signatureViews\RootMeanSquareView.xaml.cs">
       <DependentUpon>RootMeanSquareView.xaml</DependentUpon>
     </Compile>
@@ -309,6 +315,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsViews\signatureViews\FrequencyBandRMSView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\signatureViews\HistogramView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\signatureViews\PercentileView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

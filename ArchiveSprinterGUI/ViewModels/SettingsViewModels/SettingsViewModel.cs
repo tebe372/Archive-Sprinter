@@ -662,6 +662,16 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                         newSig.CalculateBand4 = signature.CalculateBand4;
                         newSig.Threshold = signature.Threshold;
                     }
+                    if (newSig.Model is Percentile)
+                    {
+                        newSig.PercentileStr = signature.PercentileStr;
+                    }
+                    if (newSig.Model is Histogram)
+                    {
+                        newSig.Minimum = signature.Minimum;
+                        newSig.Maximum = signature.Maximum;
+                        newSig.NumberOfBins = signature.NumberOfBins;
+                    }
                     SignatureSettings.Add(newSig);
                     Model.SignatureSettings.Add(newSig.Model);
                     foreach (var sig in signature.InputChannels)

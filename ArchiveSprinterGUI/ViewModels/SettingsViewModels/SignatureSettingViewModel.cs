@@ -133,6 +133,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         internal void GetSignalNameList()
         {
             _model.InputSignals = InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList();
+            if (_model is CorrelationCoefficient && _model.InputSignals.Count() != 2)
+            {
+                throw new Exception("Correlation coefficient signature calculation needs exact 2 input signals.");
+            }
         }
 
         internal void GetSamplingRAte()
@@ -302,6 +306,118 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     if (double.TryParse(value, out double v) && m.Threshold != v)
                     {
                         m.Threshold = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string PercentileStr
+        {
+            get
+            {
+                if (_model is Percentile)
+                {
+                    var m = _model as Percentile;
+                    return m.PercentileValue.ToString();
+                }
+                else
+                {
+                    //throw new NotImplementedException();
+                    return null;
+                }
+            }
+            set
+            {
+                if (_model is Percentile)
+                {
+                    var m = _model as Percentile;
+                    if (int.TryParse(value, out int v) && m.PercentileValue != v)
+                    {
+                        m.PercentileValue = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string Minimum
+        {
+            get
+            {
+                if (_model is Histogram)
+                {
+                    var m = _model as Histogram;
+                    return m.Minimum.ToString();
+                }
+                else
+                {
+                    //throw new NotImplementedException();
+                    return null;
+                }
+            }
+            set
+            {
+                if (_model is Histogram)
+                {
+                    var m = _model as Histogram;
+                    if (double.TryParse(value, out double v) && m.Minimum != v)
+                    {
+                        m.Minimum = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string Maximum
+        {
+            get
+            {
+                if (_model is Histogram)
+                {
+                    var m = _model as Histogram;
+                    return m.Maximum.ToString();
+                }
+                else
+                {
+                    //throw new NotImplementedException();
+                    return null;
+                }
+            }
+            set
+            {
+                if (_model is Histogram)
+                {
+                    var m = _model as Histogram;
+                    if (double.TryParse(value, out double v) && m.Maximum != v)
+                    {
+                        m.Maximum = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string NumberOfBins
+        {
+            get
+            {
+                if (_model is Histogram)
+                {
+                    var m = _model as Histogram;
+                    return m.NumberOfBins.ToString();
+                }
+                else
+                {
+                    //throw new NotImplementedException();
+                    return null;
+                }
+            }
+            set
+            {
+                if (_model is Histogram)
+                {
+                    var m = _model as Histogram;
+                    if (int.TryParse(value, out int v) && m.NumberOfBins != v)
+                    {
+                        m.NumberOfBins = v;
                         OnPropertyChanged();
                     }
                 }

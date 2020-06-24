@@ -163,6 +163,35 @@ namespace AS.Config
                 return false;
             }
         }
+        public void ProcessNANDataInPair(Signal sig1, Signal sig2)
+        {
+            if (sig1.Data.Count > 0 && sig2.Data.Count > 0)
+            {
+                for (int i = sig1.Data.Count - 1; i >= 0; i--)
+                {
+                    if (double.IsNaN(sig1.Data[i]) || double.IsNaN(sig2.Data[i]))
+                    {
+                        sig1.Data.RemoveAt(i);
+                        sig2.Data.RemoveAt(i);
+                    }
+                }
+            }
+            else if (sig1.ComplexData.Count > 0 && sig2.ComplexData.Count > 0)
+            {
+                for (int i = sig1.ComplexData.Count - 1; i >= 0; i--)
+                {
+                    if (double.IsNaN(sig1.ComplexData[i].Real) || double.IsNaN(sig1.ComplexData[i].Imaginary) || double.IsNaN(sig2.ComplexData[i].Real) || double.IsNaN(sig2.ComplexData[i].Imaginary))
+                    {
+                        sig1.ComplexData.RemoveAt(i);
+                        sig2.ComplexData.RemoveAt(i);
+                    }
+                }
+            }
+            else
+            {
+
+            }
+        }
     }
     public class Mean : SignatureSetting
     {
@@ -266,7 +295,7 @@ namespace AS.Config
                     {
                         mean = SignatureCalculations.Mean(item.Data);
                     }
-                    dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Mean", item.PMUName, item.SignalName, mean, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(startT, "Mean", item.PMUName, item.SignalName, mean, endT);
 #if DEBUG
                     Console.WriteLine("Mean:");
                     Console.WriteLine(mean);
@@ -334,7 +363,7 @@ namespace AS.Config
                     {
                         variance = SignatureCalculations.Variance(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Variance", item.PMUName, item.SignalName, variance, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(startT, "Variance", item.PMUName, item.SignalName, variance, endT);
                     //Console.WriteLine("Variance:");
                     //Console.WriteLine(variance);
                 }
@@ -402,7 +431,7 @@ namespace AS.Config
                     {
                         std = SignatureCalculations.Stdev(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Standard Deviation", item.PMUName, item.SignalName, std, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(startT, "Standard Deviation", item.PMUName, item.SignalName, std, endT);
                     //Console.WriteLine("Standard Deviation:");
                     //Console.WriteLine(std);
                 }
@@ -469,7 +498,7 @@ namespace AS.Config
                     {
                         kurt = SignatureCalculations.Kurtosis(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Kurtosis", item.PMUName, item.SignalName, kurt, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(startT, "Kurtosis", item.PMUName, item.SignalName, kurt, endT);
                     //Console.WriteLine("Kurtosis:");
                     //Console.WriteLine(kurt);
                 }
@@ -536,7 +565,7 @@ namespace AS.Config
                     {
                         skew = SignatureCalculations.Skewness(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Skewness", item.PMUName, item.SignalName, skew, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(startT, "Skewness", item.PMUName, item.SignalName, skew, endT);
                     //Console.WriteLine("Skewness:");
                     //Console.WriteLine(skew);
                 }
@@ -557,7 +586,64 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                //according to the input channels in variance, take part of the e as input to the following function call.
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                if (signals.Count != 2)
+                {
+                    startT = endT.AddSeconds(-WindowOverlap);
+                    endT = startT.AddSeconds(WindowSize);
+                    continue;
+                }
+                else
+                {
+                    double cc = Double.NaN;
+                    if (OmitNan)
+                    {
+                        ProcessNANDataInPair(signals[0], signals[1]);
+                        cc = SignatureCalculations.CorrelationCoeff(signals[0].Data, signals[1].Data);
+                    }
+                    else
+                    {
+                        cc = SignatureCalculations.CorrelationCoeff(signals[0].Data, signals[1].Data);
+                    }
+                    dataMngr.AddResults(startT, "CorrelationCo", signals[0].PMUName + "&" + signals[1].PMUName, signals[0].SignalName + "&" + signals[1].SignalName, cc, endT);
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+            dataMngr.FinishedSignatures.Add("Correlation Coefficient");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -571,9 +657,63 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
-        }
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
 
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                //according to the input channels in variance, take part of the e as input to the following function call.
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                for (int i = 0; i < signals.Count - 1; i++)
+                {
+                    for (int ii = i + 1; ii < signals.Count; ii++)
+                    {
+                        double co = Double.NaN;
+                        if (OmitNan)
+                        {
+                            ProcessNANDataInPair(signals[i], signals[ii]);
+                            co = SignatureCalculations.CorrelationCoeff(signals[i].Data, signals[ii].Data);
+                        }
+                        else
+                        {
+                            co = SignatureCalculations.CorrelationCoeff(signals[i].Data, signals[ii].Data);
+                        }
+                        dataMngr.AddResults(startT, "Covariance", signals[i].PMUName + "&" + signals[ii].PMUName, signals[i].SignalName + "&" + signals[ii].SignalName, co, endT);
+
+                    }
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+            dataMngr.FinishedSignatures.Add("Covariance");
+        }
         public override void ProcessNANData(Signal sig)
         {
             //omit nan in pairs
@@ -613,10 +753,64 @@ namespace AS.Config
     public class Percentile : SignatureSetting
     {
         public override string SignatureName { get { return "Percentile"; } }
-
+        public int PercentileValue { get; set; }
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double per = Double.NaN;
+                    if (OmitNan)
+                    {
+                        ProcessNANData(item);
+                        per = SignatureCalculations.Percentile(item.Data, PercentileValue);
+                    }
+                    else
+                    {
+                        per = SignatureCalculations.Percentile(item.Data, PercentileValue);
+                    }
+                    dataMngr.AddResults(startT, "Percentile", item.PMUName, item.SignalName, per, endT);
+#if DEBUG
+                    Console.WriteLine("Percentile:");
+                    Console.WriteLine(per);
+#endif
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+            dataMngr.FinishedSignatures.Add("Percentile");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -630,7 +824,71 @@ namespace AS.Config
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                foreach (var item in signals)
+                {
+                    double qua1 = Double.NaN;
+                    double qua2 = Double.NaN;
+                    double qua3 = Double.NaN;
+                    if (OmitNan)
+                    {
+                        ProcessNANData(item);
+                        qua1 = SignatureCalculations.Percentile(item.Data, 25);
+                        qua2 = SignatureCalculations.Percentile(item.Data, 50);
+                        qua3 = SignatureCalculations.Percentile(item.Data, 75);
+                    }
+                    else
+                    {
+                        qua1 = SignatureCalculations.Percentile(item.Data, 25);
+                        qua2 = SignatureCalculations.Percentile(item.Data, 50);
+                        qua3 = SignatureCalculations.Percentile(item.Data, 75);
+                    }
+                    dataMngr.AddResults(startT, "Quartiles_25", item.PMUName, item.SignalName, qua1, endT);
+                    dataMngr.AddResults(startT, "Quartiles_50", item.PMUName, item.SignalName, qua2, endT);
+                    dataMngr.AddResults(startT, "Quartiles_75", item.PMUName, item.SignalName, qua3, endT);
+#if DEBUG
+                    Console.WriteLine("Quartiles:");
+                    Console.WriteLine(qua1);
+                    Console.WriteLine(qua2);
+                    Console.WriteLine(qua3);
+#endif
+                }
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+            dataMngr.FinishedSignatures.Add("Quartiles");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -731,7 +989,7 @@ namespace AS.Config
                     {
                         med = SignatureCalculations.Median(item.Data);
                     }
-                    dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Median", item.PMUName, item.SignalName, med, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(startT, "Median", item.PMUName, item.SignalName, med, endT);
 #if DEBUG
                     Console.WriteLine("Median:");
                         Console.WriteLine(med);
@@ -800,7 +1058,7 @@ namespace AS.Config
                     {
                         max = SignatureCalculations.Maximum(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Maximum", item.PMUName, item.SignalName, max, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(startT, "Maximum", item.PMUName, item.SignalName, max, endT);
 #if DEBUG
                     Console.WriteLine("Maximum:");
                     Console.WriteLine(max);
@@ -869,7 +1127,7 @@ namespace AS.Config
                     {
                         min = SignatureCalculations.Minimum(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Minimum", item.PMUName, item.SignalName, min, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(startT, "Minimum", item.PMUName, item.SignalName, min, endT);
                     //Console.WriteLine("Minimum:");
                     //Console.WriteLine(min);
                 }
@@ -936,7 +1194,7 @@ namespace AS.Config
                     {
                         range = SignatureCalculations.Range(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Range", item.PMUName, item.SignalName, range, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(startT, "Range", item.PMUName, item.SignalName, range, endT);
                     //Console.WriteLine("Range:");
                     //Console.WriteLine(range);
                 }
@@ -1003,7 +1261,7 @@ namespace AS.Config
                     {
                         rise = SignatureCalculations.Rise(item.Data);
                     }
-                    dataMngr.AddResults(startT, "Rise", item.PMUName, item.SignalName, rise, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(startT, "Rise", item.PMUName, item.SignalName, rise, endT);
                     //Console.WriteLine("Rise:");
                     //Console.WriteLine(rise);
                 }
@@ -1022,10 +1280,120 @@ namespace AS.Config
     {
         public override string SignatureName { get { return "Histogram"; } }
         public int NumberOfBins { get; set; }
+        public double Minimum { get; set; }
+        public double Maximum { get; set; }
 
         public override void Process(DataStore dataMngr)
         {
-            throw new NotImplementedException();
+            //if there are still data to be processed
+            // two situation: 1, un-processed data available; 2, has to wait for data being read.
+            // while waiting, keep checking back
+            var startT = dataMngr.TimeZero;
+            var endT = startT.AddSeconds(WindowSize);
+
+            while (true)
+            {
+                List<Signal> signals = new List<Signal>();
+                if (dataMngr.HasDataAfter(startT, endT))
+                {
+                    if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                    {
+                        startT = endT.AddSeconds(-WindowOverlap);
+                        endT = startT.AddSeconds(WindowSize);
+                        continue;
+                    }
+                }
+                else
+                {
+                    if (dataMngr.DataCompleted)
+                    {
+                        if (!dataMngr.GetData(signals, startT, endT, WindowSizeNumberOfSamples, InputSignals))
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Thread.Sleep(500);
+                        continue;
+                    }
+                }
+                bool firstSignal = true;
+                foreach (var item in signals)
+                {
+                    List<List<double>> re = null;
+                    if (OmitNan)
+                    {
+                        ProcessNANData(item);
+                        re = SignatureCalculations.Hist(item.Data, NumberOfBins, Minimum, Maximum);
+                    }
+                    else
+                    {
+                        re = SignatureCalculations.Hist(item.Data, NumberOfBins, Minimum, Maximum);
+                    }
+                    for (int i = 0; i < NumberOfBins; i++)
+                    {
+                        if (firstSignal)
+                        {
+                            dataMngr.AddResults(startT, "Histogram_" + "bc_" + i.ToString(), item.PMUName, item.SignalName, re[0][i], endT);
+                        }
+                        dataMngr.AddResults(startT, "Histogram_" + i.ToString(), item.PMUName, item.SignalName, re[1][i], endT);
+                    }
+                    if (firstSignal)
+                    {
+                        firstSignal = false;
+                    }
+#if DEBUG
+                    Console.WriteLine("Histogram:");
+                    Console.WriteLine(re);
+#endif
+                }
+                //bool firstSignal = true;
+                //List<List<double>> re = null;
+                //List<List<double>> all = new List<List<double>>();
+                //foreach (var item in signals)
+                //{
+                //    if (OmitNan)
+                //    {
+                //        ProcessNANData(item);
+                //        re = SignatureCalculations.Hist(item.Data, NumberOfBins, Minimum, Maximum);
+                //    }
+                //    else
+                //    {
+                //        re = SignatureCalculations.Hist(item.Data, NumberOfBins, Minimum, Maximum);
+                //    }
+                //    if (firstSignal)
+                //    {
+                //        all.AddRange(re);
+                //        firstSignal = false;
+                //    }
+                //    else
+                //    {
+                //        all.Add(re[1]);
+                //    }
+                //}
+                //for (int i = 0; i < all.Count; i++)
+                //{
+                //    for (int ii = 0; ii < NumberOfBins; ii++)
+                //    {
+                //        if (i == 0)
+                //        {
+                //            dataMngr.AddResults(signals[i].TimeStamps.FirstOrDefault(), "Histogram_" + i.ToString() + "_bc", signals[i].PMUName, signals[i].SignalName, re[i][ii], signals[i].TimeStamps.LastOrDefault());
+                //        }
+                //        else
+                //        {
+                //            dataMngr.AddResults(signals[i].TimeStamps.FirstOrDefault(), "Histogram_" + i.ToString(), signals[i].PMUName, signals[i].SignalName, re[i][ii], signals[i].TimeStamps.LastOrDefault());
+                //        }
+                //    }
+                //}
+                ////if (firstSignal)
+                ////{
+                ////    firstSignal = false;
+                ////}
+                startT = endT.AddSeconds(-WindowOverlap);
+                endT = startT.AddSeconds(WindowSize);
+            }
+            dataMngr.FinishedSignatures.Add("Histogram");
         }
 
         public override void ProcessNANData(Signal sig)
@@ -1082,7 +1450,7 @@ namespace AS.Config
                     {
                         rms = SignatureCalculations.RootMeanSquare(item.Data, RemoveMean);
                     }
-                    dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "RMS", item.PMUName, item.SignalName, rms, item.TimeStamps.LastOrDefault());
+                    dataMngr.AddResults(startT, "RMS", item.PMUName, item.SignalName, rms, endT);
 #if DEBUG
                     Console.WriteLine("Root Mean Squared Value:");
                     Console.WriteLine(rms);
@@ -1175,7 +1543,7 @@ namespace AS.Config
                     }
                     foreach (var re in fbrms)
                     {
-                        dataMngr.AddResults(item.TimeStamps.FirstOrDefault(), "Frequency Band RMS_" + re.Key, item.PMUName, item.SignalName, re.Value, item.TimeStamps.LastOrDefault());
+                        dataMngr.AddResults(startT, "Frequency Band RMS_" + re.Key, item.PMUName, item.SignalName, re.Value, endT);
 #if DEBUG
                         Console.WriteLine("Frequency Band Root Mean Squared Value: " + re.Key);
                         Console.WriteLine(re.Value);

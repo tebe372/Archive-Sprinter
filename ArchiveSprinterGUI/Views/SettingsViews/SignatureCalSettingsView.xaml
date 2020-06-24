@@ -17,6 +17,12 @@
             <DataTemplate x:Key="BasicSignatureView">
                 <local:BasicSignatureView/>
             </DataTemplate>
+            <DataTemplate x:Key="HistogramView">
+                <local:HistogramView/>
+            </DataTemplate>
+            <DataTemplate x:Key="PercentileView">
+                <local:PercentileView/>
+            </DataTemplate>
             <DataTemplate x:Key="RootMeanSquareView">
                 <local:RootMeanSquareView/>
             </DataTemplate>
@@ -29,6 +35,12 @@
                     <!--<DataTrigger Binding="{Binding Name}" Value="Mean">
                         <Setter Property="ContentTemplate" Value="{StaticResource BasicSignatureView}"/>
                     </DataTrigger>-->
+                    <DataTrigger Binding="{Binding SignatureName}" Value="Percentile">
+                        <Setter Property="ContentTemplate" Value="{StaticResource PercentileView}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding SignatureName}" Value="Histogram">
+                        <Setter Property="ContentTemplate" Value="{StaticResource HistogramView}"/>
+                    </DataTrigger>
                     <DataTrigger Binding="{Binding SignatureName}" Value="Root Mean Squared Value">
                         <Setter Property="ContentTemplate" Value="{StaticResource RootMeanSquareView}"/>
                     </DataTrigger>
