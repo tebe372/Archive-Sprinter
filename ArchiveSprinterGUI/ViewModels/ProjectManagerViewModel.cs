@@ -36,9 +36,9 @@ namespace ArchiveSprinterGUI.ViewModels
 
         private void _setupProjectTree()
         {
+            Projects = new ObservableCollection<ProjectViewModel>();
             if (_model.Projects.Count > 0)
             {
-                Projects = new ObservableCollection<ProjectViewModel>();
                 foreach (var prj in _model.Projects)
                 {
                     var newprj = new ProjectViewModel(prj);
