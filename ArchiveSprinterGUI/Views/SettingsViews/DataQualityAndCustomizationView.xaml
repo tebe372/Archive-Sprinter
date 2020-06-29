@@ -14,9 +14,6 @@
             <converters:AddCustomizationParameters x:Key="AddCustomizationParameters"/>
             <converters:SelectionStatusBackgroundConverter x:Key="SelectionStatusBackgroundConverter"/>
             <converters:ExpanderHeaderConverter x:Key="ExpanderHeaderConverter"/>
-            <DataTemplate x:Key="SubtractionCustomization">
-                <local:SubtractionCustomization/>
-            </DataTemplate>
             <DataTemplate x:Key="ZerosMissingDQFilterView">
                 <local:ZerosMissingDQFilterView/>
             </DataTemplate>
@@ -43,6 +40,18 @@
             </DataTemplate>
             <DataTemplate x:Key="WrappingFailureDQFilterView">
                 <local:WrappingFailureDQFilterView/>
+            </DataTemplate>
+            <DataTemplate x:Key="ScalarRepCustomization">
+                <local:ScalarRepCustomization/>
+            </DataTemplate>
+            <DataTemplate x:Key="AdditionCustomization">
+                <local:AdditionCustomization/>
+            </DataTemplate>
+            <DataTemplate x:Key="SubtractionCustomization">
+                <local:SubtractionCustomization/>
+            </DataTemplate>
+            <DataTemplate x:Key="MultiplicationCustomization">
+                <local:MultiplicationCustomization/>
             </DataTemplate>
             <Style x:Key="ProcessStepStyle" TargetType="ContentPresenter">
                 <Style.Triggers>
@@ -79,8 +88,17 @@
                     <DataTrigger Binding="{Binding Name}" Value="Angle Wrapping">
                         <Setter Property="ContentTemplate" Value="{StaticResource WrappingFailureDQFilterView}"/>
                     </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Scalar Repetition">
+                        <Setter Property="ContentTemplate" Value="{StaticResource ScalarRepCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Addition">
+                        <Setter Property="ContentTemplate" Value="{StaticResource AdditionCustomization}"/>
+                    </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Subtraction">
                         <Setter Property="ContentTemplate" Value="{StaticResource SubtractionCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Multiplication">
+                        <Setter Property="ContentTemplate" Value="{StaticResource MultiplicationCustomization}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

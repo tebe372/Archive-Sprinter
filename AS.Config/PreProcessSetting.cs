@@ -300,16 +300,12 @@ namespace AS.Config
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
             {
-                var type = signal.TypeAbbreviation;
-                if (type.Length == 1 && type == "F")
+                var name = signal.PMUName + "_" + signal.SignalName;
+                if (InputSignals.Contains(name))
                 {
-                    var name = signal.PMUName + "_" + signal.SignalName;
-                    if (InputSignals.Contains(name))
-                    {
-                        Filters.OutlierFilt(signal, StdDevMult);
-                        filteredSignal.Add(signal);
-                    }
-                }
+                    Filters.OutlierFilt(signal, StdDevMult);
+                    filteredSignal.Add(signal);
+                }               
             }
             return filteredSignal;
         }
@@ -326,21 +322,17 @@ namespace AS.Config
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
             {
-                var type = signal.TypeAbbreviation;
-                if (type.Length == 1 && type == "F")
+                var name = signal.PMUName + "_" + signal.SignalName;
+                if (InputSignals.Contains(name))
                 {
-                    var name = signal.PMUName + "_" + signal.SignalName;
-                    if (InputSignals.Contains(name))
-                    {
-                        Filters.StaleDQFilt(signal, StaleThresh, FlagAllByFreq);
-                        filteredSignal.Add(signal);
-                    }
+                    Filters.StaleDQFilt(signal, StaleThresh);
+                    filteredSignal.Add(signal);
                 }
             }
             return filteredSignal;
         }
-        public string StaleThresh { get; set; }
-        public bool FlagAllByFreq { get; set; }
+        public int StaleThresh { get; set; }
+        //public bool FlagAllByFreq { get; set; }
     }
     public class DataFrameDQFilt : Filter
     {
@@ -353,20 +345,17 @@ namespace AS.Config
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
             {
-                var type = signal.TypeAbbreviation;
-                if (type.Length == 1 && type == "F")
+                var name = signal.PMUName + "_" + signal.SignalName;
+                if (InputSignals.Contains(name))
                 {
-                    var name = signal.PMUName + "_" + signal.SignalName;
-                    if (InputSignals.Contains(name))
-                    {
-                        Filters.DataFrameDQFilt(signal, PercentBadThresh);
-                        filteredSignal.Add(signal);
-                    }
+                    filteredSignal.Add(signal);
                 }
             }
+            Filters.DataFrameDQFilt(filteredSignal, PercentBadThresh);
+
             return filteredSignal;
         }
-        public string PercentBadThresh { get; set; }
+        public int PercentBadThresh { get; set; }
     }
     public class PMUchanDQFilt : DataFrameDQFilt
     {
@@ -379,16 +368,12 @@ namespace AS.Config
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
             {
-                var type = signal.TypeAbbreviation;
-                if (type.Length == 1 && type == "F")
+                var name = signal.PMUName + "_" + signal.SignalName;
+                if (InputSignals.Contains(name))
                 {
-                    var name = signal.PMUName + "_" + signal.SignalName;
-                    if (InputSignals.Contains(name))
-                    {
-                        Filters.PMUchanDQFilt(signal, PercentBadThresh);
-                        filteredSignal.Add(signal);
-                    }
-                }
+                    Filters.PMUchanDQFilt(signal, PercentBadThresh);
+                    filteredSignal.Add(signal);
+                }                
             }
             return filteredSignal;
         }
@@ -404,48 +389,100 @@ namespace AS.Config
             //according to the input channels that is selected, call the actual function and process each signal.
             foreach (var signal in e)
             {
-                var type = signal.TypeAbbreviation;
-                if (type.Length == 1 && type == "F")
-                {
                     var name = signal.PMUName + "_" + signal.SignalName;
                     if (InputSignals.Contains(name))
                     {
-                        Filters.PMUallDQFilt(signal, PercentBadThresh);
                         filteredSignal.Add(signal);
                     }
-                }
             }
+            Filters.PMUallDQFilt(filteredSignal, PercentBadThresh);
             return filteredSignal;
         }
     }
-    public class WrappingFailureDQFilt : Filter
+    //public class WrappingFailureDQFilt : Filter
+    //{
+    //    public int FlagBit { get; set; }
+    //    public new string Name { get { return "Angle Wrapping"; } }
+    //    public override List<Signal> Process(List<Signal> e)
+    //    {
+    //        List<Signal> filteredSignal = new List<Signal>();
+    //        //do some parameter process
+    //        //according to the input channels that is selected, call the actual function and process each signal.
+    //        foreach (var signal in e)
+    //        {
+    //            var type = signal.TypeAbbreviation;
+    //            if (type.Length == 1 && type == "F")
+    //            {
+    //                var name = signal.PMUName + "_" + signal.SignalName;
+    //                if (InputSignals.Contains(name))
+    //                {
+    //                    Filters.WrappingFailureDQFilt(signal, AngleThresh);
+    //                    filteredSignal.Add(signal);
+    //                }
+    //            }
+    //        }
+    //        return filteredSignal;
+    //    }
+    //    public string AngleThresh { get; set; }
+    //}
+    public class ScalarRepCust : Customization
     {
-        public int FlagBit { get; set; }
-        public new string Name { get { return "Angle Wrapping"; } }
+        public new string Name { get => "Scalar Repetition"; }
+        public string Scalar { get; set; }
+        public string SignalName { get; set; }
+        public string TimeSourcePMU { get; set; }
+        public string Type { get; set; }
+        public string Unit { get; set; }
         public override List<Signal> Process(List<Signal> e)
         {
-            List<Signal> filteredSignal = new List<Signal>();
-            //do some parameter process
-            //according to the input channels that is selected, call the actual function and process each signal.
-            foreach (var signal in e)
-            {
-                var type = signal.TypeAbbreviation;
-                if (type.Length == 1 && type == "F")
-                {
-                    var name = signal.PMUName + "_" + signal.SignalName;
-                    if (InputSignals.Contains(name))
-                    {
-                        Filters.WrappingFailureDQFilt(signal, AngleThresh);
-                        filteredSignal.Add(signal);
-                    }
-                }
-            }
-            return filteredSignal;
+            List<Signal> customizedSignal = new List<Signal>();
+            ////find the 2 input channels according to the customer selection for the
+
+            ////validate the subtrahend and minuend in the ViewModel when user first select the signal
+
+            //var newSignal = new Signal(PMUName, SignalName);
+            //if (Subtrahend.TypeAbbreviation == Minuend.TypeAbbreviation)
+            //{
+            //    newSignal.TypeAbbreviation = Subtrahend.TypeAbbreviation;
+            //}
+            //else
+            //{
+            //    newSignal.TypeAbbreviation = "OTHER";
+            //}
+
+
+            //if (Subtrahend.Data.Count == Minuend.Data.Count && Subtrahend.Unit == Minuend.Unit)
+            //{
+            //    newSignal.Data = Customizations.SubtractionCustomization(Subtrahend.Data, Minuend.Data);
+            //    newSignal.SamplingRate = Subtrahend.SamplingRate;
+            //    newSignal.Unit = Subtrahend.Unit;
+            //    //flag?
+            //}
+            //else
+            //{
+            //    newSignal.Unit = "OTHER";
+            //    newSignal.Data = null;  //matlab set it to NaN
+            //    newSignal.SamplingRate = -1;
+            //    //flag?
+            //}
+            //e.Add(newSignal);
+            //customizedSignal.Add(newSignal);
+            return customizedSignal;
         }
-        public string AngleThresh { get; set; }
+    }
+    public class AdditionCust : Customization
+    {
+        public new string Name { get => "Addition"; }
+        public string SignalName { get; set; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
     }
     public class SubtractionCustomization : Customization
     {
+        public new string Name { get { return "Subtraction"; } }
         public Signal Subtrahend { get; set; }
         public Signal Minuend { get; set; }
         public string SignalName { get; set; } //validation of signal name and pmu name should have been done in the view model?
@@ -484,6 +521,16 @@ namespace AS.Config
             }
             e.Add(newSignal);
             customizedSignal.Add(newSignal);
+            return customizedSignal;
+        }
+    }
+    public class MultiplicationCust : Customization
+    {
+        public new string Name { get => "Multiplication"; }
+        public string SignalName { get; set; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
             return customizedSignal;
         }
     }

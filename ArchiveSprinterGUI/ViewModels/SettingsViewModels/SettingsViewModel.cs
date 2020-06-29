@@ -284,6 +284,8 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         [JsonIgnore]
         public List<SignatureCalMenu> SignatureList => _model.SignatureList;
         [JsonIgnore]
+        public Dictionary<string, List<string>> TypeUnitDictionary => _model.TypeUnitDictionary;
+        [JsonIgnore]
         public ICommand SignatureCalAdded { get; set; }
         private void _addASignatureStep(object obj)
         {

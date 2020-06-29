@@ -76,6 +76,7 @@
     <Compile Include="ConfigurationTest.cs" />
     <Compile Include="SettingsViewModelTest.cs" />
     <Compile Include="SignalInspectionTest.cs" />
+    <Compile Include="FilterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Data\ExData_20170203_000800.csv">

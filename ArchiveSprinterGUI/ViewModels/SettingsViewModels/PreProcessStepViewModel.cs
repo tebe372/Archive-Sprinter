@@ -330,11 +330,20 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 case "Entire PMU":
                     _model = new PMUallDQFilt();
                     break;
-                case "Angle Wrapping":
-                    _model = new WrappingFailureDQFilt();
+                //case "Angle Wrapping":
+                //    _model = new WrappingFailureDQFilt();
+                //    break;
+                case "Scalar Repetition":
+                    _model = new ScalarRepCust();
+                    break;
+                case "Addition":
+                    _model = new AdditionCust();
                     break;
                 case "Subtraction":
                     _model = new SubtractionCustomization();
+                    break;
+                case "Multiplication":
+                    _model = new MultiplicationCust();
                     break;
             }
 
@@ -351,12 +360,12 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             {
                 switch (Name)
                 {
-                    //case "Status Flags":
-                    //case "Zeros":
-                    //case "Missing":
-                    //case "Nominal Voltage":
-                    //case "Nominal Frequency":
-                    //    break;
+                    case "Scalar Repetition":
+
+                        break;
+                    case "Addition":
+
+                        break;
                     case "Subtraction":
                         // Set parameter
                         SetFocusedTextBox(signal); // if step is a customization, need to make up the output signal from input signal depends on type of customizaion

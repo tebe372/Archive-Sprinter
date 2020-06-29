@@ -106,6 +106,7 @@
     <Compile Include="Converters\HeaderConverters.cs" />
     <Compile Include="Converters\RadioButtonViewConverters.cs" />
     <Compile Include="Converters\SignalSelectionDropDownConverter.cs" />
+    <Compile Include="Converters\TypeUnitDictionaryConverter.cs" />
     <Compile Include="Converters\VisibleIfNonZeroConverter.cs" />
     <Compile Include="ViewModels\DataFilterViewModel.cs" />
     <Compile Include="ViewModels\ProjectManagerViewModel.cs" />
@@ -135,6 +136,15 @@
     </Compile>
     <Compile Include="Views\ProjectTreeView.xaml.cs">
       <DependentUpon>ProjectTreeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\AdditionCustomization.xaml.cs">
+      <DependentUpon>AdditionCustomization.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\MultiplicationCustomization.xaml.cs">
+      <DependentUpon>MultiplicationCustomization.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\ScalarRepCustomization.xaml.cs">
+      <DependentUpon>ScalarRepCustomization.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsViews\customizationViews\SubtractionCustomization.xaml.cs">
       <DependentUpon>SubtractionCustomization.xaml</DependentUpon>
@@ -266,6 +276,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\ProjectTreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\customizationViews\AdditionCustomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\customizationViews\MultiplicationCustomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\customizationViews\ScalarRepCustomization.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
