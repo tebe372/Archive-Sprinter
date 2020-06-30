@@ -351,11 +351,23 @@ namespace AS.Config
                     filteredSignal.Add(signal);
                 }
             }
-            Filters.DataFrameDQFilt(filteredSignal, PercentBadThresh);
+            if (KeepDiffPMUSeparate)
+            {
+                var groupbyPMU = filteredSignal.GroupBy(x => x.PMUName).ToDictionary(y => y.Key, y => y.ToList());
+                foreach (var g in groupbyPMU)
+                {
+                    Filters.DataFrameDQFilt(g.Value, PercentBadThresh);
+                }
+            }
+            else
+            {
+                Filters.DataFrameDQFilt(filteredSignal, PercentBadThresh);
+            }
 
             return filteredSignal;
         }
-        public int PercentBadThresh { get; set; }
+        public double PercentBadThresh { get; set; }
+        public bool KeepDiffPMUSeparate { get; set; }
     }
     public class PMUchanDQFilt : DataFrameDQFilt
     {
@@ -395,7 +407,18 @@ namespace AS.Config
                         filteredSignal.Add(signal);
                     }
             }
-            Filters.PMUallDQFilt(filteredSignal, PercentBadThresh);
+            if (KeepDiffPMUSeparate)
+            {
+                var groupbyPMU = filteredSignal.GroupBy(x => x.PMUName).ToDictionary(y => y.Key, y => y.ToList());
+                foreach (var g in groupbyPMU)
+                {
+                    Filters.PMUallDQFilt(g.Value, PercentBadThresh);
+                }
+            }
+            else
+            {
+                Filters.PMUallDQFilt(filteredSignal, PercentBadThresh);
+            }
             return filteredSignal;
         }
     }

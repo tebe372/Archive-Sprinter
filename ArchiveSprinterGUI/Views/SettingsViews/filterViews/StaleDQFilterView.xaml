@@ -27,9 +27,9 @@
             </Grid.RowDefinitions>
             <Label Grid.Row="0" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Threshold (Samples):" HorizontalAlignment="Left"/>
             <TextBox Grid.Row="0" Grid.Column="1" Margin="0,1" Width="120" Text="{Binding StaleThresh}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-            <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,1" VerticalAlignment="Center" Content="Flag all PMU measurements if frequency is stale?" HorizontalAlignment="Left"/>
-            <CheckBox Grid.Row="1" Grid.Column="1" Margin="0,1" Width="15" IsChecked="{Binding FlagAllByFreq}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Right"/>
-            <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,1" Width="50" Text="" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <!--<Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,1" VerticalAlignment="Center" Content="Flag all PMU measurements if frequency is stale?" HorizontalAlignment="Left"/>
+            <CheckBox Grid.Row="1" Grid.Column="1" Margin="0,1" Width="15" IsChecked="{Binding FlagAllByFreq}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Right"/>-->
+            <TextBlock Grid.Row="0" Grid.Column="2" Margin="0,1" Width="50" Text="" VerticalAlignment="Center" HorizontalAlignment="Left"/>
         </Grid>
     </Grid>
 </UserControl>

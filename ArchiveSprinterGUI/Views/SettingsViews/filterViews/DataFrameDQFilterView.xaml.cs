@@ -18,9 +18,9 @@ namespace ArchiveSprinterGUI.Views.SettingsViews
     /// <summary>
     /// Interaction logic for DataFramePMUchanDQFilterView.xaml
     /// </summary>
-    public partial class DataFramePMUchanDQFilterView : UserControl
+    public partial class DataFrameDQFilterView : UserControl
     {
-        public DataFramePMUchanDQFilterView()
+        public DataFrameDQFilterView()
         {
             InitializeComponent();
         }

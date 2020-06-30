@@ -79,7 +79,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
                 {
                     var m = _model as VoltPhasorFilt;
-                    if (m.NomVoltage != v)
+                    if (m != null && m.NomVoltage != v)
                     {
                         m.NomVoltage = v;
                         OnPropertyChanged();
@@ -106,7 +106,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
                 {
                     var m = _model as VoltPhasorFilt;
-                    if (m.VoltMin != v)
+                    if (m != null && m.VoltMin != v)
                     {
                         m.VoltMin = v;
                         OnPropertyChanged();
@@ -133,7 +133,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
                 {
                     var m = _model as VoltPhasorFilt;
-                    if (m.VoltMax != v)
+                    if (m != null && m.VoltMax != v)
                     {
                         m.VoltMax = v;
                         OnPropertyChanged();
@@ -160,7 +160,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
                 {
                     var m = _model as FreqFilt;
-                    if (m.FreqMaxChan != v)
+                    if (m != null && m.FreqMaxChan != v)
                     {
                         m.FreqMaxChan = v;
                         OnPropertyChanged();
@@ -187,7 +187,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
                 {
                     var m = _model as FreqFilt;
-                    if (m.FreqMinChan != v)
+                    if (m != null && m.FreqMinChan != v)
                     {
                         m.FreqMinChan = v;
                         OnPropertyChanged();
@@ -214,7 +214,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
                 {
                     var m = _model as FreqFilt;
-                    if (m.FreqPctChan != v)
+                    if (m != null && m.FreqPctChan != v)
                     {
                         m.FreqPctChan = v;
                         OnPropertyChanged();
@@ -241,7 +241,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
                 {
                     var m = _model as FreqFilt;
-                    if (m.FreqMinSamp != v)
+                    if (m != null && m.FreqMinSamp != v)
                     {
                         m.FreqMinSamp = v;
                         OnPropertyChanged();
@@ -268,11 +268,126 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
                 {
                     var m = _model as FreqFilt;
-                    if (m.FreqMaxSamp != v)
+                    if (m != null && m.FreqMaxSamp != v)
                     {
                         m.FreqMaxSamp = v;
                         OnPropertyChanged();
                     }
+                }
+            }
+        }
+        public string StaleThresh
+        {
+            get
+            {
+                if (_model is StaleDQFilt)
+                {
+                    var m = _model as StaleDQFilt;
+                    return m.StaleThresh.ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && int.TryParse(value, out int v))
+                {
+                    var m = _model as StaleDQFilt;
+                    if (m != null && m.StaleThresh != v)
+                    {
+                        m.StaleThresh = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string StdDevMult
+        {
+            get
+            {
+                if (_model is OutlierFilt)
+                {
+                    var m = _model as OutlierFilt;
+                    return m.StdDevMult.ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && int.TryParse(value, out int v))
+                {
+                    var m = _model as OutlierFilt;
+                    if (m != null && m.StdDevMult != v)
+                    {
+                        m.StdDevMult = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public string PercentBadThresh
+        {
+            get
+            {
+                if (_model is DataFrameDQFilt)
+                {
+                    var m = _model as DataFrameDQFilt;
+                    return m.PercentBadThresh.ToString();
+                }
+                //else if (_model is PMUchanDQFilt)
+                //{
+                //    var m = _model as PMUchanDQFilt;
+                //    return m.PercentBadThresh.ToString();
+                //}
+                //else if (_model is PMUallDQFilt)
+                //{
+                //    var m = _model as PMUallDQFilt;
+                //    return m.PercentBadThresh.ToString();
+                //}
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value) && double.TryParse(value, out double v))
+                {
+                    var m = _model as DataFrameDQFilt;
+                    if (m != null && m.PercentBadThresh != v)
+                    {
+                        m.PercentBadThresh = v;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+        public bool KeepDiffPMUSeparate
+        {
+            get
+            {
+                if (_model is DataFrameDQFilt)
+                {
+                    var m = _model as DataFrameDQFilt;
+                    return m.KeepDiffPMUSeparate;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            set
+            {
+                var m = _model as DataFrameDQFilt;
+                if (m != null && m.KeepDiffPMUSeparate != value)
+                {
+                    m.KeepDiffPMUSeparate = value;
+                    OnPropertyChanged();
                 }
             }
         }

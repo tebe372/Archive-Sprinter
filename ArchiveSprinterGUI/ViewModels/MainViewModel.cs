@@ -110,9 +110,16 @@ namespace ArchiveSprinterGUI.ViewModels
             var numberOfDataWriters = SettingsVM.DataWriters.Count();
             _setupDataManager(numberOfDataWriters);
 
-            ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = true;
-            ProjectControlVM.CanRun = false;
-            _startAS(numberOfDataWriters);
+            if (numberOfDataWriters > 0 || SettingsVM.SignatureSettings.Count > 0)
+            {
+                ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = true;
+                ProjectControlVM.CanRun = false;
+                _startAS(numberOfDataWriters);
+            }
+            else
+            {
+                MessageBox.Show("Archive Sprinter didn't run as there's no signature need to be calculated and no data need to be written out.");
+            }
         }
 
         private async void _startAS(int numberOfDataWriters)

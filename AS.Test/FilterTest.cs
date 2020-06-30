@@ -90,6 +90,17 @@ namespace AS.Test
         [TestCase(0, 10, 1)]
         public void TestDataFrameDQFilter(int threshold, int falseCount, int row)
         {
+            signals = new List<Signal>();
+            for (int i = 1; i <= 10; i++)
+            {
+                var s = new Signal();
+                s.Data = new List<double>();
+                for (int ii = 1; ii <= 10; ii++)
+                {
+                    s.Data.Add(Math.Cos(i * i + ii * ii * ii + i + ii + i * ii) / (Math.Log(ii * i + i + ii) + ii) * ii);
+                }
+                signals.Add(s);
+            }
             foreach (var s in signals)
             {
                 Filters.OutlierFilt(s, 1);
@@ -113,6 +124,17 @@ namespace AS.Test
         [TestCase(30, new bool[] { false, false, false, false, false, false, false, false, false, false })]
         public void TestchanDQFilter(int threshold, bool[] containsTrue)
         {
+            signals = new List<Signal>();
+            for (int i = 1; i <= 10; i++)
+            {
+                var s = new Signal();
+                s.Data = new List<double>();
+                for (int ii = 1; ii <= 10; ii++)
+                {
+                    s.Data.Add(Math.Cos(i * i + ii * ii * ii + i + ii + i * ii) / (Math.Log(ii * i + i + ii) + ii) * ii);
+                }
+                signals.Add(s);
+            }
             NUnit.Framework.Assert.AreEqual(signals.Count, containsTrue.Length);
             foreach (var s in signals)
             {
@@ -128,6 +150,17 @@ namespace AS.Test
         [TestCase(40, false)]
         public void TestPMUallDQFilter(int threshold, bool containsTrue)
         {
+            signals = new List<Signal>();
+            for (int i = 1; i <= 10; i++)
+            {
+                var s = new Signal();
+                s.Data = new List<double>();
+                for (int ii = 1; ii <= 10; ii++)
+                {
+                    s.Data.Add(Math.Cos(i * i + ii * ii * ii + i + ii + i * ii) / (Math.Log(ii * i + i + ii) + ii) * ii);
+                }
+                signals.Add(s);
+            }
             foreach (var s in signals)
             {
                 Filters.OutlierFilt(s, 1);

@@ -224,7 +224,7 @@ namespace AS.ComputationManager.Calculations
             }
 
         }
-        public static void DataFrameDQFilt(List<Signal> ss, int percentBadThresh)
+        public static void DataFrameDQFilt(List<Signal> ss, double percentBadThresh)
         {
             int signalLength = ss.FirstOrDefault().Flags.Count;
             //if (ss.FirstOrDefault().ComplexData.Count > 0)
@@ -252,7 +252,7 @@ namespace AS.ComputationManager.Calculations
             }
         }
 
-        public static void PMUchanDQFilt(Signal s, int percentBadThresh)
+        public static void PMUchanDQFilt(Signal s, double percentBadThresh)
         {
             //if (s.Data.Count > 0)
             //{
@@ -282,7 +282,7 @@ namespace AS.ComputationManager.Calculations
             //}
         }
 
-        public static void PMUallDQFilt(List<Signal> ss, int percentBadThresh)
+        public static void PMUallDQFilt(List<Signal> ss, double percentBadThresh)
         {
             int signalLength = ss.FirstOrDefault().Flags.Count;
             var signalCount = ss.Count();

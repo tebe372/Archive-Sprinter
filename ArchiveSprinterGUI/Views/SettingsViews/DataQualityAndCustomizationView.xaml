@@ -32,8 +32,11 @@
             <DataTemplate x:Key="StaleDQFilterView">
                 <local:StaleDQFilterView/>
             </DataTemplate>
-            <DataTemplate x:Key="DataFramePMUchanDQFilterView">
-                <local:DataFramePMUchanDQFilterView/>
+            <DataTemplate x:Key="DataFrameDQFilterView">
+                <local:DataFrameDQFilterView/>
+            </DataTemplate>
+            <DataTemplate x:Key="PMUchanDQFilterView">
+                <local:PMUchanDQFilterView/>
             </DataTemplate>
             <DataTemplate x:Key="EntirePMUDQFilterView">
                 <local:EntirePMUDQFilterView/>
@@ -77,10 +80,10 @@
                         <Setter Property="ContentTemplate" Value="{StaticResource StaleDQFilterView}"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Data Frame">
-                        <Setter Property="ContentTemplate" Value="{StaticResource DataFramePMUchanDQFilterView}"/>
+                        <Setter Property="ContentTemplate" Value="{StaticResource DataFrameDQFilterView}"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Channel">
-                        <Setter Property="ContentTemplate" Value="{StaticResource DataFramePMUchanDQFilterView}"/>
+                        <Setter Property="ContentTemplate" Value="{StaticResource PMUchanDQFilterView}"/>
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Entire PMU">
                         <Setter Property="ContentTemplate" Value="{StaticResource EntirePMUDQFilterView}"/>

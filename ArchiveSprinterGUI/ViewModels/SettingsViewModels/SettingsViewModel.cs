@@ -615,6 +615,19 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                         newStep.FreqMaxSamp = pre.FreqMaxSamp;
                         newStep.FreqMinSamp = pre.FreqMinSamp;
                     }
+                    if (newStep.Model is OutlierFilt)
+                    {
+                        newStep.StdDevMult = pre.StdDevMult;
+                    }
+                    if (newStep.Model is StaleDQFilt)
+                    {
+                        newStep.StaleThresh = pre.StaleThresh;
+                    }
+                    if (newStep.Model is DataFrameDQFilt)
+                    {
+                        newStep.PercentBadThresh = pre.PercentBadThresh;
+                        newStep.KeepDiffPMUSeparate = pre.KeepDiffPMUSeparate;
+                    }
                     // take care of all input output signals
                     foreach (var sig in pre.InputChannels)
                     {

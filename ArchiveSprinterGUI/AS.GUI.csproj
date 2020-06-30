@@ -164,8 +164,8 @@
     <Compile Include="Views\SettingsViews\FilterListBox.xaml.cs">
       <DependentUpon>FilterListBox.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\SettingsViews\filterViews\DataFramePMUchanDQFilterView.xaml.cs">
-      <DependentUpon>DataFramePMUchanDQFilterView.xaml</DependentUpon>
+    <Compile Include="Views\SettingsViews\filterViews\DataFrameDQFilterView.xaml.cs">
+      <DependentUpon>DataFrameDQFilterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsViews\filterViews\EntirePMUDQFilterView.xaml.cs">
       <DependentUpon>EntirePMUDQFilterView.xaml</DependentUpon>
@@ -175,6 +175,9 @@
     </Compile>
     <Compile Include="Views\SettingsViews\filterViews\OutliersDQFilterView.xaml.cs">
       <DependentUpon>OutliersDQFilterView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\filterViews\PMUchanDQFilterView.xaml.cs">
+      <DependentUpon>PMUchanDQFilterView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsViews\filterViews\PMUOnlyFilterListBox.xaml.cs">
       <DependentUpon>PMUOnlyFilterListBox.xaml</DependentUpon>
@@ -315,7 +318,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SettingsViews\filterViews\DataFramePMUchanDQFilterView.xaml">
+    <Page Include="Views\SettingsViews\filterViews\DataFrameDQFilterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -328,6 +331,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsViews\filterViews\OutliersDQFilterView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\filterViews\PMUchanDQFilterView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

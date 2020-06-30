@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="ArchiveSprinterGUI.Views.SettingsViews.EntirePMUDQFilterView"
+﻿<UserControl x:Class="ArchiveSprinterGUI.Views.SettingsViews.DataFrameDQFilterView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -25,9 +25,9 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Label Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Threshold (%):" HorizontalAlignment="Left"/>
-            <TextBox Grid.Column="1" Margin="0,1" Width="120" Text="{Binding PercentBadThresh}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
-            <TextBlock Grid.Column="2" Margin="0,1" Width="50" Text="" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+            <Label Grid.Row="0" Grid.Column="0" Margin="0,1" Width="230" VerticalAlignment="Center" Content="Threshold (%):" HorizontalAlignment="Left"/>
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="0,1" Width="120" Text="{Binding PercentBadThresh}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Left"/>
+            <TextBlock Grid.Row="0" Grid.Column="2" Margin="0,1" Width="50" Text="" VerticalAlignment="Center" HorizontalAlignment="Left"/>
             <Label Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,1" VerticalAlignment="Center" Content="Keep Different PMU Separate?" HorizontalAlignment="Left"/>
             <CheckBox Grid.Row="1" Grid.Column="1" Margin="0,1" Width="15" IsChecked="{Binding KeepDiffPMUSeparate}" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Right"/>
             <TextBlock Grid.Row="1" Grid.Column="2" Margin="0,1" Width="50" Text="" VerticalAlignment="Center" HorizontalAlignment="Left"/>
