@@ -557,4 +557,141 @@ namespace AS.Config
             return customizedSignal;
         }
     }
+    public class DivisionCust : Customization
+    {
+        public new string Name { get => "Division"; }
+        public string SignalName { get; set; }
+        public string PMUName { get; set; }
+        public Signal Dividend { get; set; }
+        public Signal Divisor { get; set; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class ExponentialCust : Customization
+    {
+        public new string Name { get => "Exponential"; }
+        public string Exponent { get; set; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class SignReversalCust : Customization
+    {
+        public new string Name { get => "Sign Reversal"; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class AbsValCust : Customization
+    {
+        public new string Name { get => "Absolute Value"; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class RealComponentCust : Customization
+    {
+        public new string Name { get => "Real Component"; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class ImagComponentCust : Customization
+    {
+        public new string Name { get => "Imaginary Component"; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class AngleCust : Customization
+    {
+        public new string Name { get => "Angle Calculation"; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class ComplexConjCust : Customization
+    {
+        public new string Name { get => "Complex Conjugate"; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class CreatePhasorCust : Customization
+    {
+        public new string Name { get => "Phasor Creation"; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class PowerCalcCust : Customization
+    {
+        public new string Name { get => "Power Calculation"; }
+        public PowerType PowType { get; set; }
+        public bool IsFromPhasor { get; set; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class SpecifySignalTypeUnitCust : Customization
+    {
+        public new string Name { get => "Signal Type/Unit"; }
+        public Signal Input { get; set; }
+        public string SignalName { get; set; }
+        public string Type { get; set; }
+        public string Unit { get; set; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class MetricPrefixCust : Customization
+    {
+        public new string Name { get => "Metric Prefix"; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class AngleConversionCust : Customization
+    {
+        public new string Name { get => "Angle Conversion"; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
+    public class SignalReplicationCust : Customization
+    {
+        public new string Name { get => "Duplicate Signals"; }
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            return customizedSignal;
+        }
+    }
 }

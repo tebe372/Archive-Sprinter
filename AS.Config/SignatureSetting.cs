@@ -98,22 +98,22 @@ namespace AS.Config
         {
             if (sig.Data.Count > 0)
             {
-                bool nanAtBeginning = true;
+                bool nanAtEnd = true;
                 int nNan = 0;
                 bool nanFrag = false;
                 int beginIndex = 0;                             // 1 before the beginning of a NAN sequence.
                 int endIndex = 0;                               // 1 after the end of a NAN sequence.
                 for (int i = sig.Data.Count - 1; i >= 0; i--)   // going backwards as we need to remove points at the beginning and end if there's NAN.
                 {
-                    if (double.IsNaN(sig.Data[i]) && nanAtBeginning)
+                    if (double.IsNaN(sig.Data[i]) && nanAtEnd)
                     {
                         sig.Data.RemoveAt(i);
                     }
                     else
                     {
-                        if (nanAtBeginning)
+                        if (nanAtEnd)
                         {
-                            nanAtBeginning = false;
+                            nanAtEnd = false;
                         }
                         if (double.IsNaN(sig.Data[i]))
                         {
@@ -699,11 +699,11 @@ namespace AS.Config
                         if (OmitNan)
                         {
                             ProcessNANDataInPair(signals[i], signals[ii]);
-                            co = SignatureCalculations.CorrelationCoeff(signals[i].Data, signals[ii].Data);
+                            co = SignatureCalculations.Covariance(signals[i].Data, signals[ii].Data);
                         }
                         else
                         {
-                            co = SignatureCalculations.CorrelationCoeff(signals[i].Data, signals[ii].Data);
+                            co = SignatureCalculations.Covariance(signals[i].Data, signals[ii].Data);
                         }
                         dataMngr.AddResults(startT, "Covariance", signals[i].PMUName + "&" + signals[ii].PMUName, signals[i].SignalName + "&" + signals[ii].SignalName, co, endT);
 

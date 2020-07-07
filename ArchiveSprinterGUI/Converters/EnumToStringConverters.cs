@@ -91,4 +91,68 @@ namespace ArchiveSprinterGUI.Converters
             }
         }
     }
+    public class EnumToStringConverter3 : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            switch (value)
+            {
+                case PowerType.P:
+                    {
+                        return "Active";
+                    }
+
+                case PowerType.S:
+                    {
+                        return "Apparent";
+                    }
+
+                case PowerType.CP:
+                    {
+                        return "Complex";
+                    }
+
+                case PowerType.Q:
+                    {
+                        return "Reactive";
+                    }
+
+                default:
+                    {
+                        throw new Exception("Power type not valid!");
+                    }
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            switch (value)
+            {
+                case "Reactive":
+                    {
+                        return PowerType.Q;
+                    }
+
+                case "Apparent":
+                    {
+                        return PowerType.S;
+                    }
+
+                case "Complex":
+                    {
+                        return PowerType.CP;
+                    }
+
+                case "Active":
+                    {
+                        return PowerType.P;
+                    }
+
+                default:
+                    {
+                        throw new Exception("Enum type not valid!");
+                    }
+            }
+        }
+    }
 }

@@ -56,6 +56,33 @@
             <DataTemplate x:Key="MultiplicationCustomization">
                 <local:MultiplicationCustomization/>
             </DataTemplate>
+            <DataTemplate x:Key="DivisionCustomization">
+                <local:DivisionCustomization/>
+            </DataTemplate>
+            <DataTemplate x:Key="ExponentCustomization">
+                <local:ExponentCustomization/>
+            </DataTemplate>
+            <DataTemplate x:Key="UnaryCustomization">
+                <local:UnaryCustomization/>
+            </DataTemplate>
+            <DataTemplate x:Key="CreatePhasorCustomization">
+                <local:CreatePhasorCustomization/>
+            </DataTemplate>
+            <DataTemplate x:Key="PowerCalculationsCustomization">
+                <local:PowerCalculationsCustomization/>
+            </DataTemplate>
+            <DataTemplate x:Key="SpecifySignalTypeUnitCustomization">
+                <local:SpecifySignalTypeUnitCustomization/>
+            </DataTemplate>
+            <DataTemplate x:Key="MetricPrefixCustomization">
+                <local:MetricPrefixCustomization/>
+            </DataTemplate>
+            <DataTemplate x:Key="AngleConversionCustomization">
+                <local:AngleConversionCustomization/>
+            </DataTemplate>
+            <DataTemplate x:Key="SignalReplicationCustomization">
+                <local:SignalReplicationCustomization/>
+            </DataTemplate>
             <Style x:Key="ProcessStepStyle" TargetType="ContentPresenter">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Name}" Value="Status Flags">
@@ -102,6 +129,48 @@
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Multiplication">
                         <Setter Property="ContentTemplate" Value="{StaticResource MultiplicationCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Division">
+                        <Setter Property="ContentTemplate" Value="{StaticResource DivisionCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Exponential">
+                        <Setter Property="ContentTemplate" Value="{StaticResource ExponentCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Sign Reversal">
+                        <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Absolute Value">
+                        <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Real Component">
+                        <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Imaginary Component">
+                        <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Angle Calculation">
+                        <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Complex Conjugate">
+                        <Setter Property="ContentTemplate" Value="{StaticResource UnaryCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Phasor Creation">
+                        <Setter Property="ContentTemplate" Value="{StaticResource CreatePhasorCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Power Calculation">
+                        <Setter Property="ContentTemplate" Value="{StaticResource PowerCalculationsCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Signal Type/Unit">
+                        <Setter Property="ContentTemplate" Value="{StaticResource SpecifySignalTypeUnitCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Metric Prefix">
+                        <Setter Property="ContentTemplate" Value="{StaticResource MetricPrefixCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Angle Conversion">
+                        <Setter Property="ContentTemplate" Value="{StaticResource AngleConversionCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="Duplicate Signals">
+                        <Setter Property="ContentTemplate" Value="{StaticResource SignalReplicationCustomization}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

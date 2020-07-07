@@ -460,6 +460,48 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 case "Multiplication":
                     _model = new MultiplicationCust();
                     break;
+                case "Division":
+                    _model = new DivisionCust(); 
+                    break;
+                case "Exponential":
+                    _model = new ExponentialCust(); 
+                    break;
+                case "Sign Reversal":
+                    _model = new SignReversalCust();
+                    break;
+                case "Absolute Value":
+                    _model = new AbsValCust();
+                    break;
+                case "Real Component":
+                    _model = new RealComponentCust();
+                    break;
+                case "Imaginary Component":
+                    _model = new ImagComponentCust();
+                    break;
+                case "Angle Calculation":
+                    _model = new AngleCust();
+                    break;
+                case "Complex Conjugate":
+                    _model = new ComplexConjCust();
+                    break;
+                case "Phasor Creation":
+                    _model = new CreatePhasorCust();
+                    break;
+                case "Power Calculation":
+                    _model = new PowerCalcCust();
+                    break;
+                case "Signal Type/Unit":
+                    _model = new SpecifySignalTypeUnitCust();
+                    break;
+                case "Metric Prefix":
+                    _model = new MetricPrefixCust();
+                    break;
+                case "Angle Conversion":
+                    _model = new AngleConversionCust();
+                    break;
+                case "Duplicate Signals":
+                    _model = new SignalReplicationCust();
+                    break;
             }
 
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace AS.Utilities
 {
@@ -30,5 +31,8 @@ namespace AS.Utilities
                                                                         "RoyalBlue",
                                                                         "LimeGreen"
         };
+
+        public static Brush HighlightColor = new System.Windows.Media.SolidColorBrush(Colors.Cornsilk);
+        public static Brush WhiteColor = new System.Windows.Media.SolidColorBrush(Colors.White);
     }
 }

@@ -81,7 +81,7 @@ namespace AS.ComputationManager.Calculations
             /// kurtosis of data (a measure of the tailedness - the sharpness of the peak - of the pdf)
             /// return a single double value
             /// Returns NaN if data has less than four entries or if any entry is NaN
-            return Statistics.Kurtosis(data);
+            return Statistics.PopulationKurtosis(data) + 3;
         }
 
         public static double Skewness(List<double> data)

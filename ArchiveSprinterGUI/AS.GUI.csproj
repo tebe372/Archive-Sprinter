@@ -140,14 +140,41 @@
     <Compile Include="Views\SettingsViews\customizationViews\AdditionCustomization.xaml.cs">
       <DependentUpon>AdditionCustomization.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\AngleConversionCustomization.xaml.cs">
+      <DependentUpon>AngleConversionCustomization.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\CreatePhasorCustomization.xaml.cs">
+      <DependentUpon>CreatePhasorCustomization.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\DivisionCustomization.xaml.cs">
+      <DependentUpon>DivisionCustomization.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\ExponentCustomization.xaml.cs">
+      <DependentUpon>ExponentCustomization.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\MetricPrefixCustomization.xaml.cs">
+      <DependentUpon>MetricPrefixCustomization.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsViews\customizationViews\MultiplicationCustomization.xaml.cs">
       <DependentUpon>MultiplicationCustomization.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\PowerCalculationsCustomization.xaml.cs">
+      <DependentUpon>PowerCalculationsCustomization.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsViews\customizationViews\ScalarRepCustomization.xaml.cs">
       <DependentUpon>ScalarRepCustomization.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\SignalReplicationCustomization.xaml.cs">
+      <DependentUpon>SignalReplicationCustomization.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\SpecifySignalTypeUnitCustomization.xaml.cs">
+      <DependentUpon>SpecifySignalTypeUnitCustomization.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsViews\customizationViews\SubtractionCustomization.xaml.cs">
       <DependentUpon>SubtractionCustomization.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\UnaryCustomization.xaml.cs">
+      <DependentUpon>UnaryCustomization.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsViews\DataQualityAndCustomizationView.xaml.cs">
       <DependentUpon>DataQualityAndCustomizationView.xaml</DependentUpon>
@@ -286,7 +313,31 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SettingsViews\customizationViews\AngleConversionCustomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\customizationViews\CreatePhasorCustomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\customizationViews\DivisionCustomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\customizationViews\ExponentCustomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\customizationViews\MetricPrefixCustomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SettingsViews\customizationViews\MultiplicationCustomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\customizationViews\PowerCalculationsCustomization.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -294,7 +345,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SettingsViews\customizationViews\SignalReplicationCustomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\customizationViews\SpecifySignalTypeUnitCustomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\SettingsViews\customizationViews\SubtractionCustomization.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\customizationViews\UnaryCustomization.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

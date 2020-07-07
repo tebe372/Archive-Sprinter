@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ArchiveSprinterGUI.ViewModels.SettingsViewModels;
+using AS.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,24 +14,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using ArchiveSprinterGUI.ViewModels.SettingsViewModels;
-using AS.Utilities;
 using Xceed.Wpf.Toolkit;
 
 namespace ArchiveSprinterGUI.Views.SettingsViews
 {
     /// <summary>
-    /// Interaction logic for SubtractionCustomization.xaml
+    /// Interaction logic for DivisionCustomization.xaml
     /// </summary>
-    public partial class SubtractionCustomization : UserControl
+    public partial class DivisionCustomization : UserControl
     {
-        public SubtractionCustomization()
+        public DivisionCustomization()
         {
             InitializeComponent();
         }
-
         private void MinuendOrDividentTextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
-        {            
+        {
             ((PreProcessStepViewModel)((TextBox)sender).DataContext).CurrentCursor = "Minuend";
             var s = sender as WatermarkTextBox;
             StackPanel p = s.Parent as StackPanel;
@@ -39,7 +38,7 @@ namespace ArchiveSprinterGUI.Views.SettingsViews
                 {
                     WatermarkTextBox b = item as WatermarkTextBox;
                     b.Background = Utility.HighlightColor;
-                } 
+                }
             }
         }
 
@@ -70,7 +69,6 @@ namespace ArchiveSprinterGUI.Views.SettingsViews
                     b.Background = Utility.WhiteColor;
                 }
             }
-
         }
 
         private void SubtrahendOrDivisorTextBoxLostFocus(object sender, RoutedEventArgs e)
@@ -86,6 +84,5 @@ namespace ArchiveSprinterGUI.Views.SettingsViews
                 }
             }
         }
-
     }
 }

@@ -310,13 +310,24 @@ namespace ArchiveSprinterGUI.ViewModels
                         }
                         filteredSignal = new List<Signal>();
                     }
+                    List<Signal> sigs = null;
                     try
                     {
-                        item.Model.Process(e);
+                        sigs = item.Model.Process(e);
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message);
+                    }
+                    if (sigs != null)
+                    {
+                        foreach (var sig in sigs)
+                        {
+                            if (!filteredSignal.Contains(sig))
+                            {
+                                filteredSignal.Add(sig);
+                            }
+                        }
                     }
                 }
                 if (item.Model is Filter)

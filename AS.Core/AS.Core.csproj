@@ -57,6 +57,7 @@
     <Compile Include="Converters\BooleanVisibilityConverters.cs" />
     <Compile Include="Converters\ColorToBrushConverter.cs" />
     <Compile Include="Converters\InverseBooleanConverter.cs" />
+    <Compile Include="Converters\MultipleParametersConverter.cs" />
     <Compile Include="Converters\SelectionStatusBackgroundConverter.cs" />
     <Compile Include="Models\EnumDefinitions.cs" />
     <Compile Include="Models\Legend.cs" />
