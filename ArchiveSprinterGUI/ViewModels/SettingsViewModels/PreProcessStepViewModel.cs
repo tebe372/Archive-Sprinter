@@ -527,7 +527,51 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                         // Set parameter
                         SetFocusedTextBox(signal); // if step is a customization, need to make up the output signal from input signal depends on type of customizaion
                         break;
+                    case "Multiplication":
 
+                        break;
+                    case "Division":
+
+                        break;
+                    case "Exponential":
+
+                        break;
+                    case "Sign Reversal":
+
+                        break;
+                    case "Absolute Value":
+
+                        break;
+                    case "Real Component":
+
+                        break;
+                    case "Imaginary Component":
+
+                        break;
+                    case "Angle Calculation":
+
+                        break;
+                    case "Complex Conjugate":
+
+                        break;
+                    case "Phasor Creation":
+
+                        break;
+                    case "Power Calculation":
+
+                        break;
+                    case "Signal Type/Unit":
+
+                        break;
+                    case "Metric Prefix":
+
+                        break;
+                    case "Angle Conversion":
+
+                        break;
+                    case "Duplicate Signals":
+
+                        break;
                 }
             }
         }

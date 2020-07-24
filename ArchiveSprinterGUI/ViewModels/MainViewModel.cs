@@ -135,9 +135,9 @@ namespace ArchiveSprinterGUI.ViewModels
             }
             //data.Start();
             // call another function that start the signature calculation, might be the computation/data manager, on a thread too.
-            while (_numberOfFilesRead <= 1)
+            while (_numberOfFilesRead < 1 && !DataMngr.DataCompleted)
             {
-                Thread.Sleep(500);
+                Thread.Sleep(1000);
             }
             if (numberOfDataWriters > 0)
             {

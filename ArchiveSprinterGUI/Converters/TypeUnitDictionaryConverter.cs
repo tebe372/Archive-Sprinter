@@ -13,9 +13,13 @@ namespace ArchiveSprinterGUI.Converters
     {
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            var key = (string)values[1];
+            string key = null;
+            if (values[1] != DependencyProperty.UnsetValue)
+            {
+                key = (string)values[1];
+            }
             var dict = (Dictionary<string, List<string>>)values[0];
-            if ((key) is string && !string.IsNullOrEmpty(key) && (dict) is Dictionary<string, List<string>>)
+            if (key is string && !string.IsNullOrEmpty(key) && (dict) is Dictionary<string, List<string>>)
                 return dict[key];
             else
                 return DependencyProperty.UnsetValue;

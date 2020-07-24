@@ -149,9 +149,9 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 //OnPropertyChanged();
             }
         }
-        private void _stepSelectedToEdit(object obj)
+        private void _stepSelectedToEdit(PreProcessStepViewModel step)
         {
-            PreProcessStepViewModel step = obj as PreProcessStepViewModel;
+            //PreProcessStepViewModel step = obj as PreProcessStepViewModel;
             if (SelectedStep != step)
             {
                 if (SelectedStep != null)
