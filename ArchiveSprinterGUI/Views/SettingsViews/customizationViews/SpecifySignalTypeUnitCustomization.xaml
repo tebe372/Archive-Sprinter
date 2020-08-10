@@ -30,19 +30,19 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <Label Grid.Column="1" Margin="0,2" Width="120" VerticalAlignment="Center" Content="Custom Signal:" HorizontalAlignment="Left" ToolTip="{Binding ToolTip}"/>
-            <xtlkt:WatermarkTextBox Watermark="Enter Custom Signal Name" ToolTip="Please enter custom signal name" Text="{Binding OutputChannels[0].SignalName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" HorizontalContentAlignment="Right" Margin="8"/>
+            <xtlkt:WatermarkTextBox Watermark="Enter Custom Signal Name" ToolTip="Please enter custom signal name" Text="{Binding SignalName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" HorizontalContentAlignment="Right" Margin="8"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <Label Grid.Column="1" Margin="0,2" Width="120" VerticalAlignment="Center" Content="Signal Type:" HorizontalAlignment="Left" ToolTip="{Binding ToolTip}"/>
-            <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" HorizontalContentAlignment="Right" Margin="8" SelectedValue="{Binding OutputChannels[0].TypeAbbreviation}" utility:ComboBoxItemsSourceDecorator.ItemsSource="{Binding Path=DataContext.DataConfigure.TypeUnitDictionary, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType=UserControl}}" SelectedValuePath="Key" DisplayMemberPath="Key"/>
+            <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" HorizontalContentAlignment="Right" Margin="8" SelectedValue="{Binding TypeAbbreviation}" utility:ComboBoxItemsSourceDecorator.ItemsSource="{Binding Path=DataContext.TypeUnitDictionary, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType=UserControl}}" SelectedValuePath="Key" DisplayMemberPath="Key"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <Label Grid.Column="1" Margin="0,2" Width="120" VerticalAlignment="Center" Content="Signal Unit:" HorizontalAlignment="Left" ToolTip="{Binding ToolTip}"/>
-            <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" HorizontalContentAlignment="Right" Margin="8" SelectedValue="{Binding OutputChannels[0].Unit}" >
+            <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" HorizontalContentAlignment="Right" Margin="8" SelectedValue="{Binding Unit}" >
                 <utility:ComboBoxItemsSourceDecorator.ItemsSource>
                     <MultiBinding Converter="{StaticResource TypeUnitDictionaryConverter}">
                         <Binding Path="DataContext.TypeUnitDictionary" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType=UserControl}"/>
-                        <Binding Path="OutputChannels[0].TypeAbbreviation"/>
+                        <Binding Path="TypeAbbreviation"/>
                     </MultiBinding>
                 </utility:ComboBoxItemsSourceDecorator.ItemsSource>
             </ComboBox>

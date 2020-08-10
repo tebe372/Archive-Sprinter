@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -46,16 +47,45 @@ namespace AS.IO
                 var orderedSignal = signals.OrderBy(x => x.PMUName);
                 foreach (var signal in orderedSignal)
                 {
-                    data.NameRowList.Add(signal.SignalName);
-                    data.TypeRowList.Add(_typeConverter(signal.TypeAbbreviation));                    
-                    _unitConverter(signal.Data, signal.Unit, out Vector<double> dataInVector, out string unit);
-                    data.UnitRowList.Add(unit);
-                    data.PMUList.Add(signal.PMUName);
-                    data.Data = data.Data.InsertColumn(data.Data.ColumnCount, dataInVector);
+                    if (signal.Data.Count > 0)
+                    {
+                        data.NameRowList.Add(signal.SignalName);
+                        data.TypeRowList.Add(_typeConverter(signal.TypeAbbreviation));
+                        data.PMUList.Add(signal.PMUName);
+                        _unitConverter(signal.Data, signal.Unit, out Vector<double> dataInVector, out string unit);
+                        data.UnitRowList.Add(unit);
+                        data.Data = data.Data.InsertColumn(data.Data.ColumnCount, dataInVector);
+                    }
+                    else
+                    {
+                        data.NameRowList.Add(signal.SignalName);
+                        data.TypeRowList.Add(_typeConverter(signal.TypeAbbreviation));
+                        data.PMUList.Add(signal.PMUName);
+                        data.UnitRowList.Add("complexReal");
+                        _splitComplexNumberReal(signal.ComplexData, out Vector<double> dataInVector);
+                        data.Data = data.Data.InsertColumn(data.Data.ColumnCount, dataInVector);
+                        data.NameRowList.Add(signal.SignalName);
+                        data.TypeRowList.Add(_typeConverter(signal.TypeAbbreviation));
+                        data.PMUList.Add(signal.PMUName);
+                        data.UnitRowList.Add("complexImag");
+                        _splitComplexNumberImag(signal.ComplexData, out Vector<double> dataInVectorImag);
+                        data.Data = data.Data.InsertColumn(data.Data.ColumnCount, dataInVectorImag);
+                    }
                 }
             }
             return data;
         }
+
+        private void _splitComplexNumberImag(List<Complex> complexData, out Vector<double> dataInVector)
+        {
+            dataInVector = Vector<double>.Build.Dense(complexData.Select(x => x.Imaginary).ToArray());
+        }
+
+        private void _splitComplexNumberReal(List<Complex> complexData, out Vector<double> dataInVector)
+        {
+            dataInVector = Vector<double>.Build.Dense(complexData.Select(x => x.Real).ToArray());
+        }
+
         private void _unitConverter(List<double> data, string sgl, out Vector<double> convertedData, out string unit)
         {
             switch (sgl)

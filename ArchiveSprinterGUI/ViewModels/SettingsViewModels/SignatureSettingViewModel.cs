@@ -139,7 +139,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
             }
         }
 
-        internal void GetSamplingRAte()
+        internal void GetSamplingRate()
         {
             _model.SamplingRate = InputChannels.FirstOrDefault().SamplingRate;
         }

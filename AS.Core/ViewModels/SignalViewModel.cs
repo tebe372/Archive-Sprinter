@@ -30,11 +30,11 @@ namespace AS.Core.ViewModels
         }
 
         private Signal _model;
-        //[JsonIgnore]
-        //public Signal Model
-        //{
-        //    get { return _model; }
-        //}
+        [JsonIgnore]
+        public Signal Model
+        {
+            get { return _model; }
+        }
 
         [JsonIgnore]
         public bool IsChecked
@@ -52,17 +52,25 @@ namespace AS.Core.ViewModels
         public string SignalName
         {
             get { return _model.SignalName; }
-            set { _model.SignalName = value; }
+            set 
+            { 
+                _model.SignalName = value;
+                OnPropertyChanged();
+            }
         }
-        [JsonIgnore]
-        public string Type
-        {
-            get { return _model.TypeAbbreviation; }
-        }
-        [JsonIgnore]
+        //[JsonIgnore]
+        //public string Type
+        //{
+        //    get { return _model.TypeAbbreviation; }
+        //}
         public string Unit
         {
             get { return _model.Unit; }
+            set 
+            { 
+                _model.Unit = value;
+                OnPropertyChanged();
+            }
         }
         [JsonIgnore]
         public List<SignalTree> SignalTreeContained { get; set; } = new List<SignalTree>();
@@ -75,13 +83,21 @@ namespace AS.Core.ViewModels
         [JsonIgnore]
         public string TypeAbbreviation 
         {
-            set { _model.TypeAbbreviation = value; }
-            get { return _model.TypeAbbreviation; } 
+            get { return _model.TypeAbbreviation; }
+            set 
+            { 
+                _model.TypeAbbreviation = value;
+                OnPropertyChanged();
+            }
         }
         public string PMUName
         {
             get { return _model.PMUName; }
-            set { _model.PMUName = value; }
+            set 
+            { 
+                _model.PMUName = value;
+                OnPropertyChanged();
+            }
         }
         [JsonIgnore]
         public List<double> Data

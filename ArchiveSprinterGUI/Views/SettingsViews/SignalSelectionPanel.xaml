@@ -27,7 +27,7 @@
                 </MultiBinding>
             </ComboBox.ItemsSource>
         </ComboBox>
-        <TreeView Grid.Row="2" Margin="2">
+        <TreeView Grid.Row="2" Margin="2" Visibility="{Binding SignalSelectionTreeViewVisibility}">
             <TreeView.Style>
                 <Style TargetType="{x:Type TreeView}">
                     <Style.Triggers>

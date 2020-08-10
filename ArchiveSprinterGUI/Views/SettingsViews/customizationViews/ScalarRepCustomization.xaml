@@ -21,7 +21,7 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <Label Margin="0,2" Width="120" VerticalAlignment="Center" Content="Custom Signal:" HorizontalAlignment="Left" ToolTip="{Binding ToolTip}"/>
-            <xtlkt:WatermarkTextBox Watermark="Enter Custom Signal Name" Text="{Binding OutputChannels[0].SignalName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" HorizontalContentAlignment="Right" Margin="8"/>
+            <xtlkt:WatermarkTextBox Watermark="Enter Custom Signal Name" Text="{Binding SignalName, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" HorizontalContentAlignment="Right" Margin="8"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <Label Margin="0,2" Width="120" VerticalAlignment="Center" Content="Scalar:" HorizontalAlignment="Left" ToolTip="{Binding ToolTip}"/>
@@ -29,22 +29,22 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <Label Margin="0,2" Width="120" VerticalAlignment="Center" Content="Signal Type:" HorizontalAlignment="Left" ToolTip="{Binding ToolTip}"/>
-            <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" HorizontalContentAlignment="Right" Margin="8" SelectedValue="{Binding Type}" SelectedValuePath="Key" utility:ComboBoxItemsSourceDecorator.ItemsSource="{Binding Path=DataContext.DataConfigure.TypeUnitDictionary, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType=UserControl}}" DisplayMemberPath="Key"/>
+            <ComboBox VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" HorizontalContentAlignment="Right" Margin="8" SelectedValue="{Binding TypeAbbreviation}" SelectedValuePath="Key" utility:ComboBoxItemsSourceDecorator.ItemsSource="{Binding Path=DataContext.TypeUnitDictionary, RelativeSource={RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType=UserControl}}" DisplayMemberPath="Key"/>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <Label Margin="0,2" Width="120" VerticalAlignment="Center" Content="Signal Unit:" HorizontalAlignment="Left" ToolTip="{Binding ToolTip}"/>
             <ComboBox SelectedValue="{Binding Unit}" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" HorizontalContentAlignment="Right" Margin="8">
                 <utility:ComboBoxItemsSourceDecorator.ItemsSource>
                     <MultiBinding Converter="{StaticResource TypeUnitDictionaryConverter}">
-                        <Binding Path="DataContext.DataConfigure.TypeUnitDictionary" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType=UserControl}"/>
-                        <Binding Path="Type"/>
+                        <Binding Path="DataContext.TypeUnitDictionary" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorLevel=2, AncestorType=UserControl}"/>
+                        <Binding Path="TypeAbbreviation"/>
                     </MultiBinding>
                 </utility:ComboBoxItemsSourceDecorator.ItemsSource>
             </ComboBox>
         </StackPanel>
         <StackPanel Orientation="Horizontal">
             <Label Margin="0,2" Width="120" VerticalAlignment="Center" Content="PMU for Time Source:" HorizontalAlignment="Left" ToolTip="{Binding ToolTip}"/>
-            <ComboBox SelectedItem="{Binding TimeSourcePMU, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="PMU" SelectedValuePath="PMU" utility:SelectorBehavior.KeepSelection="True" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor, AncestorLevel=2}, Path=DataContext.SignalMgr.AllPMUs}" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" Margin="8" HorizontalContentAlignment="Right"/>
+            <ComboBox SelectedItem="{Binding TimeSourcePMU, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" DisplayMemberPath="PMU" SelectedValuePath="PMU" utility:SelectorBehavior.KeepSelection="True" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=UserControl, Mode=FindAncestor, AncestorLevel=3}, Path=DataContext.SampleDataMngr.AllPMUs}" VerticalAlignment="Center" VerticalContentAlignment="Center" Width="150" Margin="8" HorizontalContentAlignment="Right"/>
         </StackPanel>
     </StackPanel>
 </UserControl>

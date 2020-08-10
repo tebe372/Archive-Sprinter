@@ -126,15 +126,18 @@ namespace AS.DataManager
                 //Console.WriteLine("Added end timestamp: " + endT.ToString("yyyyMMdd_HHmmss.ffffff") + " in " + e.FirstOrDefault().TimeStamps.Count() + " timestamps.");
                 foreach (var sig in e)
                 {
-                    var name = sig.PMUName + "_" + sig.SignalName;
-
-                    lock (_theInputSignalsLock)
+                    if (sig.Data.Count > 0 || sig.ComplexData.Count > 0)
                     {
-                        if (!Signals.ContainsKey(name))
+                        var name = sig.PMUName + "_" + sig.SignalName;
+
+                        lock (_theInputSignalsLock)
                         {
-                            Signals[name] = new Dictionary<DateTime, Signal>();
+                            if (!Signals.ContainsKey(name))
+                            {
+                                Signals[name] = new Dictionary<DateTime, Signal>();
+                            }
+                            Signals[name][endT] = sig;
                         }
-                        Signals[name][endT] = sig;
                     }
                 }
                 lock (_theDataWriterLock)
@@ -282,117 +285,239 @@ namespace AS.DataManager
                 {
                     return false;
                 }
-                if (possibleTimeStamps.Count == 1)
-                {
-                    // if here's only 1 fragment, find the start and end point and get data between that range
-                    //var lastDataPoint = firstSig.TimeStamps.IndexOf(endT);
-                    if (lastDataPoint == -1)
-                    {
-                        //thisSig.Data = firstSig.Data;
-                        thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
-                        thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
-                        thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
-                    }
-                    else if (firstDataPoint == -1)
-                    {
-                        thisSig.Data = firstSig.Data.GetRange(0, lastDataPoint + 1);
-                        thisSig.Flags = firstSig.Flags.GetRange(0, lastDataPoint + 1);
-                        thisSig.TimeStamps = firstSig.TimeStamps.GetRange(0, lastDataPoint + 1);
-                    }
-                    else
-                    {
-                        thisSig.Data = firstSig.Data.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
-                        thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
-                        thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
-                    }
-                }
-                else
-                {
-
-                    if (lastDataPoint == -1)
-                    {
-                        thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
-                        thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
-                        thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
-                        lock (_theInputSignalsLock)
-                        {
-                            for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
-                        {
-                                if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
-                                {
-                                    thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
-                                    thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
-                                    thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
-                                }
-                            }
-                        }
-                    }
-                    else if (firstDataPoint == -1)
-                    {
-                        lock (_theInputSignalsLock)
-                        {
-                            for (int ii = 0; ii < possibleTimeStamps.Count; ii++)
-                        {
-                                if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
-                                {
-                                    thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
-                                    thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
-                                    thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
-                                }
-                                else
-                                {
-                                    thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data.GetRange(0, lastDataPoint + 1));
-                                    thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags.GetRange(0, lastDataPoint + 1));
-                                    thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps.GetRange(0, lastDataPoint + 1));
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // if need to put several fragment together, find the first partial piece first
-                        thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
-                        thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
-                        thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
-                        // if there are middle pieces, add the middle pieces which should be whole pieces
-                        for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
-                        {
-                            thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
-                            thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
-                            thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
-                        }
-                    }
-                    // then add the last piece, which could be a partial piece too
-                    //var lastSig = sig[possibleTimeStamps[possibleTimeStamps.Count - 1]];
-                    //var lastDatPoint = lastSig.TimeStamps.IndexOf(endT);
-                    //if (lastDatPoint == -1)
-                    //{
-                    //    thisSig.Data.AddRange(lastSig.Data);
-                    //}
-                    //else
-                    //{
-                    //    thisSig.Data.AddRange(lastSig.Data.GetRange(0, lastDatPoint + 1));
-                    //}
-                }
-                //if (thisSig.Data.Count < windowSize)
-                //{
-                //    return false;
-                //}
-                //else
-                if (thisSig.Data.Count > windowSize)
-                {
-                    thisSig.Data.RemoveRange(windowSize, thisSig.Data.Count - windowSize);
-                    thisSig.Flags.RemoveRange(windowSize, thisSig.Flags.Count - windowSize);
-                    thisSig.TimeStamps.RemoveRange(windowSize, thisSig.TimeStamps.Count - windowSize);
-                    signals.Add(thisSig);
-                }
-                else if (thisSig.Data.Count == windowSize)
-                {
-                    signals.Add(thisSig);
-                }
-                else
+                if (firstSig.Data.Count == 0 && firstSig.ComplexData.Count == 0)
                 {
                     return false;
+                }
+                else if (firstSig.ComplexData.Count > 0 )
+                {
+                    if (possibleTimeStamps.Count == 1)
+                    {
+                        // if here's only 1 fragment, find the start and end point and get data between that range
+                        //var lastDataPoint = firstSig.TimeStamps.IndexOf(endT);
+                        if (lastDataPoint == -1)
+                        {
+                            //thisSig.Data = firstSig.Data;
+                            thisSig.ComplexData = firstSig.ComplexData.GetRange(firstDataPoint, firstSig.ComplexData.Count - firstDataPoint);
+                            thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
+                            thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
+                        }
+                        else if (firstDataPoint == -1)
+                        {
+                            thisSig.ComplexData = firstSig.ComplexData.GetRange(0, lastDataPoint + 1);
+                            thisSig.Flags = firstSig.Flags.GetRange(0, lastDataPoint + 1);
+                            thisSig.TimeStamps = firstSig.TimeStamps.GetRange(0, lastDataPoint + 1);
+                        }
+                        else
+                        {
+                            thisSig.ComplexData = firstSig.ComplexData.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
+                            thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
+                            thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
+                        }
+                    }
+                    else
+                    {
+
+                        if (lastDataPoint == -1)
+                        {
+                            thisSig.ComplexData = firstSig.ComplexData.GetRange(firstDataPoint, firstSig.ComplexData.Count - firstDataPoint);
+                            thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
+                            thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
+                            lock (_theInputSignalsLock)
+                            {
+                                for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
+                                {
+                                    if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
+                                    {
+                                        thisSig.ComplexData.AddRange(sig[possibleTimeStamps[ii]].ComplexData);
+                                        thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                                        thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                                    }
+                                }
+                            }
+                        }
+                        else if (firstDataPoint == -1)
+                        {
+                            lock (_theInputSignalsLock)
+                            {
+                                for (int ii = 0; ii < possibleTimeStamps.Count; ii++)
+                                {
+                                    if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
+                                    {
+                                        thisSig.ComplexData.AddRange(sig[possibleTimeStamps[ii]].ComplexData);
+                                        thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                                        thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                                    }
+                                    else
+                                    {
+                                        thisSig.ComplexData.AddRange(sig[possibleTimeStamps[ii]].ComplexData.GetRange(0, lastDataPoint + 1));
+                                        thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags.GetRange(0, lastDataPoint + 1));
+                                        thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps.GetRange(0, lastDataPoint + 1));
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // if need to put several fragment together, find the first partial piece first
+                            thisSig.ComplexData = firstSig.ComplexData.GetRange(firstDataPoint, firstSig.ComplexData.Count - firstDataPoint);
+                            thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
+                            thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
+                            // if there are middle pieces, add the middle pieces which should be whole pieces
+                            for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
+                            {
+                                thisSig.ComplexData.AddRange(sig[possibleTimeStamps[ii]].ComplexData);
+                                thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                                thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                            }
+                        }
+                        // then add the last piece, which could be a partial piece too
+                        //var lastSig = sig[possibleTimeStamps[possibleTimeStamps.Count - 1]];
+                        //var lastDatPoint = lastSig.TimeStamps.IndexOf(endT);
+                        //if (lastDatPoint == -1)
+                        //{
+                        //    thisSig.Data.AddRange(lastSig.Data);
+                        //}
+                        //else
+                        //{
+                        //    thisSig.Data.AddRange(lastSig.Data.GetRange(0, lastDatPoint + 1));
+                        //}
+                    }
+                    //if (thisSig.Data.Count < windowSize)
+                    //{
+                    //    return false;
+                    //}
+                    //else
+                    if (thisSig.ComplexData.Count > windowSize)
+                    {
+                        thisSig.ComplexData.RemoveRange(windowSize, thisSig.ComplexData.Count - windowSize);
+                        thisSig.Flags.RemoveRange(windowSize, thisSig.Flags.Count - windowSize);
+                        thisSig.TimeStamps.RemoveRange(windowSize, thisSig.TimeStamps.Count - windowSize);
+                        signals.Add(thisSig);
+                    }
+                    else if (thisSig.ComplexData.Count == windowSize)
+                    {
+                        signals.Add(thisSig);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    if (possibleTimeStamps.Count == 1)
+                    {
+                        // if here's only 1 fragment, find the start and end point and get data between that range
+                        //var lastDataPoint = firstSig.TimeStamps.IndexOf(endT);
+                        if (lastDataPoint == -1)
+                        {
+                            //thisSig.Data = firstSig.Data;
+                            thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
+                            thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
+                            thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
+                        }
+                        else if (firstDataPoint == -1)
+                        {
+                            thisSig.Data = firstSig.Data.GetRange(0, lastDataPoint + 1);
+                            thisSig.Flags = firstSig.Flags.GetRange(0, lastDataPoint + 1);
+                            thisSig.TimeStamps = firstSig.TimeStamps.GetRange(0, lastDataPoint + 1);
+                        }
+                        else
+                        {
+                            thisSig.Data = firstSig.Data.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
+                            thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
+                            thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, lastDataPoint - firstDataPoint + 1);
+                        }
+                    }
+                    else
+                    {
+
+                        if (lastDataPoint == -1)
+                        {
+                            thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
+                            thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
+                            thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
+                            lock (_theInputSignalsLock)
+                            {
+                                for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
+                                {
+                                    if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
+                                    {
+                                        thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
+                                        thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                                        thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                                    }
+                                }
+                            }
+                        }
+                        else if (firstDataPoint == -1)
+                        {
+                            lock (_theInputSignalsLock)
+                            {
+                                for (int ii = 0; ii < possibleTimeStamps.Count; ii++)
+                                {
+                                    if (sig[possibleTimeStamps[ii]].TimeStamps.LastOrDefault() <= endT)
+                                    {
+                                        thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
+                                        thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                                        thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                                    }
+                                    else
+                                    {
+                                        thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data.GetRange(0, lastDataPoint + 1));
+                                        thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags.GetRange(0, lastDataPoint + 1));
+                                        thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps.GetRange(0, lastDataPoint + 1));
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // if need to put several fragment together, find the first partial piece first
+                            thisSig.Data = firstSig.Data.GetRange(firstDataPoint, firstSig.Data.Count - firstDataPoint);
+                            thisSig.Flags = firstSig.Flags.GetRange(firstDataPoint, firstSig.Flags.Count - firstDataPoint);
+                            thisSig.TimeStamps = firstSig.TimeStamps.GetRange(firstDataPoint, firstSig.TimeStamps.Count - firstDataPoint);
+                            // if there are middle pieces, add the middle pieces which should be whole pieces
+                            for (int ii = 1; ii < possibleTimeStamps.Count; ii++)
+                            {
+                                thisSig.Data.AddRange(sig[possibleTimeStamps[ii]].Data);
+                                thisSig.Flags.AddRange(sig[possibleTimeStamps[ii]].Flags);
+                                thisSig.TimeStamps.AddRange(sig[possibleTimeStamps[ii]].TimeStamps);
+                            }
+                        }
+                        // then add the last piece, which could be a partial piece too
+                        //var lastSig = sig[possibleTimeStamps[possibleTimeStamps.Count - 1]];
+                        //var lastDatPoint = lastSig.TimeStamps.IndexOf(endT);
+                        //if (lastDatPoint == -1)
+                        //{
+                        //    thisSig.Data.AddRange(lastSig.Data);
+                        //}
+                        //else
+                        //{
+                        //    thisSig.Data.AddRange(lastSig.Data.GetRange(0, lastDatPoint + 1));
+                        //}
+                    }
+                    //if (thisSig.Data.Count < windowSize)
+                    //{
+                    //    return false;
+                    //}
+                    //else
+                    if (thisSig.Data.Count > windowSize)
+                    {
+                        thisSig.Data.RemoveRange(windowSize, thisSig.Data.Count - windowSize);
+                        thisSig.Flags.RemoveRange(windowSize, thisSig.Flags.Count - windowSize);
+                        thisSig.TimeStamps.RemoveRange(windowSize, thisSig.TimeStamps.Count - windowSize);
+                        signals.Add(thisSig);
+                    }
+                    else if (thisSig.Data.Count == windowSize)
+                    {
+                        signals.Add(thisSig);
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
             //EndTimeStamps.RemoveRange(0, i1);

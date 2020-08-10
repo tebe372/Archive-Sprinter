@@ -99,10 +99,11 @@ namespace AS.IO
                         if (keepSig.Count() == NeededSignalList.Count())
                         {
                             lastTimeStamp = keepSig.FirstOrDefault().TimeStamps.LastOrDefault();
-                            OnFileReadingDone(keepSig);
+                            OnFileReadingDone(keepSig, time);
                         }
                         else
                         {
+                            OnFileReadingDone(keepSig, time);
                         }
                     }
                     time = time.AddSeconds(fileLength);
@@ -183,11 +184,11 @@ namespace AS.IO
         public List<string> NeededSignalList { get; set; }
 
         //used when done reading one file
-        public delegate void FileReadingDoneEventhandler(object sender, List<Signal> e);
+        public delegate void FileReadingDoneEventhandler(object sender, List<Signal> e, DateTime t);
         public event FileReadingDoneEventhandler FileReadingDone;
-        protected virtual void OnFileReadingDone(List<Signal> e)
+        protected virtual void OnFileReadingDone(List<Signal> e, DateTime t)
         {
-            FileReadingDone?.Invoke(this, e);
+            FileReadingDone?.Invoke(this, e, t);
         }
         //used when done reading all files in the directory
         public delegate void DataReadingDoneEventhandler(object sender, DateTime e);

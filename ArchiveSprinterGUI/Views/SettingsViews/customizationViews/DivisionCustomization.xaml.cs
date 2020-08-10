@@ -29,30 +29,38 @@ namespace ArchiveSprinterGUI.Views.SettingsViews
         }
         private void MinuendOrDividentTextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            ((PreProcessStepViewModel)((TextBox)sender).DataContext).CurrentCursor = "Minuend";
+            ((PreProcessStepViewModel)((TextBox)sender).DataContext).CurrentCursor = "Dividend";
             var s = sender as WatermarkTextBox;
             StackPanel p = s.Parent as StackPanel;
             foreach (var item in p.Children)
             {
                 if (item is WatermarkTextBox)
                 {
-                    WatermarkTextBox b = item as WatermarkTextBox;
-                    b.Background = Utility.HighlightColor;
+                    var wtb = item as WatermarkTextBox;
+                    if (wtb.Name == "MDPMU" || wtb.Name == "Dividend")
+                    {
+                        WatermarkTextBox b = item as WatermarkTextBox;
+                        b.Background = Utility.HighlightColor;
+                    }
                 }
             }
         }
 
         private void SubtrahendOrDivisorTextBoxGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
         {
-            ((PreProcessStepViewModel)((TextBox)sender).DataContext).CurrentCursor = "Subtrahend";
+            ((PreProcessStepViewModel)((TextBox)sender).DataContext).CurrentCursor = "Divisor";
             var s = sender as WatermarkTextBox;
             StackPanel p = s.Parent as StackPanel;
             foreach (var item in p.Children)
             {
                 if (item is WatermarkTextBox)
                 {
-                    WatermarkTextBox b = item as WatermarkTextBox;
-                    b.Background = Utility.HighlightColor;
+                    var wtb = item as WatermarkTextBox;
+                    if (wtb.Name == "SDPMU" || wtb.Name == "Divisor")
+                    {
+                        WatermarkTextBox b = item as WatermarkTextBox;
+                        b.Background = Utility.HighlightColor;
+                    }
                 }
             }
         }
@@ -65,8 +73,12 @@ namespace ArchiveSprinterGUI.Views.SettingsViews
             {
                 if (item is WatermarkTextBox)
                 {
-                    WatermarkTextBox b = item as WatermarkTextBox;
-                    b.Background = Utility.WhiteColor;
+                    var wtb = item as WatermarkTextBox;
+                    if (wtb.Name == "MDPMU" || wtb.Name == "Dividend")
+                    {
+                        WatermarkTextBox b = item as WatermarkTextBox;
+                        b.Background = Utility.WhiteColor;
+                    }
                 }
             }
         }
@@ -79,8 +91,12 @@ namespace ArchiveSprinterGUI.Views.SettingsViews
             {
                 if (item is WatermarkTextBox)
                 {
-                    WatermarkTextBox b = item as WatermarkTextBox;
-                    b.Background = Utility.WhiteColor;
+                    var wtb = item as WatermarkTextBox;
+                    if (wtb.Name == "SDPMU" || wtb.Name == "Divisor")
+                    {
+                        WatermarkTextBox b = item as WatermarkTextBox;
+                        b.Background = Utility.WhiteColor;
+                    }
                 }
             }
         }

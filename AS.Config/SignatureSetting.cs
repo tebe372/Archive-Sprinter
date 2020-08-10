@@ -432,8 +432,8 @@ namespace AS.Config
                         std = SignatureCalculations.Stdev(item.Data);
                     }
                     dataMngr.AddResults(startT, "Standard Deviation", item.PMUName, item.SignalName, std, endT);
-                    //Console.WriteLine("Standard Deviation:");
-                    //Console.WriteLine(std);
+                    Console.WriteLine("Standard Deviation:");
+                    Console.WriteLine(std);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -1128,8 +1128,8 @@ namespace AS.Config
                         min = SignatureCalculations.Minimum(item.Data);
                     }
                     dataMngr.AddResults(startT, "Minimum", item.PMUName, item.SignalName, min, endT);
-                    //Console.WriteLine("Minimum:");
-                    //Console.WriteLine(min);
+                    Console.WriteLine("Minimum:");
+                    Console.WriteLine(min);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -1195,8 +1195,8 @@ namespace AS.Config
                         range = SignatureCalculations.Range(item.Data);
                     }
                     dataMngr.AddResults(startT, "Range", item.PMUName, item.SignalName, range, endT);
-                    //Console.WriteLine("Range:");
-                    //Console.WriteLine(range);
+                    Console.WriteLine("Range:");
+                    Console.WriteLine(range);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);
@@ -1262,8 +1262,8 @@ namespace AS.Config
                         rise = SignatureCalculations.Rise(item.Data);
                     }
                     dataMngr.AddResults(startT, "Rise", item.PMUName, item.SignalName, rise, endT);
-                    //Console.WriteLine("Rise:");
-                    //Console.WriteLine(rise);
+                    Console.WriteLine("Rise:");
+                    Console.WriteLine(rise);
                 }
                 startT = endT.AddSeconds(-WindowOverlap);
                 endT = startT.AddSeconds(WindowSize);

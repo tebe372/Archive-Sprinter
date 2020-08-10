@@ -46,6 +46,11 @@ namespace AS.Core.ViewModels
                     return _label;
                 }
             }
+            set
+            {
+                _label = value;
+                OnPropertyChanged();
+            }
         }
         private SignalViewModel _signal;
         public SignalViewModel Signal

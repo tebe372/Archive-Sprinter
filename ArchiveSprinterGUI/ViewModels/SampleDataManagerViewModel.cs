@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace ArchiveSprinterGUI.ViewModels
 {
@@ -17,6 +18,18 @@ namespace ArchiveSprinterGUI.ViewModels
         {
             get { return _model; }
         }
+        //private static SampleDataManagerViewModel _instance = null;
+        //public static SampleDataManagerViewModel Instance
+        //{
+        //    get
+        //    {
+        //        if (_instance == null)
+        //        {
+        //            _instance = new SampleDataManagerViewModel();
+        //        }
+        //        return _instance;
+        //    }
+        //}
         public SampleDataManagerViewModel()
         {
             _model = SampleDataMngr.Instance;
@@ -1021,8 +1034,8 @@ namespace ArchiveSprinterGUI.ViewModels
                                                                     {
                                                                         var s = new SignalTree(signal);
                                                                         s.SignalCheckStatusChanged += _signalCheckStatusChanged;
-                                                                        s.Parent = aGroup;
-                                                                        aGroup.SignalList.Add(s);
+                                                                        s.Parent = positiveGroup;
+                                                                        positiveGroup.SignalList.Add(s);
                                                                     }
                                                                     aGroup.SignalList.Add(positiveGroup);
                                                                     break;
@@ -1233,7 +1246,64 @@ namespace ArchiveSprinterGUI.ViewModels
                     }
                 }
             }
+            foreach (var group in GroupedSignalByPreProcessStepsOutput)
+            {
+                foreach (var samplingRateSubgroup in group.SignalList)
+                {
+                    foreach (var subgroup in samplingRateSubgroup.SignalList)
+                    {
+                        if (subgroup.Label == pMUName)
+                        {
+                            foreach (var subsubgroup in subgroup.SignalList)
+                            {
+                                if (subsubgroup.Signal.SignalName == signalName)
+                                    return subsubgroup.Signal;
+                            }
+                        }
+                    }
+                }
+            }           
             return null;            
+        }
+
+        private ObservableCollection<PMUWithSamplingRate> _allPMU;
+        public ObservableCollection<PMUWithSamplingRate> AllPMUs
+        {
+            set { _allPMU = value; OnPropertyChanged(); }
+            get
+            {
+                return _getAllPMU();
+            }
+        }
+        private ObservableCollection<PMUWithSamplingRate> _getAllPMU()
+        {
+            List<PMUWithSamplingRate> allPMU = null;
+            if (GroupedRawSignalsByPMU != null && GroupedRawSignalsByPMU.Count > 0)
+            {
+                allPMU = GroupedRawSignalsByPMU.SelectMany(x => x.SignalList).Distinct().SelectMany(r => r.SignalList).Distinct().Select(y => new PMUWithSamplingRate(y.Signal.PMUName, y.Signal.SamplingRate, y.Signal.Data.Count)).ToList();
+            }
+            if (AllPreProcessOutputGroupedByPMU != null && AllPreProcessOutputGroupedByPMU.Count > 0)
+            {
+                allPMU.AddRange(AllPreProcessOutputGroupedByPMU.SelectMany(x => x.SignalList).Distinct().SelectMany(r => r.SignalList).Distinct().Select(y => new PMUWithSamplingRate(y.Signal.PMUName, y.Signal.SamplingRate, y.Signal.Data.Count)).ToList());
+            }
+            if (allPMU != null)
+            {
+                return new ObservableCollection<PMUWithSamplingRate>(allPMU.Distinct());
+            }
+            else
+            {
+                return null;
+            }
+        }
+        private Visibility _signalSelectionTreeViewVisibility;
+        public Visibility SignalSelectionTreeViewVisibility 
+        {
+            get { return _signalSelectionTreeViewVisibility; }
+            set
+            {
+                _signalSelectionTreeViewVisibility = value;
+                OnPropertyChanged();
+            }
         }
     }
 }

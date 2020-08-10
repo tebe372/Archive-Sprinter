@@ -30,7 +30,16 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-
+        private string _name;
+        public virtual string Name 
+        { 
+            get { return _name; }
+            set { _name = value;
+                OnPropertyChanged();
+            }
+        }
+        [JsonIgnore]
+        public SampleDataManagerViewModel SampleDataMngr { get; set; }
         private bool _isSelected;
         [JsonIgnore]
         public bool IsSelected
@@ -47,6 +56,30 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
+
+        public void UpdateInputOutputTree()
+        {
+            try
+            {
+                ThisStepInputsGroupedByType.SignalList = SampleDataMngr.SortSignalsByType(InputChannels);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            if (OutputChannels.Count > 0)
+            {
+                try
+                {
+                    ThisStepOutputsGroupedByPMU.SignalList = SampleDataMngr.SortSignalByPMU(OutputChannels);
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+            }
+        }
+
         private bool _isExpanded;
         [JsonIgnore]
         public bool IsExpanded
@@ -112,11 +145,6 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 OnPropertyChanged();
             }
         }
-
-        public void UpdateInputOutputTree()
-        {
-        }
-
         public virtual void RemoveSignal(SignalViewModel signal)
         {
             InputChannels.Remove(signal);

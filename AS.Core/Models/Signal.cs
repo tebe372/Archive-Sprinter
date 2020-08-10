@@ -79,9 +79,18 @@ namespace AS.Core.Models
             {
                 if (_flags == null)
                 {
-                    bool[] f = new bool[_data.Count];
-                    Utilities.Populate<bool>(f, true);
-                    _flags = f.ToList();
+                    if (_data.Count > 0)
+                    {
+                        bool[] f = new bool[_data.Count];
+                        Utilities.Populate<bool>(f, true);
+                        _flags = f.ToList();
+                    }
+                    if (_complexData.Count > 0)
+                    {
+                        bool[] f = new bool[_complexData.Count];
+                        Utilities.Populate<bool>(f, true);
+                        _flags = f.ToList();
+                    }
                 }
                 return _flags; 
                 

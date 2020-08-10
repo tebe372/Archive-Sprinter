@@ -83,6 +83,7 @@ namespace ArchiveSprinterGUI.ViewModels
             }
         }
         private FileReadingManager _reader;
+        public int NumberOfSignatures { get; set; }
         public ICommand MainViewSelected { get; set; }
         private void _switchView(object obj)
         {
@@ -105,9 +106,17 @@ namespace ArchiveSprinterGUI.ViewModels
         {
             ProjectControlVM.SelectedProject.SelectedRun.CheckTaskDirIntegrity();
             _numberOfFilesRead = 0;
-            _setupFileManager();
+            try
+            {
+                _setupFileManager();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
 
             var numberOfDataWriters = SettingsVM.DataWriters.Count();
+            NumberOfSignatures = SettingsVM.SignatureSettings.Count();
             _setupDataManager(numberOfDataWriters);
 
             if (numberOfDataWriters > 0 || SettingsVM.SignatureSettings.Count > 0)
@@ -153,31 +162,42 @@ namespace ArchiveSprinterGUI.ViewModels
                     MessageBox.Show(ex.Message);
                 }
             }
-            try
+            if (NumberOfSignatures > 0)
             {
-                await Task.Run(async () => { await _signatureCalculation(); });
-            }
-            catch (Exception ex)
-            {
-                _reader.DataCompleted = true;
-                DataMngr.DataCompleted = true;
-                ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
-                MessageBox.Show(ex.Message);
-            }
-            Thread.Sleep(500);
-            try
-            {
-                Task.Run(async () => { await _writeSignatureResults(); });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
+                try
+                {
+                    await Task.Run(async () => { await _signatureCalculation(); });
+                }
+                catch (Exception ex)
+                {
+                    _reader.DataCompleted = true;
+                    DataMngr.DataCompleted = true;
+                    ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
+                    MessageBox.Show(ex.Message);
+                }
+                Thread.Sleep(500);
+                try
+                {
+                    Task.Run(async () => { await _writeSignatureResults(); });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
         private void _setupFileManager()
         {
             //scan through all the steps of configuration and figure out needed signals.
-            var neededSignalList = _getAllNeededSignals();
+            List<string> neededSignalList = new List<string>();
+            try
+            {
+                neededSignalList = _getAllNeededSignals();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
 
             //send list of signals to reader control
 
@@ -254,6 +274,17 @@ namespace ArchiveSprinterGUI.ViewModels
                 {
                     signalList.AddRange(item.InputChannels.Select(x => x.PMUName + "_" + x.SignalName).ToList());
                 }
+                //if (item.Model is Customization)
+                //{
+                //    try
+                //    {
+                //        item.SetupOutputSignals();
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        throw ex;
+                //    }
+                //}
             }
             foreach (var item in SettingsVM.SignatureSettings)
             {
@@ -269,13 +300,17 @@ namespace ArchiveSprinterGUI.ViewModels
         {
             DataMngr.DataCompleted = true;
             DataMngr.FinalTimeStamp = e;
+            if (NumberOfSignatures == 0)
+            {
+                ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
+            }
         }
         public DataStore DataMngr { get; set; }
         private int _numberOfFilesRead;
-        private void _fileReadingDone(object sender, List<Signal> e)
+        private void _fileReadingDone(object sender, List<Signal> e, DateTime t)
         {
             // this function call have been put on thread, and put the data that have gone through pre process steps into a container in time order
-            _preprocessData(e);
+            _preprocessData(e, t);
             _numberOfFilesRead++;
             CurrentFileTime = _getFileDateTime(_reader.CurrentFile).ToString("MM/dd/yyyy HH:mm:ss");
         }
@@ -290,7 +325,7 @@ namespace ArchiveSprinterGUI.ViewModels
                 MessageBox.Show(ex.Message);
             }
         }
-        private void _preprocessData(List<Signal> e)
+        private void _preprocessData(List<Signal> e, DateTime t)
         {
             bool newStage = true;
             List<Signal> filteredSignal = new List<Signal>();
@@ -313,7 +348,15 @@ namespace ArchiveSprinterGUI.ViewModels
                     List<Signal> sigs = null;
                     try
                     {
-                        sigs = item.Model.Process(e);
+                        if (item.Model is ScalarRepCust)
+                        {
+                            var m = item.Model as ScalarRepCust;
+                            sigs = m.Process(e, t);
+                        }
+                        else
+                        {
+                            sigs = item.Model.Process(e);
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -368,7 +411,7 @@ namespace ArchiveSprinterGUI.ViewModels
             }
             try
             {
-                DataMngr.AddData(e);
+                DataMngr.AddData(e);  //?? shouldn't it be the filteredSignal??
             }
             catch (Exception ex)
             {
@@ -393,7 +436,7 @@ namespace ArchiveSprinterGUI.ViewModels
                 {
                     throw ex;
                 }
-                item.GetSamplingRAte();
+                item.GetSamplingRate();
                 Task.Factory.StartNew(() => item.Model.Process(DataMngr));
             }
         }
@@ -535,7 +578,14 @@ namespace ArchiveSprinterGUI.ViewModels
                 ProjectControlVM.SelectedProject.SelectedRun.PauseFilePath = null;
                 ProjectControlVM.SelectedProject.SelectedRun.CheckTaskDirIntegrity();
                 _numberOfFilesRead = 0;
-                _setupFileManager();
+                try
+                {
+                    _setupFileManager();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
                 _reader.DateTimeStart = config.LastReadFileTime;
                 var numberOfDataWriters = SettingsVM.DataWriters.Count();
                 _setupDataManager(numberOfDataWriters);

@@ -29,7 +29,7 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
         private DataWriter _model;
         [JsonIgnore]
         public DataWriter Model { get { return _model; } }
-        public string Name { get { return _model.Name; } }
+        public override string Name { get { return _model.Name; } }
         public string SavePath 
         { 
             get { return _model.SavePath; } 
