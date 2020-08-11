@@ -69,6 +69,10 @@ namespace AS.IO
                         {
                             signals = reader.Read(CurrentFile);
                         }
+                        catch (OutOfMemoryException oomEx)
+                        {
+                            throw oomEx;
+                        }
                         catch (Exception ex)
                         {
                             time = time.AddSeconds(fileLength);
