@@ -164,6 +164,10 @@ namespace ArchiveSprinterGUI.ViewModels
             }
             if (NumberOfSignatures > 0)
             {
+                while (!DataMngr.SignatureCanStart)
+                {
+                    Thread.Sleep(1000);
+                }
                 try
                 {
                     await Task.Run(async () => { await _signatureCalculation(); });
@@ -593,6 +597,7 @@ namespace ArchiveSprinterGUI.ViewModels
                 DataMngr.ResumedTask = true;
                 DataMngr.CurrentTimeStamp = config.CurrentTimeStamp;
                 DataMngr.TimeZero = lasttime.AddSeconds(Convert.ToInt32(SettingsVM.WindowSizeStr) - Convert.ToInt32(SettingsVM.WindowOverlapStr));
+                DataMngr.SignatureCanStart = true;
                 ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = true;
                 ProjectControlVM.CanRun = false;
                 _startAS(numberOfDataWriters);

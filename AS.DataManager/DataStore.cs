@@ -21,6 +21,7 @@ namespace AS.DataManager
             StartTimeStamps = new List<DateTime>();
             EndTimeStamps = new List<DateTime>();
             TimePairs = new Dictionary<DateTime, DateTime>();
+            SignatureCanStart = false;
             //FirstFileRead = false;
         }
         // when all data in the data source directory are read and preprocessed and put in the store
@@ -77,6 +78,7 @@ namespace AS.DataManager
         public int SamplingRate { get; set; }
 
         //public bool FirstFileRead { get; set; }
+        public bool SignatureCanStart { get; set; }
         private object _theEndTimeStampsLock = new object();
         private object _theResultsLock = new object();
         private object _theInputSignalsLock = new object();
@@ -115,6 +117,7 @@ namespace AS.DataManager
                 if (FirstFile)
                 {
                     TimeZero = startT;
+                    SignatureCanStart = true;
                     //FirstFileRead = true;
                     FirstFile = false;
                 }
@@ -548,6 +551,7 @@ namespace AS.DataManager
             FinishedSignatures.Clear();
             _results.Clear();
             _doneDataWriterFlags.Clear();
+            SignatureCanStart = false;
             //FirstFileRead = false;
         }
         public void WriteResults()
