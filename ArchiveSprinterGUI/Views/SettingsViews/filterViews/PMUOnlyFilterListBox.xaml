@@ -11,16 +11,16 @@
         <converters:VisibleIfNonZeroConverter x:Key="VisibleIfNonZeroConverter"/>
     </UserControl.Resources>
     <Grid>
-        <ListView Margin="20,2,2,2" Visibility="{Binding InputChannels.Count, Converter={StaticResource VisibleIfNonZeroConverter}}" ItemsSource="{Binding ThisStepOutputsGroupedByPMU.SignalList}" ScrollViewer.VerticalScrollBarVisibility="Auto" MaxHeight="150" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+        <ListView Margin="20,2,2,2" Visibility="{Binding InputChannels.Count, Converter={StaticResource VisibleIfNonZeroConverter}}" ItemsSource="{Binding InputChannels}" ScrollViewer.VerticalScrollBarVisibility="Auto" MaxHeight="150" ScrollViewer.CanContentScroll="False" ScrollViewer.HorizontalScrollBarVisibility="Auto">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <ItemsControl ItemsSource="{Binding SignalList}">
+                    <!--<ItemsControl ItemsSource="{Binding}">
                         <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Margin="2,0" Text="{Binding Label}"/>
-                            </DataTemplate>
+                            <DataTemplate>-->
+                                <TextBlock Margin="2,0" Text="{Binding PMUName}"/>
+                            <!--</DataTemplate>
                         </ItemsControl.ItemTemplate>
-                    </ItemsControl>
+                    </ItemsControl>-->
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
