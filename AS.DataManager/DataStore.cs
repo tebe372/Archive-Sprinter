@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -35,8 +36,10 @@ namespace AS.DataManager
         public bool ResumedTask { get; set; }
         public int WriteOutIntervalInSeconds { get; set; }
         private int _datawriteOutFrequency;
-        public int DatawriteOutFrequency {
-            set {
+        public int DatawriteOutFrequency
+        {
+            set
+            {
                 if (_datawriteOutFrequency != value)
                 {
                     _datawriteOutFrequency = value;
@@ -49,7 +52,7 @@ namespace AS.DataManager
             get { return _datawriteOutFrequency; }
         }
         private string _datawriteOutFrequencyUnit;
-        public string DatawriteOutFrequencyUnit 
+        public string DatawriteOutFrequencyUnit
         {
             get { return _datawriteOutFrequencyUnit; }
             set
@@ -83,6 +86,7 @@ namespace AS.DataManager
         private object _theResultsLock = new object();
         private object _theInputSignalsLock = new object();
         private object _theDataWriterLock = new object();
+        private object _theSignatureLock = new object();
         private DateTime _getNextWriteOutTime(DateTime current, int interval, string unit)
         {
             DateTime result;
@@ -152,12 +156,20 @@ namespace AS.DataManager
                     TimePairs[startT] = endT;
                     StartTimeStamps.Add(startT);
                 }
+                lock (_theSignatureLock)
+                {
+                    if (!_doneSignatureFlags.ContainsKey(endT))
+                    {
+                        _doneSignatureFlags[endT] = new List<bool>();
+                    }
+                }
                 lock (_theEndTimeStampsLock)
                 {
                     EndTimeStamps.Add(endT);
                 }
             }
         }
+        private Dictionary<DateTime, List<bool>> _doneSignatureFlags = new Dictionary<DateTime, List<bool>>();
         private Dictionary<DateTime, List<bool>> _doneDataWriterFlags = new Dictionary<DateTime, List<bool>>();
         public bool GetDataWriterData(List<string> signalNames, DateTime lasttime, out List<Signal> signals, out DateTime stime)
         {
@@ -176,9 +188,9 @@ namespace AS.DataManager
                     {
                         foreach (var name in signalNames)
                         {
-                            if(Signals.TryGetValue(name, out Dictionary<DateTime, Signal> sdict))
+                            if (Signals.TryGetValue(name, out Dictionary<DateTime, Signal> sdict))
                             {
-                                if(sdict.TryGetValue(etime, out Signal sig))
+                                if (sdict.TryGetValue(etime, out Signal sig))
                                 {
                                     signals.Add(sig);
                                 }
@@ -195,6 +207,7 @@ namespace AS.DataManager
                             list.Add(true);
                             if (list.Count == NumberOfDataWriters)
                             {
+                                _datawriterTimeMark = etime;
                                 _doneDataWriterFlags.Remove(etime);
                                 TimePairs.Remove(stime);
                                 StartTimeStamps.Remove(stime);
@@ -208,9 +221,9 @@ namespace AS.DataManager
                     return false;
                 }
             }
-            else 
-            { 
-                return false; 
+            else
+            {
+                return false;
             }
         }
         public bool HasDataAfter(DateTime startT, DateTime endT)
@@ -292,7 +305,7 @@ namespace AS.DataManager
                 {
                     return false;
                 }
-                else if (firstSig.ComplexData.Count > 0 )
+                else if (firstSig.ComplexData.Count > 0)
                 {
                     if (possibleTimeStamps.Count == 1)
                     {
@@ -523,12 +536,24 @@ namespace AS.DataManager
                     }
                 }
             }
-            //EndTimeStamps.RemoveRange(0, i1);
+            //flag time stamps, before which signals can be deleted
+            lock (_theSignatureLock)
+            {
+                if (_doneSignatureFlags.TryGetValue(possibleTimeStamps[0], out List<bool> list))
+                {
+                    list.Add(true);
+                    if (list.Count == NumberOfSignatures)
+                    {
+                        _signatureTimeMark = possibleTimeStamps[0];
+                        _doneSignatureFlags.Remove(possibleTimeStamps[0]);
+                    }
+                }
+            }
             return true;
         }
         private int? _findEndTimeFrame(DateTime endT, int beginIdx, List<DateTime> endTimeStamps)
         {
-            for ( int idx = beginIdx;  idx < endTimeStamps.Count;  idx++)
+            for (int idx = beginIdx; idx < endTimeStamps.Count; idx++)
             {
                 if (endT <= endTimeStamps[idx])
                 {
@@ -800,35 +825,35 @@ namespace AS.DataManager
             lock (_theResultsLock)
             {
                 foreach (var st in timeStampsInRange)
-            {
-                    if (_results.ContainsKey(st))
                 {
+                    if (_results.ContainsKey(st))
+                    {
 
                         _results.Remove(st);
                     }
                 }
             }
-            var lastTimePoint = timeStampsInRange.LastOrDefault();
-            foreach (var sig in Signals)
-            {
-                var timeDict = sig.Value;
-                var tss = timeDict.Keys.Where(x => x < lastTimePoint).ToList();
-                for (int i = tss.Count() - 1; i >= 0; i--)
-                {
-                    var ts = tss[i];
-                    if (timeDict.ContainsKey(ts) && !_doneDataWriterFlags.ContainsKey(ts))
-                    {
-                        lock (_theInputSignalsLock)
-                        {
-                            timeDict.Remove(ts);
-                        }
-                        lock (_theEndTimeStampsLock)
-                        {
-                            EndTimeStamps.Remove(ts);
-                        }
-                    }
-                }
-            }
+            //var lastTimePoint = timeStampsInRange.LastOrDefault();
+            //foreach (var sig in Signals)
+            //{
+            //    var timeDict = sig.Value;
+            //    var tss = timeDict.Keys.Where(x => x < lastTimePoint).ToList();
+            //    for (int i = tss.Count() - 1; i >= 0; i--)
+            //    {
+            //        var ts = tss[i];
+            //        if (timeDict.ContainsKey(ts) && !_doneDataWriterFlags.ContainsKey(ts))
+            //        {
+            //            lock (_theInputSignalsLock)
+            //            {
+            //                timeDict.Remove(ts);
+            //            }
+            //            lock (_theEndTimeStampsLock)
+            //            {
+            //                EndTimeStamps.Remove(ts);
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         private Dictionary<DateTime, List<SignatureResult>> _results = new Dictionary<DateTime, List<SignatureResult>>();
@@ -862,6 +887,84 @@ namespace AS.DataManager
         protected virtual void OnResultsWrittenDone()
         {
             ResultsWrittenDone?.Invoke(this, EventArgs.Empty);
+        }
+        private DateTime _datawriterTimeMark;
+        private DateTime _signatureTimeMark;
+        public void DeleteUsedSignals()
+        {
+            while (!DataCompleted)
+            {
+                Thread.Sleep(10000);
+                DateTime last;
+                if (_datawriterTimeMark < _signatureTimeMark)
+                {
+                    last = _datawriterTimeMark;
+                }
+                else
+                {
+                    last = _signatureTimeMark;
+                }
+                foreach (var sig in Signals)
+                {
+                    var timeDict = sig.Value;
+                    List<DateTime> tss;
+                    lock (_theInputSignalsLock)
+                    {
+                        tss = timeDict.Keys.Where(x => x < last).ToList();
+                    }
+                    for (int i = tss.Count() - 1; i >= 0; i--)
+                    {
+                        var ts = tss[i];
+                        if (timeDict.ContainsKey(ts))
+                        {
+                            lock (_theInputSignalsLock)
+                            {
+                                timeDict.Remove(ts);
+                            }
+                            lock (_theEndTimeStampsLock)
+                            {
+                                EndTimeStamps.Remove(ts);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        private string _dateTimeend;
+        public string DateTimeEnd
+        {
+            get { return _dateTimeend; }
+            set
+            {
+                _dateTimeend = value;
+                DateTime t = DateTime.ParseExact(value, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                if (NumberOfDataWriters == 0)
+                {
+                    _datawriterTimeMark = t;
+                }
+                if (NumberOfSignatures == 0)
+                {
+                    _signatureTimeMark = t;
+                }
+            }
+        }
+        private string _dateTimeStart;
+        public string DateTimeStart
+        {
+            get { return _dateTimeStart; }
+            set
+            {
+                _dateTimeStart = value;
+                DateTime t = DateTime.ParseExact(value, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                if (NumberOfDataWriters > 0)
+                {
+                    _datawriterTimeMark = t;
+                }
+                if (NumberOfSignatures > 0)
+                {
+                    _signatureTimeMark = t;
+                }
+            }
         }
     }
     public class SignatureResult

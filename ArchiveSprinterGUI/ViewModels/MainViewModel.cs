@@ -83,7 +83,7 @@ namespace ArchiveSprinterGUI.ViewModels
             }
         }
         private FileReadingManager _reader;
-        public int NumberOfSignatures { get; set; }
+        //public int NumberOfSignatures { get; set; }
         public ICommand MainViewSelected { get; set; }
         private void _switchView(object obj)
         {
@@ -116,14 +116,14 @@ namespace ArchiveSprinterGUI.ViewModels
             }
 
             var numberOfDataWriters = SettingsVM.DataWriters.Count();
-            NumberOfSignatures = SettingsVM.SignatureSettings.Count();
-            _setupDataManager(numberOfDataWriters);
+            var numberOfSignatures = SettingsVM.SignatureSettings.Count();
+            _setupDataManager(numberOfDataWriters, numberOfSignatures);
 
             if (numberOfDataWriters > 0 || SettingsVM.SignatureSettings.Count > 0)
             {
                 ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = true;
                 ProjectControlVM.CanRun = false;
-                _startAS(numberOfDataWriters);
+                _startAS(numberOfDataWriters, numberOfSignatures);
             }
             else
             {
@@ -131,7 +131,7 @@ namespace ArchiveSprinterGUI.ViewModels
             }
         }
 
-        private async void _startAS(int numberOfDataWriters)
+        private async void _startAS(int numberOfDataWriters, int numberOfSignatures)
         {
             // this need to be put on a thread
             try
@@ -162,7 +162,7 @@ namespace ArchiveSprinterGUI.ViewModels
                     MessageBox.Show(ex.Message);
                 }
             }
-            if (NumberOfSignatures > 0)
+            if (numberOfSignatures > 0)
             {
                 while (!DataMngr.SignatureCanStart)
                 {
@@ -189,6 +189,19 @@ namespace ArchiveSprinterGUI.ViewModels
                     MessageBox.Show(ex.Message);
                 }
             }
+            // to delete signals that has been used for signature calculation and datawriter.
+            try
+            {
+                Task.Run(async () => { await _deleteUsedSignals(); });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
+        private async Task _deleteUsedSignals()
+        {
+            await Task.Factory.StartNew(() => DataMngr.DeleteUsedSignals());
         }
         private void _setupFileManager()
         {
@@ -220,18 +233,21 @@ namespace ArchiveSprinterGUI.ViewModels
             _reader.DateTimeEnd = SettingsVM.DateTimeEnd;
             _reader.WindowSize = _settingsVM.Model.WindowSize;
         }
-        private void _setupDataManager(int numberOfDataWriters)
+        private void _setupDataManager(int numberOfDataWriters, int numberOfSignatures)
         {
             DataMngr.Clean();
             DataMngr.NumberOfDataWriters = numberOfDataWriters;
+            DataMngr.NumberOfSignatures = numberOfSignatures;
             DataMngr.DatawriteOutFrequency = _settingsVM.Model.DatawriteOutFrequency;
             DataMngr.DatawriteOutFrequencyUnit = _settingsVM.Model.DatawriteOutFrequencyUnit;
             DataMngr.WindowSize = _settingsVM.Model.WindowSize;
             DataMngr.WindowOverlap = _settingsVM.Model.WindowOverlap;
-            DataMngr.NumberOfSignatures = SettingsVM.SignatureSettings.Count();
+            //DataMngr.NumberOfSignatures = SettingsVM.SignatureSettings.Count();
             DataMngr.SignatureOutputDir = ProjectControlVM.SelectedProject.SelectedRun.SignaturePath;
             DataMngr.NumberOfDataPointInFile = SettingsVM.DataSourceVM.Model.NumberOfDataPointInFile;
             DataMngr.SamplingRate = SettingsVM.DataSourceVM.Model.SamplingRate;
+            DataMngr.DateTimeEnd = SettingsVM.DateTimeEnd;
+            DataMngr.DateTimeStart = SettingsVM.DateTimeStart;
         }
         private async Task _startDataWriters()
         {
@@ -304,7 +320,7 @@ namespace ArchiveSprinterGUI.ViewModels
         {
             DataMngr.DataCompleted = true;
             DataMngr.FinalTimeStamp = e;
-            if (NumberOfSignatures == 0)
+            if (DataMngr.NumberOfSignatures == 0)
             {
                 ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
             }
@@ -592,7 +608,8 @@ namespace ArchiveSprinterGUI.ViewModels
                 }
                 _reader.DateTimeStart = config.LastReadFileTime;
                 var numberOfDataWriters = SettingsVM.DataWriters.Count();
-                _setupDataManager(numberOfDataWriters);
+                var numberOfSignatures = SettingsVM.SignatureSettings.Count();
+                _setupDataManager(numberOfDataWriters, numberOfSignatures);
                 DataMngr.FirstFile = false;
                 DataMngr.ResumedTask = true;
                 DataMngr.CurrentTimeStamp = config.CurrentTimeStamp;
@@ -600,7 +617,7 @@ namespace ArchiveSprinterGUI.ViewModels
                 DataMngr.SignatureCanStart = true;
                 ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = true;
                 ProjectControlVM.CanRun = false;
-                _startAS(numberOfDataWriters);
+                _startAS(numberOfDataWriters, numberOfSignatures);
             }
         }
         public ICommand StopArchiveSprinter { get; set; }

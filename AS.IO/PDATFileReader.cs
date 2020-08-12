@@ -24,8 +24,32 @@ namespace AS.IO
             {
                 throw new Exception(ex.Message);
             }
-            var signalList = new List<Core.Models.Signal>();
-            var signals = reader.GetAllSignalsFromPDATFile();
+            List<Core.Models.Signal> signalList = null;
+            try
+            {
+                signalList = new List<Core.Models.Signal>();
+            }
+            catch (OutOfMemoryException oomEx)
+            {
+                throw oomEx;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            List<DataReaderBase.Signal> signals = null;
+            try
+            {
+                signals = reader.GetAllSignalsFromPDATFile();
+            }
+            catch (OutOfMemoryException oomEx)
+            {
+                throw oomEx;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             if (signals.Count() > 0)
             {
                 decimal diff;
@@ -49,7 +73,19 @@ namespace AS.IO
                     }
                     //}
                 }
-                var groupbyPMU = signals.GroupBy(x => x.ShortName).ToDictionary(y => y.Key,  y=> y.ToList());
+                Dictionary<string, List<DataReaderBase.Signal>> groupbyPMU = null;
+                try
+                {
+                    groupbyPMU = signals.GroupBy(x => x.ShortName).ToDictionary(y => y.Key, y => y.ToList());
+                }
+                catch (OutOfMemoryException oomEx)
+                {
+                    throw oomEx;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
                 foreach (var gr in groupbyPMU)
                 {
                     var stat = gr.Value.FirstOrDefault().stat.ToList();
@@ -57,9 +93,20 @@ namespace AS.IO
                     {
                         var newSignal = new Core.Models.Signal(sig.ShortName, sig.Header);
                         //var name = sig.Name;
-                        _getDataTimeStamp(newSignal, sig.EventDate, sig.PointsList);
-                        var time = sig.EventDate;
-                        var data = sig.PointsList;
+                        try
+                        {
+                            _getDataTimeStamp(newSignal, sig.EventDate, sig.PointsList);
+                        }
+                        catch (OutOfMemoryException oomEx)
+                        {
+                            throw oomEx;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                        //var time = sig.EventDate;
+                        //var data = sig.PointsList;
                         newSignal.TypeAbbreviation = _getSignalType(sig.Type);
                         newSignal.Unit = sig.Unit;
                         newSignal.SamplingRate = _samplingRate;
@@ -87,9 +134,42 @@ namespace AS.IO
             {
                 var d = pointsList[i];
                 var timeStamp = eventDate.DateTime.AddSeconds((double)d.T);
-                newSignal.Data.Add(d.Value);
-                newSignal.TimeStampNumber.Add(timeStamp.ToOADate());
-                newSignal.TimeStamps.Add(timeStamp);
+                try
+                {
+                    newSignal.Data.Add(d.Value);
+                }
+                catch (OutOfMemoryException oomEx)
+                {
+                    throw oomEx;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                try
+                {
+                    newSignal.TimeStampNumber.Add(timeStamp.ToOADate());
+                }
+                catch (OutOfMemoryException oomEx)
+                {
+                    throw oomEx;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
+                try
+                {
+                    newSignal.TimeStamps.Add(timeStamp);
+                }
+                catch (OutOfMemoryException oomEx)
+                {
+                    throw oomEx;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
             }
         }
 
