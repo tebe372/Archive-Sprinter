@@ -83,6 +83,9 @@
             <DataTemplate x:Key="SignalReplicationCustomization">
                 <local:SignalReplicationCustomization/>
             </DataTemplate>
+            <DataTemplate x:Key="UnWrapCustomization">
+                <local:UnWrapCustomization/>
+            </DataTemplate>
             <Style x:Key="ProcessStepStyle" TargetType="ContentPresenter">
                 <Style.Triggers>
                     <DataTrigger Binding="{Binding Name}" Value="Status Flags">
@@ -171,6 +174,9 @@
                     </DataTrigger>
                     <DataTrigger Binding="{Binding Name}" Value="Duplicate Signals">
                         <Setter Property="ContentTemplate" Value="{StaticResource SignalReplicationCustomization}"/>
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding Name}" Value="UnWrap Angles">
+                        <Setter Property="ContentTemplate" Value="{StaticResource UnWrapCustomization}"/>
                     </DataTrigger>
                 </Style.Triggers>
             </Style>

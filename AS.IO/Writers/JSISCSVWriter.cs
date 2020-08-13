@@ -19,7 +19,19 @@ namespace AS.IO
             {
                 Directory.CreateDirectory(dir);
             }
-            DataToBeWritten data = _convertDataToBeWritten(signals);
+            DataToBeWritten data;
+            try
+            {
+                data = _convertDataToBeWritten(signals);
+            }
+            catch (OutOfMemoryException oomEx)
+            {
+                throw oomEx;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
             using (StreamWriter outputFile = new StreamWriter(filename))
             {
                 outputFile.WriteLine(String.Join(",", data.NameRowList));
@@ -28,7 +40,31 @@ namespace AS.IO
                 outputFile.WriteLine(String.Join(",", data.PMUList));
                 for (int index = 0; index < data.Data.RowCount; index++)
                 {
-                    outputFile.WriteLine(string.Join(",", data.Data.Row(index).ToArray()));
+                    string str;
+                    try
+                    {
+                        str = string.Join(",", data.Data.Row(index).ToArray());
+                    }
+                    catch (OutOfMemoryException oomEx)
+                    {
+                        throw oomEx;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    try
+                    {
+                        outputFile.WriteLine(str);
+                    }
+                    catch (OutOfMemoryException oomEx)
+                    {
+                        throw oomEx;
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
                 }
             }
         }
@@ -43,18 +79,97 @@ namespace AS.IO
                 var timeArr = signals.FirstOrDefault().TimeStampNumber.ToArray();
                 //var firstTimeStamp2 = DateTime.FromOADate(InputSignals.FirstOrDefault().TimeStampNumber.FirstOrDefault()).ToString(@"yyyyMMdd_HHmmss.ffffff");
                 //Data = Matrix<double>.Build.Dense(timeArr.Count(), 1, (i, j) => (double)i / (double)InputSignals.FirstOrDefault().SamplingRate);
-                data.Data = Matrix<double>.Build.Dense(timeArr.Count(), 1, (i, j) => (timeArr[i] - firstDateTime) * 86400);
+                try
+                {
+                    data.Data = Matrix<double>.Build.Dense(timeArr.Count(), 1, (i, j) => (timeArr[i] - firstDateTime) * 86400);
+                }
+                catch (OutOfMemoryException oomEx)
+                {
+                    throw oomEx;
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
+                }
                 var orderedSignal = signals.OrderBy(x => x.PMUName);
                 foreach (var signal in orderedSignal)
                 {
                     if (signal.Data.Count > 0)
                     {
-                        data.NameRowList.Add(signal.SignalName);
-                        data.TypeRowList.Add(_typeConverter(signal.TypeAbbreviation));
-                        data.PMUList.Add(signal.PMUName);
-                        _unitConverter(signal.Data, signal.Unit, out Vector<double> dataInVector, out string unit);
-                        data.UnitRowList.Add(unit);
-                        data.Data = data.Data.InsertColumn(data.Data.ColumnCount, dataInVector);
+                        try
+                        {
+                            data.NameRowList.Add(signal.SignalName);
+                        }
+                        catch (OutOfMemoryException oomEx)
+                        {
+                            throw oomEx;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                        try
+                        {
+                            data.TypeRowList.Add(_typeConverter(signal.TypeAbbreviation));
+                        }
+                        catch (OutOfMemoryException oomEx)
+                        {
+                            throw oomEx;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                        try
+                        {
+                            data.PMUList.Add(signal.PMUName);
+                        }
+                        catch (OutOfMemoryException oomEx)
+                        {
+                            throw oomEx;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                        Vector<double> dataInVector;
+                        string unit;
+                        try
+                        {
+                            _unitConverter(signal.Data, signal.Unit, out dataInVector, out unit);
+                        }
+                        catch (OutOfMemoryException oomEx)
+                        {
+                            throw oomEx;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                        try
+                        {
+                            data.UnitRowList.Add(unit);
+                        }
+                        catch (OutOfMemoryException oomEx)
+                        {
+                            throw oomEx;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
+                        try
+                        {
+                            data.Data = data.Data.InsertColumn(data.Data.ColumnCount, dataInVector);
+                        }
+                        catch (OutOfMemoryException oomEx)
+                        {
+                            throw oomEx;
+                        }
+                        catch (Exception ex)
+                        {
+                            throw ex;
+                        }
                     }
                     else
                     {
@@ -144,7 +259,7 @@ namespace AS.IO
             }
         }
     }
-    public class DataToBeWritten
+    public class DataToBeWritten// : IDisposable
     {
         public DataToBeWritten()
         {

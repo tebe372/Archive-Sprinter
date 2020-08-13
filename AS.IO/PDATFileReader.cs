@@ -20,6 +20,10 @@ namespace AS.IO
             {
                 reader = new PDATReader(filename);
             }
+            catch (OutOfMemoryException oomEx)
+            {
+                throw oomEx;
+            }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);

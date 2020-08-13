@@ -1276,6 +1276,52 @@ namespace AS.Config
             return customizedSignal;
         }
     }
+    public class UnWrapCust : Customization
+    {
+        public override string Name { get => "UnWrap Angles"; }
+        private Dictionary<string, double> _initValues = new Dictionary<string, double>();
+        public override List<Signal> Process(List<Signal> e)
+        {
+            List<Signal> customizedSignal = new List<Signal>();
+            foreach (var signal in e)
+            {
+                var name = signal.PMUName + "_" + signal.SignalName;
+                if (InputSignals.Contains(name))
+                {
+                    if (!_initValues.ContainsKey(name))
+                    {
+                        _initValues[name] = double.NaN;
+                    }
+                    var initValue = _initValues[name];
+                    var output = OneToOneSignalPairs[name];
+                    OutputSignals.Remove(output);
+                    var newSignal = new Signal(PMUName, signal.SignalName);
+                    if (signal.Data.Count > 0)
+                    {
+                        if (signal.Unit == "DEG")
+                        {
+                            signal.Data = Customizations.AngleUnitConversionCustomizationForDeg(signal.Data);
+                            signal.Unit = "RAD";
+                        }
+                        newSignal.Data = Customizations.UnWrapCustomization(signal.Data, initValue);
+                    }
+                    _initValues[name] = newSignal.Data.Last();
+                    newSignal.TimeStampNumber = signal.TimeStampNumber;
+                    newSignal.TimeStamps = signal.TimeStamps;
+                    newSignal.TypeAbbreviation = signal.TypeAbbreviation;
+                    newSignal.Unit = signal.Unit;
+                    newSignal.SamplingRate = signal.SamplingRate;
+                    OutputSignals.Add(newSignal);
+                    customizedSignal.Add(newSignal);
+                }
+            }
+            foreach (var item in customizedSignal)
+            {
+                e.Add(item);
+            }
+            return customizedSignal;
+        }
+    }
     public class CreatPhasorInputOutputSignals
     {
         public CreatPhasorInputOutputSignals(Signal mag, Signal ang, Signal output)

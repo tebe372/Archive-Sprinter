@@ -34,6 +34,8 @@ namespace AS.Config
             var writer = new JSISCSVWriter();
             var lasttime = DateTime.MinValue;
             var fileLength = dataMngr.NumberOfDataPointInFile / (double)dataMngr.SamplingRate;
+            List<Signal> signals;
+            DateTime timeStamp;
             while (true)
             {
 #if DEBUG
@@ -41,7 +43,7 @@ namespace AS.Config
 #endif
                 if (dataMngr.StartTimeStamps.Count() > 0)
                 {
-                    if (dataMngr.GetDataWriterData(InputSignals, lasttime, out List<Signal> signals, out DateTime timeStamp))
+                    if (dataMngr.GetDataWriterData(InputSignals, lasttime, out signals, out timeStamp))
                     {
                         lasttime = timeStamp;
                         var datetime = timeStamp.ToString("_yyyyMMdd_HHmmss");
@@ -57,7 +59,18 @@ namespace AS.Config
                             {
                                 var pmuName = item.Key;
                                 filename = SavePath + "\\" + pmuName + "\\" + year + "\\" + date + "\\" + pmuName + datetime + ".csv";
-                                writer.WriteJSISCSV(item.ToList(), filename);
+                                try
+                                {
+                                    writer.WriteJSISCSV(item.ToList(), filename);
+                                }
+                                catch (OutOfMemoryException oomEx)
+                                {
+                                    throw oomEx;
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw ex;
+                                }
 #if DEBUG
                                 Console.WriteLine("Wrote separate PMU: " + filename);
 #endif
@@ -66,11 +79,23 @@ namespace AS.Config
                         else
                         {
                             filename = SavePath + "\\" + year + "\\" + date + "\\" + Mnemonic + datetime + ".csv";
-                            writer.WriteJSISCSV(signals, filename);
+                            try
+                            {
+                                writer.WriteJSISCSV(signals, filename);
+                            }
+                            catch (OutOfMemoryException oomEx)
+                            {
+                                throw oomEx;
+                            }
+                            catch (Exception ex)
+                            {
+                                throw ex;
+                            }
 #if DEBUG
                             Console.WriteLine("Wrote all PMU in one file: " + filename);
 #endif
                         }
+                        signals.Clear();
                     }
                     else
                     {

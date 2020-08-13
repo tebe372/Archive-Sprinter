@@ -254,7 +254,14 @@ namespace ArchiveSprinterGUI.ViewModels
             foreach (var item in SettingsVM.DataWriters)
             {
                 item.GetSignalNameList();
-                Task.Factory.StartNew(() => item.Model.Process(DataMngr));
+                try
+                {
+                    Task.Factory.StartNew(() => item.Model.Process(DataMngr));
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message);
+                }
             }
         }
         private List<string> _getAllNeededSignals()

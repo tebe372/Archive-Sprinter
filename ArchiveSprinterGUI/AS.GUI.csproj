@@ -248,6 +248,9 @@
     <Compile Include="Views\SettingsViews\signatureViews\RootMeanSquareView.xaml.cs">
       <DependentUpon>RootMeanSquareView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SettingsViews\customizationViews\UnWrapCustomization.xaml.cs">
+      <DependentUpon>UnWrapCustomization.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SignalInspectionViews\ASignalPlotPanel.xaml.cs">
       <DependentUpon>ASignalPlotPanel.xaml</DependentUpon>
     </Compile>
@@ -454,6 +457,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\SettingsViews\signatureViews\RootMeanSquareView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\SettingsViews\customizationViews\UnWrapCustomization.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

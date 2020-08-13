@@ -490,5 +490,43 @@ namespace AS.ComputationManager.Calculations
             }
             return result;
         }
+
+        public static List<double> UnWrapCustomization(List<double> data, double initValue)
+        {
+            double[] result = new double[data.Count];
+            int index = 0;
+            if (double.IsNaN(initValue))
+            {
+                result[0] = data[0];
+                index = 1;
+            }
+            try
+            {
+                for (var i = index; i <= data.Count - 1; i++)
+                {
+                    double difference;
+                    if (i == 0)
+                    {
+                        difference = data[i] - initValue;
+                    }
+                    else
+                    {
+                        difference = data[i] - result[i - 1];
+                    }
+                    int multiplesOf2PI = (int)((Math.Abs(difference) + Math.PI) / (2 * Math.PI));
+                    if (difference >= Math.PI)
+                        result[i] = data[i] - 2 * Math.PI * multiplesOf2PI;
+                    else if (difference <= -Math.PI)
+                        result[i] = data[i] + 2 * Math.PI * multiplesOf2PI;
+                    else
+                        result[i] = data[i];
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("unWrap error! " + ex.Message);
+            }
+            return result.ToList();
+        }
     }
 }

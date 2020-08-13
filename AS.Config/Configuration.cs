@@ -49,7 +49,8 @@ namespace AS.Config
             "Signal Type/Unit",
             "Metric Prefix",
             "Angle Conversion",
-            "Duplicate Signals"
+            "Duplicate Signals",
+            "UnWrap Angles"
         };
         [JsonIgnore]
         public readonly Dictionary<string, List<string>> TypeUnitDictionary = new Dictionary<string, List<string>> {

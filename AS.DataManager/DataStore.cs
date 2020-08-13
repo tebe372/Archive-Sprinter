@@ -218,6 +218,7 @@ namespace AS.DataManager
                 }
                 else
                 {
+                    signals.Clear();
                     return false;
                 }
             }

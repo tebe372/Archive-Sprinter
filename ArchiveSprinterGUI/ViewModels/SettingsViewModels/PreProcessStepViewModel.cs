@@ -885,8 +885,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                 case "Duplicate Signals":
                     _model = new SignalReplicationCust();
                     break;
+                case "UnWrap Angles":
+                    _model = new UnWrapCust();
+                    break;
             }
-
         }
         public override void AddSignal(SignalViewModel signal)
         {
@@ -1107,6 +1109,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                         UnaryAddOutputSignalOfthisInput(signal);
                         InputChannels.Add(signal);
                         break;
+                    case "UnWrap Angles":
+                        UnaryAddOutputSignalOfthisInput(signal);
+                        InputChannels.Add(signal);
+                        break;
                 }
             }
         }
@@ -1200,6 +1206,10 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                         _removeOutputSignalOfThisUnaryInput(signal);
                         break;
                     case "Duplicate Signals":
+                        InputChannels.Remove(signal);
+                        _removeOutputSignalOfThisUnaryInput(signal);
+                        break;
+                    case "UnWrap Angles":
                         InputChannels.Remove(signal);
                         _removeOutputSignalOfThisUnaryInput(signal);
                         break;
@@ -1401,12 +1411,12 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     throw new Exception("Metric prefix customization cannot apply to this signal type: " + signal.TypeAbbreviation + " .");
                 }
             }
-            if (_model is AngleConversionCust)
+            if (_model is AngleConversionCust || _model is UnWrapCust)
             {
                 if (signal.TypeAbbreviation.Length != 3 || signal.TypeAbbreviation.Substring(1, 1) != "A")
                 {
                     signal.IsChecked = false;
-                    throw new Exception("Angle unit conversion customization can only apply to signals of angle type.");
+                    throw new Exception("Angle unit conversion/Unwarp angles customization can only apply to signals of angle type.");
                 }
             }
             var output = new SignalViewModel(signal.SignalName, CustPMUname);
@@ -1427,12 +1437,12 @@ namespace ArchiveSprinterGUI.ViewModels.SettingsViewModels
                     throw new Exception("Metric prefix customization cannot apply to this signal type: " + signal.TypeAbbreviation + " .");
                 }
             }
-            if (_model is AngleConversionCust)
+            if (_model is AngleConversionCust || _model is UnWrapCust)
             {
                 if (signal.TypeAbbreviation.Length != 3 || signal.TypeAbbreviation.Substring(1, 1) != "A")
                 {
                     signal.IsChecked = false;
-                    throw new Exception("Angle unit conversion customization can only apply to signals of angle type.");
+                    throw new Exception("Angle unit conversion/Unwarp angles customization can only apply to signals of angle type.");
                 }
             }
             var output = SelectedOneToOneInputOutputPair.Output;
