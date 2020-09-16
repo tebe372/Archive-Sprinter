@@ -14,6 +14,7 @@
             <coreConverter:InverseBooleanVisibilityConverter x:Key="InverseBooleanVisibilityConverter"/>
             <coreConverter:BooleanVisibilityConverter x:Key="BooleanVisibilityConverter"/>
             <converters:FileExistenceBooleanConverter x:Key="FileExistenceBooleanConverter"/>
+            <converters:CanStartRunConverter x:Key="CanStartRunConverter"/>
             <!--<converters:EnabledIfRunningOrPausedConverter x:Key="EnabledIfRunningOrPausedConverter"/>
             <converters2:ProgressVisibilityConverter x:Key="ProgressVisibilityConverter"/>-->
         </ResourceDictionary>
@@ -35,8 +36,14 @@
             <StackPanel Orientation="Vertical" Grid.Row="3" Margin="2,0">
                 <Separator Margin="0,10,0,5"/>
                 <StackPanel Grid.Row="0" Orientation="Horizontal">
-                    <Button Margin="2" Command="{Binding RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Window, Mode=FindAncestor}, Path=DataContext.StartArchiveSprinter}" IsEnabled="{Binding CanRun, Mode=OneWay}" ToolTip="Start Archive Sprinter run">
+                    <Button Margin="2" Command="{Binding RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Window, Mode=FindAncestor}, Path=DataContext.StartArchiveSprinter}" ToolTip="Start Archive Sprinter run">
                         <Image Source="/ArchiveSprinterGUI;component/Resources/Run_16x.png"/>
+                        <Button.IsEnabled>
+                            <MultiBinding Converter="{StaticResource CanStartRunConverter}">
+                                <Binding Path="CanRun" Mode="OneWay"/>
+                                <Binding Path="DataContext.NoTaskingIsRunning" RelativeSource="{RelativeSource AncestorLevel=1, AncestorType=Window, Mode=FindAncestor}"/>
+                            </MultiBinding>
+                        </Button.IsEnabled>
                     </Button>
                     <Button Margin="2" Command="{Binding RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Window, Mode=FindAncestor}, Path=DataContext.PauseArchiveSprinter}" IsEnabled="{Binding SelectedProject.SelectedRun.IsTaskRunning}" ToolTip="Pause Archive Sprinter run" Visibility="{Binding SelectedProject.SelectedRun.IsTaskRunning, Converter={StaticResource BooleanVisibilityConverter}}">
                         <Image Source="/ArchiveSprinterGUI;component/Resources/pause.PNG"/>

@@ -40,6 +40,7 @@ namespace ArchiveSprinterGUI.ViewModels
             SaveConfigFile = new RelayCommand(_saveConfigFile);
             //OpenConfigFile = new RelayCommand(_openConfigFile);
             _numberOfFilesRead = 0;
+            _noTaskingIsRunning = true;
         }
         private SampleDataMngr _sampleDataMgr;
         private ViewModelBase _currentView;
@@ -122,7 +123,9 @@ namespace ArchiveSprinterGUI.ViewModels
             if (numberOfDataWriters > 0 || SettingsVM.SignatureSettings.Count > 0)
             {
                 ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = true;
+                _currentRunningTask = ProjectControlVM.SelectedProject.SelectedRun;
                 ProjectControlVM.CanRun = false;
+                NoTaskingIsRunning = false;
                 _startAS(numberOfDataWriters, numberOfSignatures);
             }
             else
@@ -177,6 +180,7 @@ namespace ArchiveSprinterGUI.ViewModels
                     _reader.DataCompleted = true;
                     DataMngr.DataCompleted = true;
                     ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
+                    NoTaskingIsRunning = true;
                     MessageBox.Show(ex.Message);
                 }
                 Thread.Sleep(500);
@@ -329,7 +333,9 @@ namespace ArchiveSprinterGUI.ViewModels
             DataMngr.FinalTimeStamp = e;
             if (DataMngr.NumberOfSignatures == 0)
             {
-                ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
+                //ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
+                _currentRunningTask.IsTaskRunning = false;
+                NoTaskingIsRunning = true;
             }
         }
         public DataStore DataMngr { get; set; }
@@ -504,7 +510,9 @@ namespace ArchiveSprinterGUI.ViewModels
         }
         private void _onResultsWrittenDone(object sender, EventArgs e)
         {
-            ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
+            //ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = false;
+            _currentRunningTask.IsTaskRunning = false;
+            NoTaskingIsRunning = true;
         }
         public ICommand SaveConfigFile { get; set; }
         private void _saveConfigFile(object obj)
@@ -623,7 +631,9 @@ namespace ArchiveSprinterGUI.ViewModels
                 DataMngr.TimeZero = lasttime.AddSeconds(Convert.ToInt32(SettingsVM.WindowSizeStr) - Convert.ToInt32(SettingsVM.WindowOverlapStr));
                 DataMngr.SignatureCanStart = true;
                 ProjectControlVM.SelectedProject.SelectedRun.IsTaskRunning = true;
+                _currentRunningTask = ProjectControlVM.SelectedProject.SelectedRun;
                 ProjectControlVM.CanRun = false;
+                NoTaskingIsRunning = false;
                 _startAS(numberOfDataWriters, numberOfSignatures);
             }
         }
@@ -667,6 +677,16 @@ namespace ArchiveSprinterGUI.ViewModels
             DateTime b = DateTime.Parse(s);
             return b;
         }
-
+        private bool _noTaskingIsRunning;
+        public bool NoTaskingIsRunning 
+        {
+            get { return _noTaskingIsRunning; }
+            set
+            {
+                _noTaskingIsRunning = value;
+                OnPropertyChanged();
+            }
+        }
+        private ASTaskViewModel _currentRunningTask;
     }
 }

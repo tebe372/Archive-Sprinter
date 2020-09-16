@@ -1300,12 +1300,18 @@ namespace AS.Config
                     {
                         if (signal.Unit == "DEG")
                         {
-                            signal.Data = Customizations.AngleUnitConversionCustomizationForDeg(signal.Data);
-                            signal.Unit = "RAD";
+                            var temp = Customizations.AngleUnitConversionCustomizationForDeg(signal.Data);
+                            temp = Customizations.UnWrapCustomization(temp, ref initValue);
+                            // convert it back to degree
+                            newSignal.Data = Customizations.AngleUnitConversionCustomizationForRad(temp);
                         }
-                        newSignal.Data = Customizations.UnWrapCustomization(signal.Data, initValue);
+                        else
+                        {
+                            newSignal.Data = Customizations.UnWrapCustomization(signal.Data, ref initValue);
+                        }
                     }
-                    _initValues[name] = newSignal.Data.Last();
+                    //_initValues[name] = newSignal.Data.Last()
+                    _initValues[name] = initValue;
                     newSignal.TimeStampNumber = signal.TimeStampNumber;
                     newSignal.TimeStamps = signal.TimeStamps;
                     newSignal.TypeAbbreviation = signal.TypeAbbreviation;

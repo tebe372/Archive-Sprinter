@@ -88,7 +88,7 @@ namespace AS.IO
                 var time1 = timeSpanRelativeToBaseTime[0];
                 var time2 = timeSpanRelativeToBaseTime[1];
                 _samplingRate = (int)Math.Round((1 / (time2 - time1)) / 10) * 10;
-
+                List<UInt16> stats = (new UInt16[timeStamps.Count]).ToList();
                 //try
                 //{
                 //    //double t1 = Convert.ToDouble(time1);
@@ -113,6 +113,7 @@ namespace AS.IO
                 foreach (var sig in signalList)
                 {
                     sig.SamplingRate = _samplingRate;
+                    sig.Stat = stats;
                 }
             }
 
