@@ -40,7 +40,7 @@ namespace AS.ComputationManager.Calculations
             {
                 for (int idx = 0; idx < s.Data.Count; idx++)
                 {
-                    if (s.Data[idx] < 1e-15)
+                    if (s.Data[idx] == 0d)
                     {
                         s.Flags[idx] = false;
                     }
@@ -50,7 +50,7 @@ namespace AS.ComputationManager.Calculations
             {
                 for (int idx = 0; idx < s.ComplexData.Count; idx++)
                 {
-                    if (Complex.Abs(s.ComplexData[idx]) == 0)
+                    if (Complex.Abs(s.ComplexData[idx]) == 0d)
                     {
                         s.Flags[idx] = false;
                     }
