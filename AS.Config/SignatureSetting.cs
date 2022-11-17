@@ -1255,7 +1255,10 @@ namespace AS.Config
                     if (OmitNan)
                     {
                         ProcessNANData(item);
-                        rise = SignatureCalculations.Rise(item.Data);
+                        if (item.Data.Count > 0)
+                        {
+                            rise = SignatureCalculations.Rise(item.Data);
+                        }
                     }
                     else
                     {
